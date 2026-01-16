@@ -1,0 +1,45 @@
+{
+	"head": {
+		"title": "Riordon的个人网站",
+		"description": "Author:Riordon,Category:Personal Blog",
+		"favicon": "favicon.ico"
+	},
+	"intro": {
+		"title": "Riordon",
+		"subtitle": "心之所向，素履以往",
+		"enter": "enter",
+		"supportAuthor": true,
+		"background": true
+	},
+	"main": {
+		"name": "Riordon",
+		"signature": "Code & Input & Output",
+		"avatar": {
+			"link": "assets/avatar.jpg",
+			"height": "100",
+			"width": "100"
+		},
+		"ul": {
+			"first": {
+				"href": "blog/",
+				"icon": "bokeyuan",
+				"text": "博客"
+			},
+			"second": {
+				"href": "about/",
+				"icon": "xiaolian",
+				"text": "关于"
+			},
+			"third": {
+				"href": "mailto:admin@riordon.xyz",
+				"icon": "email",
+				"text": "邮箱"
+			},
+			"fourth": {
+				"href": "https://github.com/Riordon666",
+				"icon": "github",
+				"text": "Github"
+			}
+		}
+	}
+}
