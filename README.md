@@ -76,11 +76,6 @@ npm run preview
 - **WebGL** - 流体背景
 - **anime.js** - 动画库
 
-## 备案信息
-
-- ICP备案：蜀ICP备2026002494号-1
-- 公安备案：川公网安备51111102000146号
-
 ## License
 
 MIT
