@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title id="page-title">Riordon的个人网站</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="renderer" content="webkit">
+
+  <meta name="theme-color" content="#222325">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#222325">
+  <meta name="msapplication-navbutton-color" content="#222325">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SimonAKing/font/font.min.css">
+  <link rel="stylesheet" href="/src/css/style.css">
+
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="prefetch" href="https://cdn.jsdelivr.net/">
+
+  <meta id="meta-description" name="description" content="Author:Riordon,Category:Personal Blog">
+  <link rel="icon" id="favicon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" id="favicon-shortcut" href="/favicon.ico" type="image/x-icon">
+
+  <!--[if lt IE 9]>
+  <style>
+    .alert { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px }
+    .alert-danger { background-color: #f2dede; border-color: #ebccd1; color: #a94442; border-bottom: 1px solid #ebccd1 }
+    .alert-link { color: #843534; font-weight: bold }
+    .topframe { margin: 0; padding-left: 15px; padding-right: 15px; text-align: center; border-radius: 0; position: fixed; left: 0; right: 0; top: 0; z-index: 1000 }
+  </style>
+  <div class="alert alert-danger topframe">
+    你的浏览器实在<strong>太太太太太太旧了</strong>，放学别走，升级完浏览器再说
+    <a class="alert-link" target="_blank" href="http://browsehappy.com">立即升级</a>
+  </div>
+  <script src="https://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+  <main>
+    <!-- Intro Section -->
+    <div class="content content-intro">
+      <div class="content-inner">
+        <canvas id="background"></canvas>
+        
+        <div class="wrap fade">
+          <!-- GitHub Corner -->
+          <a href="https://github.com/Riordon666/PersonalWeb" class="github-corner" aria-label="View source on GitHub" target="_blank" rel="noopener noreferrer">
+            <svg width="80" height="80" viewBox="0 0 250 250" style="fill:transparent; color:#fff; position: absolute; top: 20px; border: 0; right: 0;" aria-hidden="true">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+              <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+            </svg>
+          </a>
+          <style>
+            .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}
+            @keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}
+            @media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+          </style>
+
+          <h2 class="content-title" id="intro-title">Riordon</h2>
+          <h3 class="content-subtitle" id="intro-subtitle" original-content="心之所向，素履以往">&nbsp;</h3>
+          <a class="enter" id="enter-btn">enter</a>
+          <div class="arrow arrow-1"></div>
+          <div class="arrow arrow-2"></div>
+        </div>
+
+        <div class="shape-wrap">
+          <svg class="shape" width="100%" height="100vh" preserveAspectRatio="none" viewBox="0 0 1440 800" xmlns:pathdata="http://www.codrops.com/">
+            <path d="M -44,-50 C -52.71,28.52 15.86,8.186 184,14.69 383.3,22.39 462.5,12.58 638,14 835.5,15.6 987,6.4 1194,13.86 1661,30.68 1652,-36.74 1582,-140.1 1512,-243.5 15.88,-589.5 -44,-50 Z" pathdata:id="M -44,-50 C -137.1,117.4 67.86,445.5 236,452 435.3,459.7 500.5,242.6 676,244 873.5,245.6 957,522.4 1154,594 1593,753.7 1793,226.3 1582,-126 1371,-478.3 219.8,-524.2 -44,-50 Z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="content content-main">
+      <div id="card">
+        <div class="card-inner fade">
+          <header>
+            <img id="avatar" src="/avatar.jpg" width="100" height="100" alt="avatar">
+            <h1 data-translate="name" id="main-name">Riordon</h1>
+            <h2 id="signature" data-translate="signature">Go where your heart leads.</h2>
+          </header>
+
+          <ul id="main-links">
+            <li>
+              <a href="/blog/" aria-label="博客">
+                <i class="icon icon-bokeyuan"></i>
+                <span data-translate="博客">博客</span>
+              </a>
+            </li>
+            
+            <li>
+              <a href="mailto:admin@riordon.xyz" aria-label="邮箱" target="_blank">
+                <i class="icon icon-email"></i>
+                <span data-translate="邮箱">邮箱</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/Riordon666" aria-label="Github" target="_blank">
+                <i class="icon icon-github"></i>
+                <span data-translate="Github">Github</span>
+              </a>
+            </li>
+            <li>
+              <a href="/" aria-label="返回">
+                <i class="icon icon-xiaolian"></i>
+                <span data-translate="返回">返回</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <canvas class="grid-background" id="gridCanvas"></canvas>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <a target="_blank" href="https://beian.miit.gov.cn/" class="footer-link">
+          <img src="https://lemoncoder.cn/themes/halo-theme-vapor/assets/imgs/icpb.webp" alt="ICP备案" class="footer-icon">
+          <span>蜀ICP备2026002494号-1</span>
+        </a>
+        <a target="_blank" href="https://beian.mps.gov.cn/#/query/webSearch" class="footer-link">
+          <img src="https://lemoncoder.cn/upload/gawb.png?width=800" alt="网安备案" class="footer-icon">
+          <span>川公网安备51111102000146号</span>
+        </a>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+  <script>
+    // 全局工具函数
+    window.$ = selector => document.querySelector(selector)
+    const getOriginalContent = selector => $(selector).getAttribute("original-content")
+    
+    // 从DOM读取配置（由main.js在DOMContentLoaded时设置）
+    window.subtitle = null
+    window.signature = null
+    
+    // 流体背景配置
+    window.config = {
+      SIM_RESOLUTION: 128,
+      DYE_RESOLUTION: 1024,
+      CAPTURE_RESOLUTION: 512,
+      DENSITY_DISSIPATION: 1,
+      VELOCITY_DISSIPATION: 0.2,
+      PRESSURE: 0.8,
+      PRESSURE_ITERATIONS: 20,
+      CURL: 30,
+      SPLAT_RADIUS: 0.25,
+      SPLAT_FORCE: 6000,
+      SHADING: true,
+      COLORFUL: true,
+      COLOR_UPDATE_SPEED: 10,
+      PAUSED: false,
+      BACK_COLOR: { r: 30, g: 31, b: 33 },
+      TRANSPARENT: false,
+      BLOOM: true,
+      BLOOM_ITERATIONS: 8,
+      BLOOM_RESOLUTION: 256,
+      BLOOM_INTENSITY: 0.4,
+      BLOOM_THRESHOLD: 0.8,
+      BLOOM_SOFT_KNEE: 0.7,
+      SUNRAYS: true,
+      SUNRAYS_RESOLUTION: 196,
+      SUNRAYS_WEIGHT: 1.0,
+    }
+  </script>
+
+  <script type="module" src="/src/js/main.js"></script>
+  <script type="module" src="/src/js/background.js"></script>
+</body>
+</html>
