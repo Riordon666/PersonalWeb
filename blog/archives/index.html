@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog</title>
+  <title>Archives</title>
   <link rel="stylesheet" href="/blog/blog.css" />
+  <link rel="stylesheet" href="/blog/archives.css" />
 </head>
 <body>
   <div id="app" class="layout">
@@ -30,11 +31,11 @@
         </div>
       </div>
       <nav class="nav">
-        <a class="nav-item active" href="/blog/" data-short="主">
+        <a class="nav-item " href="/blog/" data-short="主">
           <span class="nav-icon svg-icon"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M883.2 277.333333l-264.533333-183.466666C546.133333 42.666667 435.2 42.666667 366.933333 98.133333L136.533333 277.333333c-46.933333 34.133333-81.066667 106.666667-81.066666 166.4v315.733334c0 115.2 93.866667 213.333333 213.333333 213.333333h494.933333c115.2 0 213.333333-93.866667 213.333334-213.333333v-311.466667c-4.266667-59.733333-42.666667-136.533333-93.866667-170.666667z m21.333333 482.133334c0 38.4-12.8 72.533333-42.666666 102.4s-59.733333 42.666667-102.4 42.666666H268.8c-38.4 0-72.533333-12.8-102.4-42.666666s-42.666667-64-42.666667-102.4v-315.733334c0-46.933333 17.066667-85.333333 55.466667-110.933333l230.4-179.2c21.333333-17.066667 51.2-25.6 85.333333-25.6s64 8.533333 85.333334 25.6l264.533333 183.466667c42.666667 29.866667 59.733333 68.266667 59.733333 115.2v307.2z" fill="currentColor"></path><path d="M486.4 789.333333v-170.666666c0-17.066667 17.066667-34.133333 34.133333-34.133334s34.133333 17.066667 34.133334 34.133334v170.666666c0 17.066667-17.066667 34.133333-34.133334 34.133334s-34.133333-17.066667-34.133333-34.133334z" fill="currentColor"></path></svg></span>
           <span class="nav-text">主 页</span>
         </a>
-        <a class="nav-item " href="/blog/archives/" data-short="档">
+        <a class="nav-item active" href="/blog/archives/" data-short="档">
           <span class="nav-icon svg-icon"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M934.4 260.266667l-396.8-145.066667c-17.066667-8.533333-38.4-8.533333-59.733333 0L81.066667 260.266667c-51.2 21.333333-51.2 93.866667 0 110.933333l396.8 145.066667c17.066667 8.533333 38.4 8.533333 59.733333 0l396.8-145.066667c51.2-17.066667 51.2-93.866667 0-110.933333zM512 452.266667h-12.8L128 315.733333l375.466667-136.533333h12.8l375.466666 136.533333-379.733333 136.533334z" fill="currentColor"></path><path d="M72.533333 499.2c-4.266667 0-8.533333-4.266667-12.8-4.266667-17.066667 0-34.133333 17.066667-34.133333 34.133334 0 12.8 8.533333 25.6 21.333333 29.866666l418.133334 157.866667c29.866667 12.8 55.466667 12.8 85.333333 0l418.133333-157.866667c12.8-4.266667 21.333333-17.066667 21.333334-29.866666 0-17.066667-17.066667-34.133333-34.133334-34.133334-4.266667 0-8.533333 0-12.8 4.266667l-418.133333 157.866667c-12.8 4.266667-25.6 4.266667-38.4 0l-413.866667-157.866667z" fill="currentColor"></path><path d="M72.533333 712.533333c-4.266667 0-8.533333-4.266667-12.8-4.266666-17.066667 0-34.133333 17.066667-34.133333 34.133333 0 12.8 8.533333 25.6 21.333333 29.866667l418.133334 157.866666c29.866667 12.8 55.466667 12.8 85.333333 0l418.133333-157.866666c12.8-4.266667 21.333333-17.066667 21.333334-29.866667 0-17.066667-17.066667-34.133333-34.133334-34.133333-4.266667 0-8.533333 0-12.8 4.266666l-418.133333 157.866667c-12.8 4.266667-25.6 4.266667-38.4 0l-413.866667-157.866667z" fill="currentColor"></path></svg></span>
           <span class="nav-text">归 档</span>
         </a>
@@ -63,50 +64,33 @@
       </div>
     </aside>
   
-
     <main class="main">
       <header class="topbar">
         <div class="brand">
           <h1>Riordon</h1>
           <div class="subtitle">Go where your heart leads.</div>
         </div>
-        <button class="search" aria-label="search"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M469.333333 42.666667C234.666667 42.666667 42.666667 234.666667 42.666667 469.333333s192 426.666667 426.666666 426.666667 426.666667-192 426.666667-426.666667S704 42.666667 469.333333 42.666667z m251.733334 678.4c-68.266667 68.266667-153.6 106.666667-251.733334 106.666666s-183.466667-34.133333-251.733333-106.666666c-68.266667-68.266667-106.666667-153.6-106.666667-251.733334s34.133333-183.466667 106.666667-251.733333C285.866667 145.066667 371.2 110.933333 469.333333 110.933333s183.466667 34.133333 251.733334 106.666667c68.266667 68.266667 106.666667 153.6 106.666666 251.733333s-34.133333 183.466667-106.666666 251.733334zM878.933333 785.066667l89.6 89.6c12.8 12.8 12.8 34.133333 0 46.933333-12.8 12.8-34.133333 12.8-46.933333 0l-89.6-89.6c-12.8-12.8-12.8-34.133333 0-46.933333s34.133333-12.8 46.933333 0z" fill="currentColor"></path></svg></button>
+        <a class="back" href="/blog/" aria-label="back"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg></a>
       </header>
-
       <section class="content">
-        <div class="post-list">
+        <div class="archive-list">
           
-        <article class="post-item">
-          <div class="post-item-cover"></div>
-          <div class="post-item-body">
-            <h2 class="post-item-title"><a href="/blog/hello-world1/">Hello World</a></h2>
-            <div class="post-item-meta">2026-02-22</div>
-            <p class="post-item-excerpt">这是你的第一篇文章。 - 直接用 Markdown 写内容</p>
-            <a class="post-item-cta" href="/blog/hello-world1/">阅读全文 &gt;&gt;</a>
-          </div>
-        </article>
+        <div class="archive-item">
+          <a href="/blog/hello-world1/">Hello World</a>
+          <span class="archive-date">2026-02-22</span>
+        </div>
       
 
-        <article class="post-item">
-          <div class="post-item-cover"></div>
-          <div class="post-item-body">
-            <h2 class="post-item-title"><a href="/blog/hello-world/">Hello World</a></h2>
-            <div class="post-item-meta">2026-02-22</div>
-            <p class="post-item-excerpt">这是你的第一篇文章。 - 直接用 Markdown 写内容</p>
-            <a class="post-item-cta" href="/blog/hello-world/">阅读全文 &gt;&gt;</a>
-          </div>
-        </article>
+        <div class="archive-item">
+          <a href="/blog/hello-world/">Hello World</a>
+          <span class="archive-date">2026-02-22</span>
+        </div>
       
 
-        <article class="post-item">
-          <div class="post-item-cover"></div>
-          <div class="post-item-body">
-            <h2 class="post-item-title"><a href="/blog/hello-world3/">Hello World</a></h2>
-            <div class="post-item-meta">2026-02-22</div>
-            <p class="post-item-excerpt">这是你的第一篇文章。 - 直接用 Markdown 写内容</p>
-            <a class="post-item-cta" href="/blog/hello-world3/">阅读全文 &gt;&gt;</a>
-          </div>
-        </article>
+        <div class="archive-item">
+          <a href="/blog/hello-world3/">Hello World</a>
+          <span class="archive-date">2026-02-22</span>
+        </div>
       
         </div>
       </section>

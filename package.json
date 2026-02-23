@@ -4,7 +4,10 @@
   "description": "Riordon's Personal Website",
   "type": "module",
   "scripts": {
+    "gen:blog": "node scripts/generate-blog.mjs",
+    "predev": "node scripts/generate-blog.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/generate-blog.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
