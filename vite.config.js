@@ -18,6 +18,6 @@ export default defineConfig({
   server: {
     port: 8080,
     open: true,
-    allowedHosts: ['riordon.xyz','ruka.cc.cd'],
+    allowedHosts: ['riordon.xyz','ruka.cc.cd','ruka.riordon.xyz'],
   },
 })
