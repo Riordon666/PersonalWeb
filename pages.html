@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>博客 / 关于</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/src/css/pages.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">Riordon</a>
+      <nav class="nav">
+        <a href="#blog" class="nav-link">博客</a>
+        <a href="#about" class="nav-link">关于</a>
+        <a href="/" class="nav-link">返回</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <h1 class="hero-title">「心」之所向，素履以往</h1>
+        <p class="hero-subtitle">Go where your heart leads.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#blog">进入博客</a>
+          <a class="btn btn-ghost" href="#about">关于我</a>
+        </div>
+      </div>
+      <div class="wave" aria-hidden="true"></div>
+    </main>
+
+    <section id="blog" class="section">
+      <div class="container">
+        <h2 class="section-title">博客</h2>
+        <p class="section-desc">这里放你的文章列表。后续你可以改成真正的博客系统或静态文章列表。</p>
+
+        <div class="cards">
+          <article class="card">
+            <h3 class="card-title">示例文章 1</h3>
+            <p class="card-desc">一个占位的文章卡片，你可以替换成真实内容。</p>
+            <a class="card-link" href="#">阅读全文</a>
+          </article>
+          <article class="card">
+            <h3 class="card-title">示例文章 2</h3>
+            <p class="card-desc">支持响应式布局，移动端也会很好看。</p>
+            <a class="card-link" href="#">阅读全文</a>
+          </article>
+          <article class="card">
+            <h3 class="card-title">示例文章 3</h3>
+            <p class="card-desc">后续可以把数据抽到 JSON 或 markdown。</p>
+            <a class="card-link" href="#">阅读全文</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">关于</h2>
+        <div class="about">
+          <div class="about-left">
+            <img class="about-avatar" src="/avatar.jpg" alt="avatar" />
+          </div>
+          <div class="about-right">
+            <p class="about-text">Hi，我是 Riordon。这里写你的简介、技能栈、经历等等。</p>
+            <p class="about-text">你也可以把这里做成时间线、项目展示、联系方式等。</p>
+            <div class="about-actions">
+              <a class="btn" href="mailto:admin@riordon.xyz">联系我</a>
+              <a class="btn btn-ghost" href="https://github.com/Riordon666" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>© <span id="year"></span> Riordon</span>
+        <span class="footer-sep">·</span>
+        <a class="footer-link" href="/">首页</a>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/js/pages.js"></script>
+  </body>
+</html>

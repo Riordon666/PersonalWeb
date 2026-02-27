@@ -1,17 +1,8 @@
-// Blog page interactions (placeholder)
-// Later: search, sidebar collapse, archives/tags filtering
+// Blog page interactions
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const sidebar = document.querySelector('.sidebar')
   const toggle = document.querySelector('.nav-toggle')
-
-  const isPostPage = Boolean(document.querySelector('.post'))
-  if (isPostPage) {
-    document.body.setAttribute('data-page', 'post')
-    // post page: sidebar collapsed by default
-    document.documentElement.classList.remove('nav-open')
-    if (sidebar) sidebar.setAttribute('data-open', 'false')
-  }
 
   const setOpen = (open) => {
     if (!sidebar) return
@@ -40,89 +31,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  const runPostEnhancements = () => {
-    if (!isPostPage) return
-
-    // Typing animation for title
-    const titleEl = document.querySelector('.post-h1')
-    if (titleEl) {
-      const full = titleEl.textContent || ''
-      titleEl.textContent = ''
-      titleEl.classList.add('typing')
-      let i = 0
-      const tick = () => {
-        i += 1
-        titleEl.textContent = full.slice(0, i)
-        if (i < full.length) requestAnimationFrame(tick)
-        else titleEl.classList.remove('typing')
-      }
-      requestAnimationFrame(tick)
-    }
-
-    // Build TOC from headings
-    const tocRoot = document.querySelector('.post-toc-inner')
-    const content = document.querySelector('.post-content')
-    if (!tocRoot || !content) return
-
-    const headings = Array.from(content.querySelectorAll('h2, h3'))
-    if (headings.length === 0) return
-
-    const slugify = (s) =>
-      s
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9\u4e00-\u9fa5\-]/g, '')
-
-    const used = new Map()
-    const ensureId = (el) => {
-      let id = el.id
-      if (id) return id
-      const base = slugify(el.textContent || 'section') || 'section'
-      const n = (used.get(base) || 0) + 1
-      used.set(base, n)
-      id = n === 1 ? base : `${base}-${n}`
-      el.id = id
-      return id
-    }
-
-    tocRoot.innerHTML = ''
-    const items = headings.map((h) => {
-      const id = ensureId(h)
-      const a = document.createElement('a')
-      a.className = 'toc-item'
-      a.href = `#${id}`
-      a.textContent = h.textContent || ''
-      a.setAttribute('data-level', h.tagName === 'H3' ? '3' : '2')
-      a.addEventListener('click', (e) => {
-        e.preventDefault()
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
-      tocRoot.appendChild(a)
-      return { heading: h, link: a }
-    })
-
-    // Active section highlight
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const ent of entries) {
-          if (!ent.isIntersecting) continue
-          for (const it of items) it.link.classList.remove('active')
-          const match = items.find((it) => it.heading === ent.target)
-          match?.link.classList.add('active')
-          break
-        }
-      },
-      { root: null, threshold: 0.2, rootMargin: '-20% 0px -70% 0px' }
-    )
-
-    for (const it of items) io.observe(it.heading)
-  }
-
+  // Theme and Background Management
   const root = document.documentElement
   const STORAGE_KEY = 'blog-theme-hsl'
+  const BG_STORAGE_KEY = 'blog-theme-bg'
 
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v))
+
+  let bgState = {
+    mode: 'color',
+    image: '',
+    blur: 0,
+    opacity: 1
+  }
+
+  const applyBgState = (state) => {
+    bgState = state
+    document.body.setAttribute('data-theme-mode', state.mode)
+    // Clear background image when in color mode
+    const bgImage = state.mode === 'color' ? 'none' : (state.image ? `url("${state.image}")` : 'none')
+    root.style.setProperty('--bg-image', bgImage)
+    root.style.setProperty('--bg-blur', `${state.blur}px`)
+    root.style.setProperty('--bg-opacity', state.opacity)
+    // Save with timestamp
+    localStorage.setItem(BG_STORAGE_KEY, JSON.stringify({ ...state, timestamp: Date.now() }))
+  }
+
+  const loadBgState = async () => {
+    try {
+      // Load config for defaults
+      let config = { defaultMode: 'color', defaultImage: 1, defaultBlur: 0, defaultOpacity: 1 }
+      try {
+        const resp = await fetch('/blog/background-config.json')
+        if (resp.ok) config = await resp.json()
+      } catch (e) { /* use defaults */ }
+      
+      // Build default image path
+      const files = await fetch('/blog/backgrounds.json').then(r => r.ok ? r.json() : []).catch(() => [])
+      const defaultImage = files[config.defaultImage - 1] || ''
+      
+      // Check localStorage for user settings with 2-day expiration
+      const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
+      const raw = localStorage.getItem(BG_STORAGE_KEY)
+      let useDefaults = true
+      
+      if (raw) {
+        const saved = JSON.parse(raw)
+        // Check if settings are still valid (within 2 days)
+        if (saved.timestamp && (Date.now() - saved.timestamp) < TWO_DAYS_MS) {
+          useDefaults = false
+          applyBgState({
+            mode: saved.mode,
+            image: saved.image || defaultImage,
+            blur: saved.blur ?? config.defaultBlur,
+            opacity: saved.opacity ?? config.defaultOpacity
+          })
+        }
+      }
+      
+      if (useDefaults) {
+        // No valid saved state, use config defaults
+        applyBgState({
+          mode: config.defaultMode || 'color',
+          image: defaultImage,
+          blur: config.defaultBlur,
+          opacity: config.defaultOpacity
+        })
+      }
+      
+      if (!document.querySelector('.site-background')) {
+        const bg = document.createElement('div')
+        bg.className = 'site-background'
+        document.body.prepend(bg)
+      }
+    } catch (e) { console.error('Failed to load bg state', e) }
+  }
 
   const setTheme = ({ h, s, l }) => {
     root.style.setProperty('--theme-h', String(Math.round(h)))
@@ -146,8 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Apply persisted theme on load
   setTheme(getTheme())
+  await loadBgState()
+  if (!document.querySelector('.site-background')) {
+    const bg = document.createElement('div')
+    bg.className = 'site-background'
+    document.body.prepend(bg)
+  }
 
   const hslToRgb = (h, s, l) => {
     s /= 100
@@ -169,43 +157,119 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const rgbToHsl = (r, g, b) => {
-    r /= 255
-    g /= 255
-    b /= 255
-    const max = Math.max(r, g, b)
-    const min = Math.min(r, g, b)
-    const d = max - min
-    let h = 0
-    if (d !== 0) {
-      if (max === r) h = ((g - b) / d) % 6
-      else if (max === g) h = (b - r) / d + 2
-      else h = (r - g) / d + 4
-      h *= 60
-      if (h < 0) h += 360
-    }
-    const l = (max + min) / 2
-    const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1))
-    return { h, s: s * 100, l: l * 100 }
-  }
-
-  const createPaletteModal = (initial) => {
+  const createPaletteModal = async (initial) => {
     const modal = document.createElement('div')
     modal.className = 'palette-modal'
+    
+    // Fetch backgrounds from JSON
+    let backgrounds = []
+    try {
+      const resp = await fetch('/blog/backgrounds.json')
+      if (resp.ok) {
+        backgrounds = await resp.json()
+      }
+    } catch (e) {
+      console.warn('Failed to load backgrounds:', e)
+    }
+
+    // Show first 8 images, 9th slot is "view more" button (3x3 grid)
+    const previewImages = backgrounds.slice(0, 8)
+    const hasMore = backgrounds.length > 8
+    const isColorMode = bgState.mode === 'color'
+
     modal.innerHTML = `
       <div class="palette-card" role="dialog" aria-modal="true" aria-label="palette">
-        <div class="palette-title">RGB调色实验室</div>
-        <div class="palette-body">
-          <div class="wheel-wrap">
-            <canvas class="palette-wheel" width="220" height="220"></canvas>
-            <div class="wheel-knob" aria-hidden="true"></div>
+        <div class="palette-header">
+          <div class="mode-switch">
+            <button class="mode-btn ${isColorMode ? 'active' : ''}" data-mode="color">纯色</button>
+            <button class="mode-btn ${!isColorMode ? 'active' : ''}" data-mode="image">图片</button>
           </div>
-          <input class="palette-light" type="range" min="20" max="80" value="${Math.round(initial.l)}" aria-label="light" />
         </div>
-        <button class="palette-close" type="button" aria-label="close">×</button>
+        <div class="palette-content">
+          ${isColorMode ? `
+            <div class="color-pane active">
+              <div class="wheel-wrap">
+                <canvas class="palette-wheel" width="240" height="240"></canvas>
+                <div class="wheel-knob" aria-hidden="true"></div>
+              </div>
+              <input class="palette-light" type="range" min="20" max="80" value="${Math.round(initial.l)}" aria-label="light" />
+            </div>
+          ` : `
+            <div class="image-pane active">
+              <div class="bg-grid">
+                ${backgrounds.length > 0 ? `
+                  ${previewImages.map(src => `
+                    <div class="bg-item ${bgState.image === src ? 'active' : ''}" 
+                         style="background-image: url('${src}')" 
+                         data-src="${src}"></div>
+                  `).join('')}
+                  ${hasMore ? `
+                    <div class="bg-item bg-more" data-action="view-more">
+                      <span class="bg-more-text">+${backgrounds.length - 8}</span>
+                      <span class="bg-more-label">查看更多</span>
+                    </div>
+                  ` : ''}
+                ` : '<div class="bg-empty">暂无背景图片，请添加到 public/blog/backgrounds/ 文件夹</div>'}
+              </div>
+              <div class="bg-controls">
+                <div class="setting-row">
+                  <div class="setting-label"><span>虚化程度</span><span id="val-blur">${bgState.blur}px</span></div>
+                  <input class="setting-slider" id="input-blur" type="range" min="0" max="20" value="${bgState.blur}" />
+                </div>
+                <div class="setting-row">
+                  <div class="setting-label"><span>背景亮度</span><span id="val-opacity">${Math.round(bgState.opacity * 100)}%</span></div>
+                  <input class="setting-slider" id="input-opacity" type="range" min="10" max="100" value="${bgState.opacity * 100}" />
+                </div>
+              </div>
+            </div>
+          `}
+        </div>
+        <div class="palette-footer">
+          <button class="palette-btn-close" type="button">关闭</button>
+        </div>
       </div>
     `
+    
+    // Store backgrounds for later use
+    modal._backgrounds = backgrounds
     return modal
+  }
+
+  // Fullscreen image picker modal with lazy loading
+  const createImagePickerModal = (backgrounds) => {
+    const picker = document.createElement('div')
+    picker.className = 'image-picker-modal'
+    picker.innerHTML = `
+      <div class="image-picker-content">
+        <div class="image-picker-header">
+          <h3>选择背景图片</h3>
+          <button class="image-picker-close" type="button" aria-label="close">×</button>
+        </div>
+        <div class="image-picker-grid">
+          ${backgrounds.map(src => `
+            <div class="image-picker-item ${bgState.image === src ? 'active' : ''}" 
+                 data-src="${src}"></div>
+          `).join('')}
+        </div>
+      </div>
+    `
+    
+    // Lazy load images
+    setTimeout(() => {
+      const items = picker.querySelectorAll('.image-picker-item')
+      items.forEach(item => {
+        const src = item.dataset.src
+        if (src) {
+          const img = new Image()
+          img.onload = () => {
+            item.style.backgroundImage = `url('${src}')`
+          }
+          img.src = src
+        }
+      })
+    }, 50)
+    
+    return picker
   }
 
   const drawWheel = (canvas, lightness) => {
@@ -256,10 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let paletteEl = null
-  const openPalette = () => {
+  const openPalette = async () => {
     if (paletteEl) return
     let theme = getTheme()
-    paletteEl = createPaletteModal(theme)
+    paletteEl = await createPaletteModal(theme)
     document.body.appendChild(paletteEl)
 
     const close = () => {
@@ -274,12 +338,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const light = paletteEl.querySelector('.palette-light')
 
     const redraw = () => {
-      drawWheel(wheel, theme.l)
-      positionKnob(knob, wheel, theme.h, theme.s)
+      if (wheel && knob) {
+        drawWheel(wheel, theme.l)
+        positionKnob(knob, wheel, theme.h, theme.s)
+      }
       setTheme(theme)
     }
 
     redraw()
+
+    // Mode Switching - rebuild modal with new mode
+    const modeBtns = paletteEl.querySelectorAll('.mode-btn')
+    modeBtns.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const newMode = btn.dataset.mode
+        applyBgState({ ...bgState, mode: newMode })
+        // Rebuild modal
+        paletteEl.remove()
+        paletteEl = null
+        await openPalette()
+      })
+    })
+
+    // Background selection (only in image mode)
+    const bgItems = paletteEl.querySelectorAll('.bg-item')
+    bgItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // Check if it's the "view more" button
+        if (item.dataset.action === 'view-more') {
+          openImagePicker(paletteEl._backgrounds)
+          return
+        }
+        bgItems.forEach(i => i.classList.remove('active'))
+        item.classList.add('active')
+        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image' })
+      })
+    })
+
+    // Blur slider
+    const blurInput = paletteEl.querySelector('#input-blur')
+    const blurVal = paletteEl.querySelector('#val-blur')
+    blurInput?.addEventListener('input', () => {
+      const v = blurInput.value
+      blurVal.textContent = `${v}px`
+      applyBgState({ ...bgState, blur: Number(v) })
+    })
+
+    // Opacity slider
+    const opacityInput = paletteEl.querySelector('#input-opacity')
+    const opacityVal = paletteEl.querySelector('#val-opacity')
+    opacityInput?.addEventListener('input', () => {
+      const v = opacityInput.value
+      opacityVal.textContent = `${v}%`
+      applyBgState({ ...bgState, opacity: Number(v) / 100 })
+    })
 
     const pickAt = (clientX, clientY) => {
       const rect = wheel.getBoundingClientRect()
@@ -317,19 +429,22 @@ document.addEventListener('DOMContentLoaded', () => {
       dragging = false
     }
 
-    wheel.addEventListener('mousedown', start)
+    wheel?.addEventListener('mousedown', start)
     window.addEventListener('mousemove', move)
     window.addEventListener('mouseup', end)
-    wheel.addEventListener('touchstart', start, { passive: true })
+    wheel?.addEventListener('touchstart', start, { passive: true })
     window.addEventListener('touchmove', move, { passive: true })
     window.addEventListener('touchend', end)
 
-    light.addEventListener('input', () => {
+    light?.addEventListener('input', () => {
       theme = { ...theme, l: Number(light.value) }
       redraw()
     })
-
-    closeBtn?.addEventListener('click', close)
+    
+    // Bottom close button
+    const footerCloseBtn = paletteEl.querySelector('.palette-btn-close')
+    footerCloseBtn?.addEventListener('click', close)
+    
     paletteEl.addEventListener('click', (e) => {
       if (e.target === paletteEl) close()
     })
@@ -343,20 +458,57 @@ document.addEventListener('DOMContentLoaded', () => {
     )
   }
 
-  const paletteBtn = document.querySelector('.palette-btn')
-  if (paletteBtn) {
-    paletteBtn.addEventListener('click', openPalette)
+  // Fullscreen image picker
+  let imagePickerEl = null
+  const openImagePicker = (backgrounds) => {
+    if (imagePickerEl) return
+    imagePickerEl = createImagePickerModal(backgrounds)
+    document.body.appendChild(imagePickerEl)
+
+    const close = () => {
+      if (!imagePickerEl) return
+      imagePickerEl.remove()
+      imagePickerEl = null
+    }
+
+    const closeBtn = imagePickerEl.querySelector('.image-picker-close')
+    closeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation()
+      close()
+    })
+    imagePickerEl.addEventListener('click', (e) => {
+      if (e.target === imagePickerEl) close()
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close()
+    }, { once: true })
+
+    // Image selection in picker
+    const items = imagePickerEl.querySelectorAll('.image-picker-item')
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(i => i.classList.remove('active'))
+        item.classList.add('active')
+        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image' })
+        
+        // Update palette modal's preview grid
+        const paletteItems = paletteEl?.querySelectorAll('.bg-item')
+        if (paletteItems) {
+          paletteItems.forEach(i => {
+            if (i.dataset.src === item.dataset.src) {
+              i.classList.add('active')
+            } else {
+              i.classList.remove('active')
+            }
+          })
+        }
+        
+        close()
+      })
+    })
   }
 
-  runPostEnhancements()
-
-  // Search functionality
-  const searchBtn = document.querySelector('.search')
-  if (searchBtn) {
-    searchBtn.addEventListener('click', openSearch)
-  }
-
-  function openSearch() {
+  const openSearch = () => {
     const existing = document.querySelector('.search-modal')
     if (existing) return
 
@@ -387,7 +539,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Escape') close()
     }, { once: true })
 
-    // Get all posts data from page
     const posts = Array.from(document.querySelectorAll('.post-item, .post-card')).map(el => ({
       title: el.querySelector('.post-title, h2')?.textContent || '',
       excerpt: el.querySelector('.post-excerpt, p')?.textContent || '',
@@ -423,4 +574,155 @@ document.addEventListener('DOMContentLoaded', () => {
 
     input.focus()
   }
+
+  // Post enhancements
+  const runPostEnhancements = () => {
+    if (!isPostPage) return
+
+    const titleEl = document.querySelector('.post-h1')
+    if (titleEl) {
+      const full = titleEl.textContent || ''
+      titleEl.textContent = ''
+      titleEl.classList.add('typing')
+      let i = 0
+      const tick = () => {
+        i += 1
+        titleEl.textContent = full.slice(0, i)
+        if (i < full.length) requestAnimationFrame(tick)
+        else titleEl.classList.remove('typing')
+      }
+      requestAnimationFrame(tick)
+    }
+
+    const tocRoot = document.querySelector('.post-toc-inner')
+    const content = document.querySelector('.post-content')
+    if (!tocRoot || !content) return
+
+    const headings = Array.from(content.querySelectorAll('h2, h3'))
+    if (headings.length === 0) {
+      const tocAside = document.querySelector('.post-toc')
+      if (tocAside) tocAside.style.display = 'none'
+      return
+    }
+
+    const slugify = (s) =>
+      s.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\u4e00-\u9fa5\-]/g, '')
+
+    const used = new Map()
+    const ensureId = (el) => {
+      let id = el.id
+      if (id) return id
+      const base = slugify(el.textContent || 'section') || 'section'
+      const n = (used.get(base) || 0) + 1
+      used.set(base, n)
+      id = n === 1 ? base : `${base}-${n}`
+      el.id = id
+      return id
+    }
+
+    tocRoot.innerHTML = ''
+    const items = headings.map((h) => {
+      const id = ensureId(h)
+      const a = document.createElement('a')
+      a.className = 'toc-item'
+      a.href = `#${id}`
+      a.textContent = h.textContent || ''
+      a.setAttribute('data-level', h.tagName === 'H3' ? '3' : '2')
+      a.addEventListener('click', (e) => {
+        e.preventDefault()
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        history.pushState(null, '', `#${id}`)
+      })
+      tocRoot.appendChild(a)
+      return { heading: h, link: a }
+    })
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const ent of entries) {
+          if (!ent.isIntersecting) continue
+          for (const it of items) it.link.classList.remove('active')
+          const match = items.find((it) => it.heading === ent.target)
+          match?.link.classList.add('active')
+          break
+        }
+      },
+      { root: null, threshold: 0.2, rootMargin: '-20% 0px -70% 0px' }
+    )
+
+    for (const it of items) io.observe(it.heading)
+  }
+
+  // SPA Navigation
+  const initLinks = () => {
+    document.querySelectorAll('a').forEach(a => {
+      const href = a.getAttribute('href')
+      if (!href || !href.startsWith('/blog/') || a.getAttribute('target') === '_blank') return
+      
+      a.onclick = async (e) => {
+        e.preventDefault()
+        const targetUrl = a.href
+        if (targetUrl === window.location.href) return
+        
+        try {
+          const resp = await fetch(targetUrl)
+          const html = await resp.text()
+          const parser = new DOMParser()
+          const doc = parser.parseFromString(html, 'text/html')
+          
+          document.title = doc.title
+          const newMain = doc.querySelector('.main')
+          const currentMain = document.querySelector('.main')
+          if (newMain && currentMain) {
+            currentMain.innerHTML = newMain.innerHTML
+            
+            const currentPath = new URL(targetUrl).pathname
+            document.querySelectorAll('.nav-item').forEach(nav => {
+              const navPath = new URL(nav.href, window.location.origin).pathname
+              nav.classList.toggle('active', navPath === currentPath)
+            })
+
+            const isPost = Boolean(doc.querySelector('.post'))
+            document.body.setAttribute('data-page', isPost ? 'post' : '')
+            if (!isPost) {
+              document.documentElement.classList.add('nav-open')
+              if (sidebar) sidebar.setAttribute('data-open', 'true')
+            } else {
+              document.documentElement.classList.remove('nav-open')
+              if (sidebar) sidebar.setAttribute('data-open', 'false')
+            }
+
+            runPostEnhancements()
+            initLinks() 
+            attachGlobalListeners()
+            
+            history.pushState(null, '', targetUrl)
+            window.scrollTo(0, 0)
+          }
+        } catch (err) {
+          console.error('Navigation failed:', err)
+          window.location.href = targetUrl
+        }
+      }
+    })
+  }
+
+  const attachGlobalListeners = () => {
+    const paletteBtn = document.querySelector('.palette-btn')
+    if (paletteBtn) {
+      paletteBtn.onclick = openPalette
+    }
+    const searchBtn = document.querySelector('.search')
+    if (searchBtn) {
+      searchBtn.onclick = openSearch
+    }
+  }
+
+  window.onpopstate = () => {
+    window.location.reload()
+  }
+
+  initLinks()
+  attachGlobalListeners()
+  runPostEnhancements()
 })

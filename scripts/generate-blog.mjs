@@ -247,7 +247,7 @@ async function readPosts() {
       .join(' ')
       .slice(0, 160)
 
-    posts.push({ title, date, slug, tags, body, raw, excerpt })
+    posts.push({ title, date, slug, tags, body, raw, excerpt, cover: typeof fm.cover === 'string' ? fm.cover : null })
   }
 
   posts.sort((a, b) => b.date - a.date)
@@ -259,7 +259,7 @@ function renderBlogIndex(posts) {
     .map(
       (p) => `
         <article class="post-item">
-          <div class="post-item-cover"></div>
+          <div class="post-item-cover" style="${p.cover ? `background-image: url('${p.cover}')` : ''}"></div>
           <div class="post-item-body">
             <h2 class="post-item-title"><a href="/blog/${p.slug}/">${escapeHtml(
         p.title
@@ -324,6 +324,7 @@ function renderPostPage(post, allPosts) {
 
     <main class="main">
       <header class="topbar">
+        <a class="back" href="/blog/" aria-label="返回">${ICONS.back}</a>
         <div class="brand">
           <h1>Riordon</h1>
           <div class="subtitle">Go where your heart leads.</div>
@@ -347,16 +348,32 @@ function renderPostPage(post, allPosts) {
 }
 
 function renderArchivesPage(posts) {
-  const items = posts
-    .map(
-      (p) => `
-        <div class="archive-item">
-          <a href="/blog/${p.slug}/">${escapeHtml(p.title)}</a>
-          <span class="archive-date">${formatDate(p.date)}</span>
-        </div>
-      `
-    )
-    .join('\n')
+  // Group posts by year
+  const yearMap = new Map()
+  for (const p of posts) {
+    const year = new Date(p.date).getFullYear()
+    if (!yearMap.has(year)) yearMap.set(year, [])
+    yearMap.get(year).push(p)
+  }
+  
+  // Sort years descending
+  const years = Array.from(yearMap.keys()).sort((a, b) => b - a)
+  
+  const yearSections = years.map(year => {
+    const yearPosts = yearMap.get(year)
+    const postItems = yearPosts.map(p => `
+          <div class="timeline-item">
+            <span class="timeline-date">${formatDate(p.date).slice(5)}</span>
+            <a class="timeline-title" href="/blog/${p.slug}/">${escapeHtml(p.title)}</a>
+          </div>`).join('\n')
+    
+    return `
+      <div class="year-block">
+        <div class="year-label">${year}</div>
+        <div class="timeline-line"></div>
+        <div class="timeline-posts">${postItems}</div>
+      </div>`
+  }).join('\n')
 
   return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -373,14 +390,15 @@ function renderArchivesPage(posts) {
     <main class="main">
       <header class="topbar">
         <div class="brand">
-          <h1>Riordon</h1>
-          <div class="subtitle">Go where your heart leads.</div>
+          <h1>Memory.backup()</h1>
+          
         </div>
-        <a class="back" href="/blog/" aria-label="back">${ICONS.back}</a>
       </header>
       <section class="content">
-        <div class="archive-list">
-          ${items || '<div class="empty">暂无文章</div>'}
+        <div class="archive-container">
+          <div class="archive-timeline">
+            ${yearSections || '<div class="empty">暂无文章</div>'}
+          </div>
         </div>
       </section>
     </main>
@@ -457,8 +475,43 @@ async function writeFile(p, content) {
   await fs.writeFile(p, content, 'utf8')
 }
 
+async function scanBackgrounds() {
+  const bgDir = path.join(projectRoot, 'public', 'blog', 'backgrounds')
+  const files = await fs.readdir(bgDir).catch(() => [])
+  const images = files
+    .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+    .map(f => `/blog/backgrounds/${f}`)
+  const outPath = path.join(projectRoot, 'public', 'blog', 'backgrounds.json')
+  await fs.writeFile(outPath, JSON.stringify(images, null, 2))
+  console.log(`[blog] found ${images.length} background images`)
+  return images
+}
+
+async function cleanupOrphanedPosts(posts) {
+  // Get all existing post directories in blog/
+  const entries = await fs.readdir(blogDir, { withFileTypes: true }).catch(() => [])
+  const existingDirs = entries
+    .filter(e => e.isDirectory() && !['archives', 'tags'].includes(e.name))
+    .map(e => e.name)
+  
+  // Get current post slugs
+  const currentSlugs = new Set(posts.map(p => p.slug))
+  
+  // Remove directories that no longer have a corresponding .md file
+  for (const dir of existingDirs) {
+    if (!currentSlugs.has(dir)) {
+      const dirPath = path.join(blogDir, dir)
+      await fs.rm(dirPath, { recursive: true }).catch(() => {})
+      console.log(`[blog] removed orphaned directory: ${dir}`)
+    }
+  }
+}
+
 async function main() {
   const posts = await readPosts()
+  
+  // Clean up orphaned post directories
+  await cleanupOrphanedPosts(posts)
 
   // blog index
   await writeFile(path.join(blogDir, 'index.html'), renderBlogIndex(posts))
@@ -473,9 +526,10 @@ async function main() {
   await writeFile(path.join(blogDir, 'archives', 'index.html'), renderArchivesPage(posts))
   await writeFile(path.join(blogDir, 'tags', 'index.html'), renderTagsPage(posts))
 
+  // backgrounds.json
+  await scanBackgrounds()
+
   console.log(`[blog] generated ${posts.length} posts`) 
 }
-
-await main()
 
 await main()
