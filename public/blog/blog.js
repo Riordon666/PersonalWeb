@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const open = sidebar.getAttribute('data-open') === 'true'
     if (!open) return
     const target = e.target
-    if (target instanceof Node && !sidebar.contains(target)) {
+    if (target instanceof Node && !sidebar.contains(target) && (!toggle || !toggle.contains(target))) {
       setOpen(false)
     }
   })
@@ -65,16 +65,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const resp = await fetch('/blog/background-config.json')
         if (resp.ok) config = await resp.json()
       } catch (e) { /* use defaults */ }
-      
+
       // Build default image path
       const files = await fetch('/blog/backgrounds.json').then(r => r.ok ? r.json() : []).catch(() => [])
       const defaultImage = files[config.defaultImage - 1] || ''
-      
+
       // Check localStorage for user settings with 2-day expiration
       const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
       const raw = localStorage.getItem(BG_STORAGE_KEY)
       let useDefaults = true
-      
+
       if (raw) {
         const saved = JSON.parse(raw)
         // Check if settings are still valid (within 2 days)
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           })
         }
       }
-      
+
       if (useDefaults) {
         // No valid saved state, use config defaults
         applyBgState({
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           opacity: config.defaultOpacity
         })
       }
-      
+
       if (!document.querySelector('.site-background')) {
         const bg = document.createElement('div')
         bg.className = 'site-background'
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (120 <= h && h < 180) [r, g, b] = [0, c, x]
     else if (180 <= h && h < 240) [r, g, b] = [0, x, c]
     else if (240 <= h && h < 300) [r, g, b] = [x, 0, c]
-    else [r, g, b] = [c, 0, x]
+    else[r, g, b] = [c, 0, x]
     return {
       r: Math.round((r + m) * 255),
       g: Math.round((g + m) * 255),
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const createPaletteModal = async (initial) => {
     const modal = document.createElement('div')
     modal.className = 'palette-modal'
-    
+
     // Fetch backgrounds from JSON
     let backgrounds = []
     try {
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
       </div>
     `
-    
+
     // Store backgrounds for later use
     modal._backgrounds = backgrounds
     return modal
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
       </div>
     `
-    
+
     // Lazy load images
     setTimeout(() => {
       const items = picker.querySelectorAll('.image-picker-item')
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       })
     }, 50)
-    
+
     return picker
   }
 
@@ -440,11 +440,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       theme = { ...theme, l: Number(light.value) }
       redraw()
     })
-    
+
     // Bottom close button
     const footerCloseBtn = paletteEl.querySelector('.palette-btn-close')
     footerCloseBtn?.addEventListener('click', close)
-    
+
     paletteEl.addEventListener('click', (e) => {
       if (e.target === paletteEl) close()
     })
@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         items.forEach(i => i.classList.remove('active'))
         item.classList.add('active')
         applyBgState({ ...bgState, image: item.dataset.src, mode: 'image' })
-        
+
         // Update palette modal's preview grid
         const paletteItems = paletteEl?.querySelectorAll('.bg-item')
         if (paletteItems) {
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           })
         }
-        
+
         close()
       })
     })
@@ -553,8 +553,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return
       }
 
-      const filtered = posts.filter(p => 
-        p.title.toLowerCase().includes(q) || 
+      const filtered = posts.filter(p =>
+        p.title.toLowerCase().includes(q) ||
         p.excerpt.toLowerCase().includes(q)
       )
 
@@ -658,24 +658,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('a').forEach(a => {
       const href = a.getAttribute('href')
       if (!href || !href.startsWith('/blog/') || a.getAttribute('target') === '_blank') return
-      
+
       a.onclick = async (e) => {
         e.preventDefault()
         const targetUrl = a.href
         if (targetUrl === window.location.href) return
-        
+
         try {
           const resp = await fetch(targetUrl)
           const html = await resp.text()
           const parser = new DOMParser()
           const doc = parser.parseFromString(html, 'text/html')
-          
+
           document.title = doc.title
           const newMain = doc.querySelector('.main')
           const currentMain = document.querySelector('.main')
           if (newMain && currentMain) {
             currentMain.innerHTML = newMain.innerHTML
-            
+
             const currentPath = new URL(targetUrl).pathname
             document.querySelectorAll('.nav-item').forEach(nav => {
               const navPath = new URL(nav.href, window.location.origin).pathname
@@ -693,9 +693,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             runPostEnhancements()
-            initLinks() 
+            initLinks()
             attachGlobalListeners()
-            
+
             history.pushState(null, '', targetUrl)
             window.scrollTo(0, 0)
           }

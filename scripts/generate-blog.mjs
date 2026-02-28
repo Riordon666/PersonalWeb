@@ -150,8 +150,8 @@ function formatDate(d) {
 
 function renderSidebar(activeKey) {
   return `
+    <button class="nav-toggle" aria-label="menu" type="button">☰</button>
     <aside class="sidebar" data-open="false">
-      <button class="nav-toggle" aria-label="menu" type="button">☰</button>
       <div class="profile">
         <div class="avatar"><img src="/avatar.jpg" alt="avatar" /></div>
         <div class="name">Riordon</div>
@@ -355,10 +355,10 @@ function renderArchivesPage(posts) {
     if (!yearMap.has(year)) yearMap.set(year, [])
     yearMap.get(year).push(p)
   }
-  
+
   // Sort years descending
   const years = Array.from(yearMap.keys()).sort((a, b) => b - a)
-  
+
   const yearSections = years.map(year => {
     const yearPosts = yearMap.get(year)
     const postItems = yearPosts.map(p => `
@@ -366,7 +366,7 @@ function renderArchivesPage(posts) {
             <span class="timeline-date">${formatDate(p.date).slice(5)}</span>
             <a class="timeline-title" href="/blog/${p.slug}/">${escapeHtml(p.title)}</a>
           </div>`).join('\n')
-    
+
     return `
       <div class="year-block">
         <div class="year-label">${year}</div>
@@ -493,15 +493,15 @@ async function cleanupOrphanedPosts(posts) {
   const existingDirs = entries
     .filter(e => e.isDirectory() && !['archives', 'tags'].includes(e.name))
     .map(e => e.name)
-  
+
   // Get current post slugs
   const currentSlugs = new Set(posts.map(p => p.slug))
-  
+
   // Remove directories that no longer have a corresponding .md file
   for (const dir of existingDirs) {
     if (!currentSlugs.has(dir)) {
       const dirPath = path.join(blogDir, dir)
-      await fs.rm(dirPath, { recursive: true }).catch(() => {})
+      await fs.rm(dirPath, { recursive: true }).catch(() => { })
       console.log(`[blog] removed orphaned directory: ${dir}`)
     }
   }
@@ -509,7 +509,7 @@ async function cleanupOrphanedPosts(posts) {
 
 async function main() {
   const posts = await readPosts()
-  
+
   // Clean up orphaned post directories
   await cleanupOrphanedPosts(posts)
 
@@ -529,7 +529,7 @@ async function main() {
   // backgrounds.json
   await scanBackgrounds()
 
-  console.log(`[blog] generated ${posts.length} posts`) 
+  console.log(`[blog] generated ${posts.length} posts`)
 }
 
 await main()

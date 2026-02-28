@@ -14,7 +14,7 @@
 .post-h1.typing {
   white-space: nowrap;
   overflow: hidden;
-  border-right: 2px solid rgba(0,0,0,0.35);
+  border-right: 2px solid rgba(0, 0, 0, 0.35);
 }
 
 .post-date {
@@ -68,9 +68,9 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.22);
-  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.9);
   display: grid;
   place-items: center;
 }
@@ -79,7 +79,7 @@
   width: 18px;
   height: 18px;
   display: block;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .main {
@@ -132,5 +132,67 @@
 @media (max-width: 1100px) {
   .post-toc {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .post {
+    width: 100%;
+    padding: 20px 14px 40px;
+  }
+
+  .post-h1 {
+    font-size: 22px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .post-h1.typing {
+    white-space: normal;
+    border-right: none;
+  }
+
+  .post-content {
+    padding: 18px 14px;
+    font-size: 14px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  .post-content pre {
+    padding: 12px;
+    font-size: 12px;
+    max-width: calc(100vw - 56px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .post-content code {
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .post-content h1 {
+    font-size: 20px;
+  }
+
+  .post-content h2 {
+    font-size: 18px;
+  }
+
+  .post-content h3 {
+    font-size: 16px;
+  }
+
+  .post-content img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .topbar .back {
+    left: 60px;
+    top: 14px;
+    width: 32px;
+    height: 32px;
   }
 }
