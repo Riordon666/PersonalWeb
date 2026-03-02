@@ -2,5 +2,6 @@
   "defaultMode": "image",
   "defaultImage": 35,
   "defaultBlur": 0,
-  "defaultOpacity": 1
+  "defaultOpacity": 1,
+  "defaultImageOnly": false
 }

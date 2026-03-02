@@ -2,12 +2,15 @@
 title: 基于 Flask 的股票预测管理系统
 date: 2026-02-27
 tags: [Python, Flask, 股票, 机器学习, 项目分享]
-cover: /images/stock-cover.jpg
+cover: /images/cover-stock.png
 ---
 
 # 基于 Flask 的股票预测管理系统
 
 最近完成了一个股票分析预测系统，今天来分享一下这个项目的设计思路和实现细节。
+<p style="text-align:center">
+  <img src="/images/cover-stock.png" alt="cover" style="max-width: 100%; border-radius: 12px;" />
+</p>
 
 ## 项目背景
 

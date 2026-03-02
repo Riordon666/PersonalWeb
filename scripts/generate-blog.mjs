@@ -19,8 +19,9 @@ const ICONS = {
   search: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M469.333333 42.666667C234.666667 42.666667 42.666667 234.666667 42.666667 469.333333s192 426.666667 426.666666 426.666667 426.666667-192 426.666667-426.666667S704 42.666667 469.333333 42.666667z m251.733334 678.4c-68.266667 68.266667-153.6 106.666667-251.733334 106.666666s-183.466667-34.133333-251.733333-106.666666c-68.266667-68.266667-106.666667-153.6-106.666667-251.733334s34.133333-183.466667 106.666667-251.733333C285.866667 145.066667 371.2 110.933333 469.333333 110.933333s183.466667 34.133333 251.733334 106.666667c68.266667 68.266667 106.666667 153.6 106.666666 251.733333s-34.133333 183.466667-106.666666 251.733334zM878.933333 785.066667l89.6 89.6c12.8 12.8 12.8 34.133333 0 46.933333-12.8 12.8-34.133333 12.8-46.933333 0l-89.6-89.6c-12.8-12.8-12.8-34.133333 0-46.933333s34.133333-12.8 46.933333 0z" fill="currentColor"></path></svg>',
   nav: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M287.018667 602.752l100.693333 33.578667 33.536 100.650666c22.826667 68.608 50.176 122.794667 81.322667 160.554667 31.061333 37.632 69.205333 62.464 112.682666 62.464 43.52 0 81.621333-24.832 112.682667-62.464 31.146667-37.76 58.496-91.946667 81.365333-160.597333l131.584-394.837334 0.042667-0.085333c31.061333-93.952 25.088-179.029333-27.434667-231.637333-52.608-52.650667-137.6-58.624-231.594666-27.306667L286.976 214.784c-68.608 22.954667-122.794667 50.346667-160.512 81.493333-37.632 31.104-62.464 69.205333-62.464 112.64 0 43.52 24.874667 81.578667 62.464 112.64 37.76 31.104 91.946667 58.410667 160.554667 81.237334z m589.098666-282.154667l-131.584 394.752q-30.592 91.946667-69.248 138.709334-31.104 37.674667-60.032 37.674666t-60.032-37.674666q-38.613333-46.762667-69.205333-138.666667l-28.714667-86.058667 173.909334-156.586666a34.133333 34.133333 0 0 0-45.653334-50.773334l-168.874666 152.064-108.074667-36.053333q-91.904-30.592-138.666667-69.12Q132.266667 437.76 132.266667 408.874667t37.674666-60.032Q216.746667 310.229333 308.650667 279.466667l394.837333-131.584q113.237333-37.76 161.706667 10.752 48.426667 48.512 10.922666 161.962666z" fill="currentColor"></path></svg>',
   back: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg>',
-  github: '<svg viewBox="0 0 1049 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M524.979332 0C234.676191 0 0 234.676191 0 524.979332c0 232.068678 150.366597 428.501342 358.967656 498.035028 26.075132 5.215026 35.636014-11.299224 35.636014-25.205961 0-12.168395-0.869171-53.888607-0.869171-97.347161-146.020741 31.290159-176.441729-62.580318-176.441729-62.580318-23.467619-60.841976-58.234462-76.487055-58.234463-76.487055-47.804409-32.15933 3.476684-32.15933 3.476685-32.15933 53.019436 3.476684 80.83291 53.888607 80.83291 53.888607 46.935238 79.963739 122.553122 57.365291 152.97411 43.458554 4.345855-33.897672 18.252593-57.365291 33.028501-70.402857-116.468925-12.168395-239.022047-57.365291-239.022047-259.012982 0-57.365291 20.860106-104.300529 53.888607-140.805715-5.215026-13.037566-23.467619-66.926173 5.215027-139.067372 0 0 44.327725-13.906737 144.282399 53.888607 41.720212-11.299224 86.917108-17.383422 131.244833-17.383422s89.524621 6.084198 131.244833 17.383422C756.178839 203.386032 800.506564 217.29277 800.506564 217.29277c28.682646 72.1412 10.430053 126.029806 5.215026 139.067372 33.897672 36.505185 53.888607 83.440424 53.888607 140.805715 0 201.64769-122.553122 245.975415-239.891218 259.012982 19.121764 16.514251 35.636014 47.804409 35.636015 97.347161 0 70.402857-0.869171 126.898978-0.869172 144.282399 0 13.906737 9.560882 30.420988 35.636015 25.205961 208.601059-69.533686 358.967656-265.96635 358.967655-498.035028C1049.958663 234.676191 814.413301 0 524.979332 0z" fill="currentColor"></path><path d="M199.040177 753.571326c-0.869171 2.607513-5.215026 3.476684-8.691711 1.738342s-6.084198-5.215026-4.345855-7.82254c0.869171-2.607513 5.215026-3.476684 8.691711-1.738342s5.215026 5.215026 4.345855 7.82254z m-6.953369-4.345856M219.900283 777.038945c-2.607513 2.607513-7.82254 0.869171-10.430053-2.607514-3.476684-3.476684-4.345855-8.691711-1.738342-11.299224 2.607513-2.607513 6.953369-0.869171 10.430053 2.607514 3.476684 4.345855 4.345855 9.560882 1.738342 11.299224z m-5.215026-5.215027M240.760389 807.459932c-3.476684 2.607513-8.691711 0-11.299224-4.345855-3.476684-4.345855-3.476684-10.430053 0-12.168395 3.476684-2.607513 8.691711 0 11.299224 4.345855 3.476684 4.345855 3.476684 9.560882 0 12.168395z m0 0M269.443034 837.011749c-2.607513 3.476684-8.691711 2.607513-13.906737-1.738342-4.345855-4.345855-6.084198-10.430053-2.607513-13.037566 2.607513-3.476684 8.691711-2.607513 13.906737 1.738342 4.345855 3.476684 5.215026 9.560882 2.607513 13.037566z m0 0M308.555733 853.526c-0.869171 4.345855-6.953369 6.084198-13.037566 4.345855-6.084198-1.738342-9.560882-6.953369-8.691711-10.430053 0.869171-4.345855 6.953369-6.084198 13.037566-4.345855 6.084198 1.738342 9.560882 6.084198 8.691711 10.430053z m0 0M351.145116 857.002684c0 4.345855-5.215026 7.82254-11.299224 7.82254-6.084198 0-11.299224-3.476684-11.299224-7.82254s5.215026-7.82254 11.299224-7.82254c6.084198 0 11.299224 3.476684 11.299224 7.82254z m0 0M391.126986 850.049315c0.869171 4.345855-3.476684 8.691711-9.560882 9.560882-6.084198 0.869171-11.299224-1.738342-12.168395-6.084197-0.869171-4.345855 3.476684-8.691711 9.560881-9.560882 6.084198-0.869171 11.299224 1.738342 12.168396 6.084197z m0 0" fill="currentColor"></path></svg>',
+  github: '<svg viewBox="0 0 1049 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M524.979332 0C234.676191 0 0 234.676191 0 524.979332c0 232.068678 150.366597 428.501342 358.967656 498.035028 26.075132 5.215026 35.636014-11.299224 35.636014-25.205961 0-12.168395-0.869171-53.888607-0.869171-97.347161-146.020741 31.290159-176.441729-62.580318-176.441729-62.580318-23.467619-60.841976-58.234462-76.487055-58.234463-76.487055-47.804409-32.15933 3.476684-32.15933 3.476685-32.15933 53.019436 3.476684 80.83291 53.888607 80.83291 53.888607 46.935238 79.963739 122.553122 57.365291 152.97411 43.458554 4.345855-33.897672 18.252593-57.365291 33.028501-70.402857-116.468925-12.168395-239.022047-57.365291-239.022047-259.012982 0-57.365291 20.860106-104.300529 53.888607-140.805715-5.215026-13.037566-23.467619-66.926173 5.215027-139.067372 0 0 44.327725-13.906737 144.282399 53.888607 41.720212-11.299224 86.917108-17.383422 131.244833-17.383422s89.524621 6.084198 131.244833 17.383422C756.178839 203.386032 800.506564 217.29277 800.506564 217.29277c28.682646 72.1412 10.430053 126.029806 5.215026 139.067372 33.897672 36.505185 53.888607 83.440424 53.888607 140.805715 0 201.64769-122.553122 245.975415-239.891218 259.012982 19.121764 16.514251 35.636014 47.804409 35.636015 97.347161 0 70.402857-0.869171 126.898978-0.869172 144.282399 0 13.906737 9.560882 30.420988 35.636015 25.205961 208.601059-69.533686 358.967656-265.96635 358.967655-498.035028C1049.958663 234.676191 814.413301 0 524.979332 0z" fill="currentColor"></path></svg>',
   email: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M893.421013 263.914762c-1.982144 16.412808-9.237385 32.210609-21.676695 44.729737L581.597101 598.791715c-29.696346 29.696346-78.243015 29.696346-107.939361 0L183.510524 308.644499c-12.519128-12.519128-19.770276-28.396747-21.676695-44.729737-0.38374 3.130294-0.611937 6.259564-0.611937 9.465582l0 396.939451c0 41.983183 34.348296 76.335572 76.336596 76.335572l580.14196 0c41.980113 0 76.332503-34.352389 76.332503-76.335572L894.03295 273.380344C894.03295 270.174326 893.804752 267.045055 893.421013 263.914762L893.421013 263.914762 893.421013 263.914762zM581.597101 543.222095l304.193117-304.19414c-12.598946-24.883737-38.473243-41.983183-68.089771-41.983183L237.558487 197.044772c-29.616528 0-55.499012 17.099447-68.089771 41.983183L473.65774 543.222095C503.349993 572.917418 551.900755 572.917418 581.597101 543.222095L581.597101 543.222095 581.597101 543.222095z" fill="currentColor"></path></svg>',
+  qq: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z" fill="currentColor"></path></svg>',
   palette: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 65.3312C184.9344 65.3312 64.1024 350.6176 64.1024 510.5664S180.224 958.464 502.5792 958.464c0 0 80.0768 1.4336 80.0768-70.656s-36.0448-48.9472-36.0448-100.7616c0-51.8144 36.0448-74.9568 53.248-74.9568 17.2032 0 131.072 8.6016 194.56-15.9744 63.2832-24.3712 165.6832-102.1952 165.6832-234.7008 0-116.5312-121.0368-396.0832-448.1024-396.0832z" fill="#FFFFFF"></path><path d="M502.9888 989.184h-0.6144c-191.488 0-303.7184-95.8464-364.3392-176.3328-77.2096-102.4-104.6528-223.4368-104.6528-302.4896 0-78.848 28.2624-199.2704 107.9296-301.4656 61.8496-79.4624 176.5376-174.2848 370.688-174.2848 190.8736 0 306.5856 89.9072 370.0736 165.2736 74.9568 89.088 108.544 195.584 108.544 261.7344 0 65.7408-22.9376 127.1808-66.56 177.9712-45.8752 53.4528-98.304 77.6192-118.784 85.4016-53.8624 20.6848-132.3008 20.6848-194.7648 18.2272-4.3008-0.2048-7.9872-0.2048-10.0352-0.4096-4.7104 1.2288-23.3472 12.288-23.3472 44.2368 0 11.4688 1.2288 12.9024 7.3728 19.456 14.5408 15.36 28.672 34.2016 28.672 81.5104 0 28.0576-9.4208 52.224-27.4432 70.0416-30.3104 29.696-74.1376 31.1296-82.7392 31.1296zM512 96.0512C196.8128 96.0512 94.8224 375.3984 94.8224 510.5664c0 69.2224 24.1664 175.3088 92.16 265.4208 52.224 69.2224 149.2992 151.7568 315.5968 151.7568h0.4096c7.3728 0 28.4672-2.4576 39.936-13.9264 3.8912-3.8912 9.0112-10.6496 9.0112-26.0096 0-26.8288-4.7104-31.744-11.8784-39.3216-12.288-12.9024-24.1664-28.2624-24.1664-61.6448 0-38.7072 15.36-63.488 28.2624-77.6192 15.9744-17.6128 36.864-28.0576 55.9104-28.0576 2.8672 0 6.9632 0.2048 13.1072 0.4096 30.1056 1.2288 121.4464 4.7104 170.1888-14.1312 54.272-20.8896 146.0224-87.8592 146.0224-206.0288 0-93.3888-102.8096-365.3632-417.3824-365.3632z" fill="currentColor"></path><path d="M239.0016 512c-43.008 0-77.824-34.816-77.824-77.824s34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824c-0.2048 43.008-35.0208 77.824-77.824 77.824z" fill="currentColor"></path><path d="M385.6384 241.664m-77.824 0a77.824 77.824 0 1 0 155.648 0 77.824 77.824 0 1 0-155.648 0Z" fill="currentColor"></path><path d="M635.0848 241.664m-77.824 0a77.824 77.824 0 1 0 155.648 0 77.824 77.824 0 1 0-155.648 0Z" fill="currentColor"></path><path d="M783.1552 512c-42.8032 0-77.824-34.816-77.824-77.824s34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824c0.2048 43.008-34.816 77.824-77.824 77.824z" fill="currentColor"></path></svg>',
 }
 
@@ -150,7 +151,6 @@ function formatDate(d) {
 
 function renderSidebar(activeKey) {
   return `
-    <button class="nav-toggle" aria-label="menu" type="button">☰</button>
     <aside class="sidebar" data-open="false">
       <div class="profile">
         <div class="avatar"><img src="/avatar.jpg" alt="avatar" /></div>
@@ -158,7 +158,8 @@ function renderSidebar(activeKey) {
       </div>
       <div class="quick-actions">
         <a class="qa" href="https://github.com/Riordon666" target="_blank" aria-label="GitHub">${ICONS.github}</a>
-        <a class="qa" href="mailto:admin@riordon.xyz" target="_blank" aria-label="Email">${ICONS.email}</a>
+        <a class="qa" href="#" aria-label="Email" data-copy-text="admin@riordon.xyz" data-copy-toast="已复制邮箱">${ICONS.email}</a>
+        <a class="qa" href="#" aria-label="QQ" data-copy-text="2717831140">${ICONS.qq}</a>
       </div>
       <div class="stats">
         <div class="stat">
@@ -193,6 +194,7 @@ function renderSidebar(activeKey) {
         </a>
       </nav>
       <div class="sidebar-footer">
+        <div class="copyright">© 2026 Riordon. All rights reserved.</div>
         <a target="_blank" href="${BEIAN.icpHref}">
           <img class="beian-icon" src="https://lemoncoder.cn/themes/halo-theme-vapor/assets/imgs/icpb.webp" alt="ICP备案" />
           <span>${BEIAN.icpText}</span>
@@ -280,9 +282,45 @@ function renderBlogIndex(posts) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog</title>
   <link rel="stylesheet" href="/blog/blog.css" />
+  <script>
+    // Load theme immediately to prevent flash
+    (function() {
+      var root = document.documentElement;
+      var themeRaw = localStorage.getItem('blog-theme-hsl');
+      if (themeRaw) {
+        try {
+          var t = JSON.parse(themeRaw);
+          if (typeof t.h === 'number') {
+            root.style.setProperty('--theme-h', String(Math.round(t.h)));
+            root.style.setProperty('--theme-s', Math.round(t.s) + '%');
+            root.style.setProperty('--theme-l', Math.round(t.l) + '%');
+            root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)');
+          }
+        } catch(e) {}
+      }
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      if (bgRaw) {
+        try {
+          var bg = JSON.parse(bgRaw);
+          if (bg.mode === 'image' && bg.image) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = bg.imageOnly ? 'image-only' : 'image';
+            document.documentElement.setAttribute('data-theme-mode', mode);
+            document.body && document.body.setAttribute('data-theme-mode', mode);
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
 </head>
 <body>
+  <div class="site-background"></div>
   <div id="app" class="layout">
+    <button class="nav-toggle" aria-label="menu" type="button">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
     ${renderSidebarWithStats('home', posts)}
 
     <main class="main">
@@ -317,9 +355,45 @@ function renderPostPage(post, allPosts) {
   <title>${escapeHtml(post.title)}</title>
   <link rel="stylesheet" href="/blog/blog.css" />
   <link rel="stylesheet" href="/blog/post.css" />
+  <script>
+    // Load theme immediately to prevent flash
+    (function() {
+      var root = document.documentElement;
+      var themeRaw = localStorage.getItem('blog-theme-hsl');
+      if (themeRaw) {
+        try {
+          var t = JSON.parse(themeRaw);
+          if (typeof t.h === 'number') {
+            root.style.setProperty('--theme-h', String(Math.round(t.h)));
+            root.style.setProperty('--theme-s', Math.round(t.s) + '%');
+            root.style.setProperty('--theme-l', Math.round(t.l) + '%');
+            root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)');
+          }
+        } catch(e) {}
+      }
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      if (bgRaw) {
+        try {
+          var bg = JSON.parse(bgRaw);
+          if (bg.mode === 'image' && bg.image) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = bg.imageOnly ? 'image-only' : 'image';
+            document.documentElement.setAttribute('data-theme-mode', mode);
+            document.body && document.body.setAttribute('data-theme-mode', mode);
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
 </head>
 <body>
+  <div class="site-background"></div>
   <div id="app" class="layout">
+    <button class="nav-toggle" aria-label="menu" type="button">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
     ${renderSidebarWithStats('post', allPosts)}
 
     <main class="main">
@@ -333,7 +407,12 @@ function renderPostPage(post, allPosts) {
       </header>
 
       <article class="post">
-        <h1 class="post-h1">${escapeHtml(post.title)}</h1>
+        <div class="post-header">
+          <h1 class="post-h1">${escapeHtml(post.title)}</h1>
+          <button class="toc-toggle" aria-label="toc" type="button">
+            <svg t="1772439250931" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1023" aria-hidden="true"><path d="M800 6c115.98 0 210 94.02 210 210v596c0 115.98-94.02 210-210 210H220c-115.98 0-210-94.02-210-210V216C10 100.02 104.02 6 220 6h580z m-410 956H800c82.844 0 150-67.156 150-150V216c0-82.84-67.156-150-150-150H390v896zM220 66c-82.84 0-150 67.16-150 150v596c0 82.844 67.16 150 150 150h110v-896H220z m539.448 285.764a30.004 30.004 0 0 1 29.104 52.472l-210.3 116.648 211.064 125.32a30 30 0 0 1 10.48 41.112 30 30 0 0 1-41.112 10.48l-238.028-141.328c-27.88-16.552-27.284-57.116 1.072-72.844l237.72-131.86z" fill="currentColor" p-id="1024"></path></svg>
+          </button>
+        </div>
         <div class="post-date">${formatDate(post.date)}</div>
         <div class="post-content">${body}</div>
       </article>
@@ -383,15 +462,51 @@ function renderArchivesPage(posts) {
   <title>Archives</title>
   <link rel="stylesheet" href="/blog/blog.css" />
   <link rel="stylesheet" href="/blog/archives.css" />
+  <script>
+    // Load theme immediately to prevent flash
+    (function() {
+      var root = document.documentElement;
+      var themeRaw = localStorage.getItem('blog-theme-hsl');
+      if (themeRaw) {
+        try {
+          var t = JSON.parse(themeRaw);
+          if (typeof t.h === 'number') {
+            root.style.setProperty('--theme-h', String(Math.round(t.h)));
+            root.style.setProperty('--theme-s', Math.round(t.s) + '%');
+            root.style.setProperty('--theme-l', Math.round(t.l) + '%');
+            root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)');
+          }
+        } catch(e) {}
+      }
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      if (bgRaw) {
+        try {
+          var bg = JSON.parse(bgRaw);
+          if (bg.mode === 'image' && bg.image) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = bg.imageOnly ? 'image-only' : 'image';
+            document.documentElement.setAttribute('data-theme-mode', mode);
+            document.body && document.body.setAttribute('data-theme-mode', mode);
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
 </head>
 <body>
+  <div class="site-background"></div>
   <div id="app" class="layout">
+    <button class="nav-toggle" aria-label="menu" type="button">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
     ${renderSidebarWithStats('archives', posts)}
     <main class="main">
       <header class="topbar">
+        <a class="back" href="/blog/" aria-label="返回">${ICONS.back}</a>
         <div class="brand">
           <h1>Memory.backup()</h1>
-          
         </div>
       </header>
       <section class="content">
@@ -442,17 +557,52 @@ function renderTagsPage(posts) {
   <title>Tags</title>
   <link rel="stylesheet" href="/blog/blog.css" />
   <link rel="stylesheet" href="/blog/tags.css" />
+  <script>
+    // Load theme immediately to prevent flash
+    (function() {
+      var root = document.documentElement;
+      var themeRaw = localStorage.getItem('blog-theme-hsl');
+      if (themeRaw) {
+        try {
+          var t = JSON.parse(themeRaw);
+          if (typeof t.h === 'number') {
+            root.style.setProperty('--theme-h', String(Math.round(t.h)));
+            root.style.setProperty('--theme-s', Math.round(t.s) + '%');
+            root.style.setProperty('--theme-l', Math.round(t.l) + '%');
+            root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)');
+          }
+        } catch(e) {}
+      }
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      if (bgRaw) {
+        try {
+          var bg = JSON.parse(bgRaw);
+          if (bg.mode === 'image' && bg.image) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = bg.imageOnly ? 'image-only' : 'image';
+            document.documentElement.setAttribute('data-theme-mode', mode);
+            document.body && document.body.setAttribute('data-theme-mode', mode);
+          }
+        } catch(e) {}
+      }
+    })();
+  </script>
 </head>
 <body>
+  <div class="site-background"></div>
   <div id="app" class="layout">
+    <button class="nav-toggle" aria-label="menu" type="button">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
     ${renderSidebarWithStats('tags', posts)}
     <main class="main">
       <header class="topbar">
+        <a class="back" href="/blog/" aria-label="返回">${ICONS.back}</a>
         <div class="brand">
-          <h1>Riordon</h1>
-          <div class="subtitle">Go where your heart leads.</div>
+          <h1>Tag.sort()</h1>
         </div>
-        <a class="back" href="/blog/" aria-label="back">${ICONS.back}</a>
       </header>
       <section class="content">
         <div class="tag-list">

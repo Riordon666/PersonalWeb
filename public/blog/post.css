@@ -4,11 +4,19 @@
   padding: 36px 18px 60px;
 }
 
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
 .post-h1 {
   margin: 0;
   text-align: center;
   font-size: 28px;
   letter-spacing: 1px;
+  flex: 1;
 }
 
 .post-h1.typing {
@@ -68,9 +76,11 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.22);
-  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.55);
+  background: linear-gradient(135deg,
+      hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.55),
+      rgba(255, 255, 255, 0.18));
+  color: rgba(255, 255, 255, 0.95);
   display: grid;
   place-items: center;
 }
@@ -104,6 +114,30 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.toc-toggle {
+  display: none;
+  position: fixed;
+  right: 16px;
+  top: 80px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.55);
+  background: linear-gradient(135deg,
+      hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.55),
+      rgba(255, 255, 255, 0.18));
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  place-items: center;
+  z-index: 250;
+}
+
+.toc-toggle svg {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 .toc-item {
@@ -189,8 +223,39 @@
     height: auto;
   }
 
+  .toc-toggle {
+    display: grid;
+    position: fixed;
+    right: 12px;
+    top: 74px;
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+  }
+
+  .post-toc {
+    display: block;
+    position: fixed;
+    right: 12px;
+    top: 112px;
+    width: min(220px, 70vw);
+    max-height: 55vh;
+    transform: translateX(calc(100% + 16px));
+    transition: transform 0.2s ease;
+    z-index: 260;
+  }
+
+  body[data-toc-open="true"] .post-toc {
+    transform: translateX(0);
+  }
+
+  .post-toc {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 10px;
+  }
+
   .topbar .back {
-    left: 60px;
+    left: 52px;
     top: 14px;
     width: 32px;
     height: 32px;

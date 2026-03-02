@@ -4,11 +4,57 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sidebar = document.querySelector('.sidebar')
   const toggle = document.querySelector('.nav-toggle')
 
+  const showToast = (message) => {
+    const el = document.createElement('div')
+    el.className = 'toast'
+    el.textContent = message
+    document.body.appendChild(el)
+    requestAnimationFrame(() => el.classList.add('show'))
+    window.setTimeout(() => {
+      el.classList.remove('show')
+      window.setTimeout(() => el.remove(), 220)
+    }, 1200)
+  }
+
+  const bindCopyActions = () => {
+    document.querySelectorAll('[data-copy-text]').forEach((el) => {
+      if (el.getAttribute('data-copy-bound') === 'true') return
+      el.setAttribute('data-copy-bound', 'true')
+
+      el.addEventListener('click', async (e) => {
+        e.preventDefault()
+        const text = el.getAttribute('data-copy-text') || ''
+        const toast = el.getAttribute('data-copy-toast') || '已复制QQ号'
+        if (!text) return
+        try {
+          await navigator.clipboard.writeText(text)
+          showToast(toast)
+        } catch {
+          const ta = document.createElement('textarea')
+          ta.value = text
+          ta.setAttribute('readonly', '')
+          ta.style.position = 'fixed'
+          ta.style.left = '-9999px'
+          document.body.appendChild(ta)
+          ta.select()
+          try {
+            document.execCommand('copy')
+            showToast(toast)
+          } finally {
+            ta.remove()
+          }
+        }
+      })
+    })
+  }
+
   const setOpen = (open) => {
     if (!sidebar) return
     sidebar.setAttribute('data-open', open ? 'true' : 'false')
     document.documentElement.classList.toggle('nav-open', open)
   }
+
+  const closeSidebar = () => setOpen(false)
 
   if (toggle && sidebar) {
     toggle.addEventListener('click', () => {
@@ -16,6 +62,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       setOpen(!open)
     })
   }
+
+  bindCopyActions()
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') setOpen(false)
@@ -31,6 +79,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   })
 
+  // Close sidebar when a nav link is clicked (mobile UX)
+  const bindSidebarNavAutoClose = () => {
+    if (!sidebar) return
+    sidebar.querySelectorAll('a.nav-item[href^="/blog/"]').forEach((a) => {
+      a.addEventListener('click', () => {
+        closeSidebar()
+      })
+    })
+  }
+
   // Theme and Background Management
   const root = document.documentElement
   const STORAGE_KEY = 'blog-theme-hsl'
@@ -42,12 +100,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     mode: 'color',
     image: '',
     blur: 0,
-    opacity: 1
+    opacity: 1,
+    imageOnly: false
   }
 
   const applyBgState = (state) => {
     bgState = state
-    document.body.setAttribute('data-theme-mode', state.mode)
+    const bodyMode = state.mode === 'image' && state.imageOnly ? 'image-only' : state.mode
+    document.body.setAttribute('data-theme-mode', bodyMode)
     // Clear background image when in color mode
     const bgImage = state.mode === 'color' ? 'none' : (state.image ? `url("${state.image}")` : 'none')
     root.style.setProperty('--bg-image', bgImage)
@@ -84,7 +144,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             mode: saved.mode,
             image: saved.image || defaultImage,
             blur: saved.blur ?? config.defaultBlur,
-            opacity: saved.opacity ?? config.defaultOpacity
+            opacity: saved.opacity ?? config.defaultOpacity,
+            imageOnly: saved.imageOnly ?? false
           })
         }
       }
@@ -95,14 +156,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           mode: config.defaultMode || 'color',
           image: defaultImage,
           blur: config.defaultBlur,
-          opacity: config.defaultOpacity
+          opacity: config.defaultOpacity,
+          imageOnly: config.defaultImageOnly ?? false
         })
-      }
-
-      if (!document.querySelector('.site-background')) {
-        const bg = document.createElement('div')
-        bg.className = 'site-background'
-        document.body.prepend(bg)
       }
     } catch (e) { console.error('Failed to load bg state', e) }
   }
@@ -131,11 +187,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   setTheme(getTheme())
   await loadBgState()
-  if (!document.querySelector('.site-background')) {
-    const bg = document.createElement('div')
-    bg.className = 'site-background'
-    document.body.prepend(bg)
-  }
 
   const hslToRgb = (h, s, l) => {
     s /= 100
@@ -172,9 +223,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.warn('Failed to load backgrounds:', e)
     }
 
-    // Show first 8 images, 9th slot is "view more" button (3x3 grid)
-    const previewImages = backgrounds.slice(0, 8)
-    const hasMore = backgrounds.length > 8
+    // Show first 7 images, 8th slot is "view more" button (2x4 grid on mobile)
+    const isMobile = window.innerWidth <= 768
+    const previewCount = isMobile ? 7 : 8
+    const previewImages = backgrounds.slice(0, previewCount)
+    const hasMore = backgrounds.length > previewCount
     const isColorMode = bgState.mode === 'color'
 
     modal.innerHTML = `
@@ -205,7 +258,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   `).join('')}
                   ${hasMore ? `
                     <div class="bg-item bg-more" data-action="view-more">
-                      <span class="bg-more-text">+${backgrounds.length - 8}</span>
+                      <span class="bg-more-text">+${backgrounds.length - previewCount}</span>
                       <span class="bg-more-label">查看更多</span>
                     </div>
                   ` : ''}
@@ -219,6 +272,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="setting-row">
                   <div class="setting-label"><span>背景亮度</span><span id="val-opacity">${Math.round(bgState.opacity * 100)}%</span></div>
                   <input class="setting-slider" id="input-opacity" type="range" min="10" max="100" value="${bgState.opacity * 100}" />
+                </div>
+                <div class="setting-row setting-switch">
+                  <div class="setting-label"><span>仅背景图片</span><span>不叠加主题色</span></div>
+                  <div class="checkbox-wrapper-5">
+                    <div class="check">
+                      <input ${bgState.imageOnly ? 'checked' : ''} id="toggle-image-only" type="checkbox">
+                      <label for="toggle-image-only"></label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -371,7 +433,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         bgItems.forEach(i => i.classList.remove('active'))
         item.classList.add('active')
-        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image' })
+        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image', imageOnly: bgState.imageOnly })
       })
     })
 
@@ -391,6 +453,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const v = opacityInput.value
       opacityVal.textContent = `${v}%`
       applyBgState({ ...bgState, opacity: Number(v) / 100 })
+    })
+
+    // Image-only toggle (only in image mode)
+    const imageOnlyToggle = paletteEl.querySelector('#toggle-image-only')
+    imageOnlyToggle?.addEventListener('change', () => {
+      applyBgState({ ...bgState, mode: 'image', imageOnly: !!imageOnlyToggle.checked })
     })
 
     const pickAt = (clientX, clientY) => {
@@ -577,22 +645,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Post enhancements
   const runPostEnhancements = () => {
+    const isPostPage = Boolean(document.querySelector('.post'))
     if (!isPostPage) return
 
     const titleEl = document.querySelector('.post-h1')
-    if (titleEl) {
-      const full = titleEl.textContent || ''
-      titleEl.textContent = ''
-      titleEl.classList.add('typing')
-      let i = 0
-      const tick = () => {
-        i += 1
-        titleEl.textContent = full.slice(0, i)
-        if (i < full.length) requestAnimationFrame(tick)
-        else titleEl.classList.remove('typing')
-      }
-      requestAnimationFrame(tick)
-    }
+    if (titleEl) titleEl.classList.remove('typing')
 
     const tocRoot = document.querySelector('.post-toc-inner')
     const content = document.querySelector('.post-content')
@@ -632,6 +689,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault()
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         history.pushState(null, '', `#${id}`)
+        // Auto-close TOC drawer on mobile
+        document.body.setAttribute('data-toc-open', 'false')
       })
       tocRoot.appendChild(a)
       return { heading: h, link: a }
@@ -651,6 +710,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     )
 
     for (const it of items) io.observe(it.heading)
+
+    // Mobile TOC toggle
+    const tocToggle = document.querySelector('.toc-toggle')
+    if (tocToggle) {
+      tocToggle.onclick = () => {
+        const open = document.body.getAttribute('data-toc-open') === 'true'
+        document.body.setAttribute('data-toc-open', open ? 'false' : 'true')
+      }
+    }
   }
 
   // SPA Navigation
@@ -671,10 +739,74 @@ document.addEventListener('DOMContentLoaded', async () => {
           const doc = parser.parseFromString(html, 'text/html')
 
           document.title = doc.title
+
+          // Sync page-specific stylesheets (archives.css / tags.css / post.css, etc.)
+          // because SPA navigation only swaps .main innerHTML by default.
+          // Returns a Promise that resolves when all new CSS files are loaded.
+          const syncStylesheets = () => {
+            const normalizeHref = (href) => {
+              try {
+                return new URL(href, window.location.origin).pathname
+              } catch {
+                return href
+              }
+            }
+
+            const isBlogStylesheet = (href) => {
+              const p = normalizeHref(href)
+              return p.startsWith('/blog/') && p.endsWith('.css')
+            }
+
+            const nextLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]'))
+              .map((l) => normalizeHref(l.getAttribute('href')))
+              .filter(isBlogStylesheet)
+
+            const curLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'))
+              .map((l) => ({ el: l, href: normalizeHref(l.getAttribute('href')) }))
+              .filter((x) => isBlogStylesheet(x.href))
+
+            // Remove current page-specific css that isn't needed anymore
+            for (const { el, href } of curLinks) {
+              if (!nextLinks.includes(href)) el.remove()
+            }
+
+            // Add missing css required by next page and wait for them to load
+            const have = new Set(
+              Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'))
+                .map((l) => normalizeHref(l.getAttribute('href')))
+                .filter(isBlogStylesheet)
+            )
+            const loadPromises = []
+            for (const href of nextLinks) {
+              if (have.has(href)) continue
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = href
+              const loadPromise = new Promise((resolve) => {
+                link.onload = resolve
+                link.onerror = resolve // Continue even on error
+              })
+              document.head.appendChild(link)
+              loadPromises.push(loadPromise)
+            }
+            return Promise.all(loadPromises)
+          }
+          await syncStylesheets()
+
           const newMain = doc.querySelector('.main')
           const currentMain = document.querySelector('.main')
           if (newMain && currentMain) {
             currentMain.innerHTML = newMain.innerHTML
+
+            // Keep cross-page UI state in sync (important for SPA navigations)
+            const isPost = Boolean(doc.querySelector('.post'))
+            document.body.setAttribute('data-page', isPost ? 'post' : '')
+            if (!isPost) {
+              // Leaving a post page: close mobile TOC drawer and remove any lingering toggles
+              document.body.setAttribute('data-toc-open', 'false')
+              document.querySelector('.toc-toggle')?.remove()
+              document.querySelector('.post-toc')?.remove()
+            }
 
             const currentPath = new URL(targetUrl).pathname
             document.querySelectorAll('.nav-item').forEach(nav => {
@@ -682,25 +814,17 @@ document.addEventListener('DOMContentLoaded', async () => {
               nav.classList.toggle('active', navPath === currentPath)
             })
 
-            const isPost = Boolean(doc.querySelector('.post'))
-            document.body.setAttribute('data-page', isPost ? 'post' : '')
-            if (!isPost) {
-              document.documentElement.classList.add('nav-open')
-              if (sidebar) sidebar.setAttribute('data-open', 'true')
-            } else {
-              document.documentElement.classList.remove('nav-open')
-              if (sidebar) sidebar.setAttribute('data-open', 'false')
-            }
-
-            runPostEnhancements()
+            // Keep sidebar closed after navigation. User can open it via hamburger.
+            closeSidebar()
             initLinks()
             attachGlobalListeners()
-
-            history.pushState(null, '', targetUrl)
-            window.scrollTo(0, 0)
+            runPostEnhancements()
+            initBackToTop()
+            bindSidebarNavAutoClose()
+            bindCopyActions()
           }
         } catch (err) {
-          console.error('Navigation failed:', err)
+          console.error(err)
           window.location.href = targetUrl
         }
       }
@@ -718,6 +842,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Back to Top Button
+  const initBackToTop = () => {
+    // Remove existing button if any (for SPA navigation)
+    const existingBtn = document.querySelector('.back-to-top')
+    if (existingBtn) existingBtn.remove()
+
+    // Check if we're on tags page
+    const isTagsPage = Boolean(document.querySelector('.tag-list'))
+    if (isTagsPage) return
+
+    // Create button
+    const btn = document.createElement('button')
+    btn.className = 'back-to-top'
+    btn.setAttribute('aria-label', 'Back to top')
+    btn.innerHTML = `
+      <svg class="svgIcon" viewBox="0 0 384 512">
+        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+      </svg>
+    `
+    document.body.appendChild(btn)
+
+    // Show/hide based on scroll position
+    const checkScroll = () => {
+      if (window.scrollY > 300) {
+        btn.classList.add('visible')
+      } else {
+        btn.classList.remove('visible')
+      }
+    }
+
+    // Click handler - smooth scroll to top
+    btn.onclick = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    // Listen for scroll
+    window.addEventListener('scroll', checkScroll, { passive: true })
+    checkScroll() // Initial check
+  }
+
   window.onpopstate = () => {
     window.location.reload()
   }
@@ -725,4 +889,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initLinks()
   attachGlobalListeners()
   runPostEnhancements()
+  initBackToTop()
+  bindSidebarNavAutoClose()
 })
