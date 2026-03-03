@@ -79,16 +79,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   })
 
-  // Close sidebar when a nav link is clicked (mobile UX)
-  const bindSidebarNavAutoClose = () => {
-    if (!sidebar) return
-    sidebar.querySelectorAll('a.nav-item[href^="/blog/"]').forEach((a) => {
-      a.addEventListener('click', () => {
-        closeSidebar()
-      })
-    })
-  }
-
   // Theme and Background Management
   const root = document.documentElement
   const STORAGE_KEY = 'blog-theme-hsl'
@@ -316,18 +306,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `
 
-    // Lazy load images
+    // Lazy load images with IntersectionObserver for better performance
+    const loadItem = (item) => {
+      const src = item.dataset.src
+      if (src && !item.dataset.loaded) {
+        item.dataset.loaded = 'true'
+        const img = new Image()
+        img.onload = () => {
+          item.style.backgroundImage = `url('${src}')`
+        }
+        img.src = src
+      }
+    }
+
+    // Use IntersectionObserver for true lazy loading
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadItem(entry.target)
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { rootMargin: '100px' })
+
     setTimeout(() => {
       const items = picker.querySelectorAll('.image-picker-item')
       items.forEach(item => {
-        const src = item.dataset.src
-        if (src) {
-          const img = new Image()
-          img.onload = () => {
-            item.style.backgroundImage = `url('${src}')`
-          }
-          img.src = src
-        }
+        observer.observe(item)
       })
     }, 50)
 
@@ -725,12 +730,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   const initLinks = () => {
     document.querySelectorAll('a').forEach(a => {
       const href = a.getAttribute('href')
-      if (!href || !href.startsWith('/blog/') || a.getAttribute('target') === '_blank') return
+      // Skip links that don't match SPA navigation criteria
+      if (!href || a.getAttribute('target') === '_blank') return
+      if (href.startsWith('#')) return
+      if (href.startsWith('mailto:') || href.startsWith('tel:')) return
+      if (href.startsWith('http://') || href.startsWith('https://')) return
+      if (href.startsWith('tencent://')) return
+      if (!href.startsWith('/blog') && !href.startsWith('blog/') && !href.startsWith('./') && !href.startsWith('../')) return
+      // Skip copy-to-click elements (they have their own handler)
+      if (a.hasAttribute('data-copy-text')) return
+      // Skip already-bound links
+      if (a.getAttribute('data-spa-bound') === 'true') return
+      a.setAttribute('data-spa-bound', 'true')
 
-      a.onclick = async (e) => {
+      a.addEventListener('click', async (e) => {
         e.preventDefault()
         const targetUrl = a.href
-        if (targetUrl === window.location.href) return
+        if (targetUrl === window.location.href) {
+          // Show toast notification for current page
+          const currentPath = window.location.pathname
+          let pageName = '当前页面'
+          if (currentPath === '/blog/' || currentPath === '/blog') {
+            pageName = '主页'
+          } else if (currentPath.startsWith('/blog/archives')) {
+            pageName = '归档页'
+          } else if (currentPath.startsWith('/blog/tags')) {
+            pageName = '标签页'
+          } else if (currentPath.startsWith('/blog/changelog')) {
+            pageName = '更新日志页'
+          }
+          showToast(`已经在${pageName}了`)
+          return
+        }
 
         try {
           const resp = await fetch(targetUrl)
@@ -798,6 +829,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (newMain && currentMain) {
             currentMain.innerHTML = newMain.innerHTML
 
+            history.pushState(null, '', targetUrl)
+
             // Keep cross-page UI state in sync (important for SPA navigations)
             const isPost = Boolean(doc.querySelector('.post'))
             document.body.setAttribute('data-page', isPost ? 'post' : '')
@@ -820,39 +853,47 @@ document.addEventListener('DOMContentLoaded', async () => {
             attachGlobalListeners()
             runPostEnhancements()
             initBackToTop()
-            bindSidebarNavAutoClose()
             bindCopyActions()
           }
         } catch (err) {
           console.error(err)
           window.location.href = targetUrl
         }
-      }
+      })
     })
   }
 
   const attachGlobalListeners = () => {
     const paletteBtn = document.querySelector('.palette-btn')
-    if (paletteBtn) {
-      paletteBtn.onclick = openPalette
+    if (paletteBtn && paletteBtn.getAttribute('data-listener-bound') !== 'true') {
+      paletteBtn.setAttribute('data-listener-bound', 'true')
+      paletteBtn.addEventListener('click', openPalette)
     }
     const searchBtn = document.querySelector('.search')
-    if (searchBtn) {
-      searchBtn.onclick = openSearch
+    if (searchBtn && searchBtn.getAttribute('data-listener-bound') !== 'true') {
+      searchBtn.setAttribute('data-listener-bound', 'true')
+      searchBtn.addEventListener('click', openSearch)
     }
   }
 
-  // Back to Top Button
+  // Back to Top Button & Post Sticky Header
   const initBackToTop = () => {
     // Remove existing button if any (for SPA navigation)
     const existingBtn = document.querySelector('.back-to-top')
     if (existingBtn) existingBtn.remove()
+    const existingHeader = document.querySelector('.post-sticky-header')
+    if (existingHeader) existingHeader.remove()
 
     // Check if we're on tags page
     const isTagsPage = Boolean(document.querySelector('.tag-list'))
     if (isTagsPage) return
 
-    // Create button
+    // Check if we're on a post page
+    const isPostPage = Boolean(document.querySelector('.post'))
+    const postTitleEl = document.querySelector('.post-h1')
+    const postTitle = postTitleEl ? postTitleEl.textContent : ''
+
+    // Create back-to-top button
     const btn = document.createElement('button')
     btn.className = 'back-to-top'
     btn.setAttribute('aria-label', 'Back to top')
@@ -863,32 +904,98 @@ document.addEventListener('DOMContentLoaded', async () => {
     `
     document.body.appendChild(btn)
 
-    // Show/hide based on scroll position
-    const checkScroll = () => {
-      if (window.scrollY > 300) {
-        btn.classList.add('visible')
-      } else {
-        btn.classList.remove('visible')
+    // Create sticky header for post pages
+    let stickyHeader = null
+    if (isPostPage && postTitle) {
+      stickyHeader = document.createElement('div')
+      stickyHeader.className = 'post-sticky-header'
+      stickyHeader.innerHTML = `
+        <a class="sticky-back" href="/blog/" aria-label="返回">
+          <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg>
+        </a>
+        <span class="sticky-title">${postTitle}</span>
+        <button class="sticky-search" aria-label="search">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+        </button>
+      `
+      document.body.appendChild(stickyHeader)
+
+      // Bind search button
+      const searchBtn = stickyHeader.querySelector('.sticky-search')
+      if (searchBtn) {
+        searchBtn.addEventListener('click', openSearch)
       }
     }
 
-    // Click handler - smooth scroll to top
-    btn.onclick = () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Throttle function for scroll performance
+  const throttle = (fn, delay) => {
+    let lastCall = 0
+    return (...args) => {
+      const now = Date.now()
+      if (now - lastCall >= delay) {
+        lastCall = now
+        fn(...args)
+      }
     }
-
-    // Listen for scroll
-    window.addEventListener('scroll', checkScroll, { passive: true })
-    checkScroll() // Initial check
   }
 
-  window.onpopstate = () => {
-    window.location.reload()
+  // Show/hide based on scroll position (throttled for performance)
+  const checkScroll = throttle(() => {
+    if (window.scrollY > 300) {
+      btn.classList.add('visible')
+      if (stickyHeader) stickyHeader.classList.add('visible')
+    } else {
+      btn.classList.remove('visible')
+      if (stickyHeader) stickyHeader.classList.remove('visible')
+    }
+  }, 100)
+
+  // Click handler - smooth scroll to top
+  btn.onclick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Listen for scroll with passive option
+  window.addEventListener('scroll', checkScroll, { passive: true })
+  checkScroll() // Initial check
+  }
+
+  window.onpopstate = async () => {
+    const targetUrl = window.location.href
+    try {
+      const resp = await fetch(targetUrl)
+      const html = await resp.text()
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(html, 'text/html')
+
+      document.title = doc.title
+
+      const newMain = doc.querySelector('.main')
+      const currentMain = document.querySelector('.main')
+      if (newMain && currentMain) {
+        currentMain.innerHTML = newMain.innerHTML
+      }
+
+      const currentPath = new URL(targetUrl).pathname
+      document.querySelectorAll('.nav-item').forEach(nav => {
+        const navPath = new URL(nav.href, window.location.origin).pathname
+        nav.classList.toggle('active', navPath === currentPath)
+      })
+
+      initLinks()
+      attachGlobalListeners()
+      runPostEnhancements()
+      initBackToTop()
+      bindCopyActions()
+      closeSidebar()
+    } catch (err) {
+      console.error(err)
+      window.location.reload()
+    }
   }
 
   initLinks()
   attachGlobalListeners()
   runPostEnhancements()
   initBackToTop()
-  bindSidebarNavAutoClose()
 })

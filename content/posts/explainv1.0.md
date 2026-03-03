@@ -1,5 +1,5 @@
 ---
-title: Riorddon's Blog v1.0 更新说明与网站介绍
+title: Riordon's Blog v1.0 更新说明与网站介绍
 slug: v1-0
 date: 2026-03-02
 tags:
@@ -9,7 +9,7 @@ tags:
 cover: /images/cover-v1-0.png
 ---
 
-# Vapor Blog v1.0 更新说明与网站介绍
+# Riordon's Blog v1.0 更新说明与网站介绍
 
 今天想认真写一篇"里程碑"——本网站（博客）正式进入 **v1.0**。
 
