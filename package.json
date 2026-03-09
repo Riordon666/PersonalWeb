@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "sharp": "^0.34.5",
     "vite": "^5.0.0"
   },
   "keywords": [

@@ -1,5 +1,133 @@
 // Blog page interactions
 
+// Page Loader
+const createPageLoader = () => {
+  const loader = document.createElement('div')
+  loader.className = 'page-loader'
+  loader.innerHTML = `
+    <div class="loader">
+      <svg height="0" width="0" viewBox="0 0 64 64" class="absolute">
+        <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="b">
+            <stop class="s-xJBuHA073rTt" stop-color="#973BED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#007CFF" offset="1"></stop>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="0" x2="0" y1="64" x1="0" id="c">
+            <stop class="s-xJBuHA073rTt" stop-color="#FFC800"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#F0F" offset="1"></stop>
+            <animateTransform repeatCount="indefinite" keySplines=".42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1" keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1" dur="8s" values="0 32 32;-270 32 32;-270 32 32;-540 32 32;-540 32 32;-810 32 32;-810 32 32;-1080 32 32;-1080 32 32" type="rotate" attributeName="gradientTransform"></animateTransform>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="d">
+            <stop class="s-xJBuHA073rTt" stop-color="#00E0ED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#00DA72" offset="1"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#b)" d="M 54.722656,3.9726563 A 2.0002,2.0002 0 0 0 54.941406,4 h 5.007813 C 58.955121,17.046124 49.099667,27.677057 36.121094,29.580078 a 2.0002,2.0002 0 0 0 -1.708985,1.978516 V 60 H 29.587891 V 31.558594 A 2.0002,2.0002 0 0 0 27.878906,29.580078 C 14.900333,27.677057 5.0448787,17.046124 4.0507812,4 H 9.28125 c 1.231666,11.63657 10.984383,20.554048 22.6875,20.734375 a 2.0002,2.0002 0 0 0 0.02344,0 c 11.806958,0.04283 21.70649,-9.003371 22.730469,-20.7617187 z" class="dash" id="y" pathLength="360"></path>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="10" stroke="url(#c)" d="M 32 32 m 0 -27 a 27 27 0 1 1 0 54 a 27 27 0 1 1 0 -54" class="spin" id="o" pathLength="360"></path>
+      </svg>
+      <div class="w-2"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#d)" d="M 4,4 h 4.6230469 v 25.919922 c -0.00276,11.916203 9.8364941,21.550422 21.7500001,21.296875 11.616666,-0.240651 21.014356,-9.63894 21.253906,-21.25586 a 2.0002,2.0002 0 0 0 0,-0.04102 V 4 H 56.25 v 25.919922 c 0,14.33873 -11.581192,25.919922 -25.919922,25.919922 a 2.0002,2.0002 0 0 0 -0.0293,0 C 15.812309,56.052941 3.998433,44.409961 4,29.919922 Z" class="dash" id="u" pathLength="360"></path>
+      </svg>
+    </div>
+  `
+  document.body.appendChild(loader)
+  return loader
+}
+
+const createTileLoader = () => {
+  const loader = document.createElement('div')
+  loader.className = 'tile-loader'
+
+  const uid = `tl-${Math.random().toString(36).slice(2, 10)}`
+  const idB = `b-${uid}`
+  const idC = `c-${uid}`
+  const idD = `d-${uid}`
+
+  loader.innerHTML = `
+    <div class="loader">
+      <svg height="0" width="0" viewBox="0 0 64 64" class="absolute">
+        <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="${idB}">
+            <stop class="s-xJBuHA073rTt" stop-color="#973BED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#007CFF" offset="1"></stop>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="0" x2="0" y1="64" x1="0" id="${idC}">
+            <stop class="s-xJBuHA073rTt" stop-color="#FFC800"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#F0F" offset="1"></stop>
+            <animateTransform repeatCount="indefinite" keySplines=".42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1" keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1" dur="8s" values="0 32 32;-270 32 32;-270 32 32;-540 32 32;-540 32 32;-810 32 32;-810 32 32;-1080 32 32;-1080 32 32" type="rotate" attributeName="gradientTransform"></animateTransform>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="${idD}">
+            <stop class="s-xJBuHA073rTt" stop-color="#00E0ED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#00DA72" offset="1"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#${idB})" d="M 54.722656,3.9726563 A 2.0002,2.0002 0 0 0 54.941406,4 h 5.007813 C 58.955121,17.046124 49.099667,27.677057 36.121094,29.580078 a 2.0002,2.0002 0 0 0 -1.708985,1.978516 V 60 H 29.587891 V 31.558594 A 2.0002,2.0002 0 0 0 27.878906,29.580078 C 14.900333,27.677057 5.0448787,17.046124 4.0507812,4 H 9.28125 c 1.231666,11.63657 10.984383,20.554048 22.6875,20.734375 a 2.0002,2.0002 0 0 0 0.02344,0 c 11.806958,0.04283 21.70649,-9.003371 22.730469,-20.7617187 z" class="dash" id="y" pathLength="360"></path>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="10" stroke="url(#${idC})" d="M 32 32
+        m 0 -27
+        a 27 27 0 1 1 0 54
+        a 27 27 0 1 1 0 -54" class="spin" id="o" pathLength="360"></path>
+      </svg>
+      <div class="w-2"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#${idD})" d="M 4,4 h 4.6230469 v 25.919922 c -0.00276,11.916203 9.8364941,21.550422 21.7500001,21.296875 11.616666,-0.240651 21.014356,-9.63894 21.253906,-21.25586 a 2.0002,2.0002 0 0 0 0,-0.04102 V 4 H 56.25 v 25.919922 c 0,14.33873 -11.581192,25.919922 -25.919922,25.919922 a 2.0002,2.0002 0 0 0 -0.0293,0 C 15.812309,56.052941 3.998433,44.409961 4,29.919922 Z" class="dash" id="u" pathLength="360"></path>
+      </svg>
+    </div>
+  `
+  return loader
+}
+
+let pageLoader = null
+const showLoader = () => {
+  // First check if loader already exists in DOM (from PAGE_LOADER_HTML)
+  if (!pageLoader) {
+    pageLoader = document.querySelector('.page-loader')
+  }
+  // If still not found, create a new one
+  if (!pageLoader) {
+    pageLoader = createPageLoader()
+  }
+  pageLoader.classList.remove('hidden')
+}
+const hideLoader = () => {
+  if (!pageLoader) pageLoader = document.querySelector('.page-loader')
+  if (pageLoader) pageLoader.classList.add('hidden')
+}
+
+// Track when theme and background are fully loaded
+let themeLoadedResolve = null
+const themeLoadedPromise = new Promise((resolve) => {
+  themeLoadedResolve = resolve
+})
+
+// Hide loader only when both conditions are met:
+// 1. Minimum 1 second has passed
+// 2. Theme and background are fully loaded
+window.addEventListener('load', async () => {
+  const startTime = Date.now()
+  const minDuration = 1000
+
+  // Wait for theme to be fully loaded
+  await themeLoadedPromise
+
+  // Ensure minimum display time
+  const elapsed = Date.now() - startTime
+  const remaining = Math.max(0, minDuration - elapsed)
+  if (remaining > 0) {
+    await new Promise(r => setTimeout(r, remaining))
+  }
+
+  hideLoader()
+})
+
 document.addEventListener('DOMContentLoaded', async () => {
   const sidebar = document.querySelector('.sidebar')
   const toggle = document.querySelector('.nav-toggle')
@@ -178,6 +306,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   setTheme(getTheme())
   await loadBgState()
 
+  // Signal that theme and background are fully loaded
+  if (themeLoadedResolve) themeLoadedResolve()
+
   const hslToRgb = (h, s, l) => {
     s /= 100
     l /= 100
@@ -242,9 +373,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               <div class="bg-grid">
                 ${backgrounds.length > 0 ? `
                   ${previewImages.map(src => `
-                    <div class="bg-item ${bgState.image === src ? 'active' : ''}" 
-                         style="background-image: url('${src}')" 
-                         data-src="${src}"></div>
+                    <div class="bg-item ${bgState.image === src ? 'active' : ''}"
+                         style="background-image: url('${src}')"
+                         data-src="${src}">
+                    </div>
                   `).join('')}
                   ${hasMore ? `
                     <div class="bg-item bg-more" data-action="view-more">
@@ -288,35 +420,82 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Fullscreen image picker modal with lazy loading
-  const createImagePickerModal = (backgrounds) => {
+  const createImagePickerModal = async (backgrounds) => {
+    // Load thumbnails config
+    let thumbsConfig = { dir: '/blog/backgrounds/thumbs/', files: [] }
+    try {
+      const resp = await fetch('/blog/thumbs.json')
+      if (resp.ok) thumbsConfig = await resp.json()
+    } catch {}
+
     const picker = document.createElement('div')
     picker.className = 'image-picker-modal'
     picker.innerHTML = `
-      <div class="image-picker-content">
+      <div class="image-picker-backdrop"></div>
+      <div class="image-picker-panel">
         <div class="image-picker-header">
-          <h3>选择背景图片</h3>
+          <div class="image-picker-title">选择背景图片</div>
           <button class="image-picker-close" type="button" aria-label="close">×</button>
         </div>
         <div class="image-picker-grid">
-          ${backgrounds.map(src => `
-            <div class="image-picker-item ${bgState.image === src ? 'active' : ''}" 
-                 data-src="${src}"></div>
-          `).join('')}
+          ${backgrounds.map((src, i) => {
+            // Use thumbnail if available, fallback to full image
+            const baseName = src.split('/').pop().replace(/\.[^.]+$/, '')
+            const thumbFile = thumbsConfig.files.find(f => f.includes(baseName))
+            const thumbSrc = thumbFile ? `${thumbsConfig.dir}${thumbFile}` : src
+            return `
+              <div class="image-picker-item ${bgState.image === src ? 'active' : ''}" 
+                   data-src="${src}"
+                   data-thumb="${thumbSrc}"></div>
+            `
+          }).join('')}
         </div>
       </div>
     `
 
     // Lazy load images with IntersectionObserver for better performance
-    const loadItem = (item) => {
-      const src = item.dataset.src
-      if (src && !item.dataset.loaded) {
-        item.dataset.loaded = 'true'
-        const img = new Image()
-        img.onload = () => {
-          item.style.backgroundImage = `url('${src}')`
-        }
-        img.src = src
+    // Limit concurrent loads to prevent jank
+    const loadQueue = []
+    let loadingCount = 0
+    const MAX_CONCURRENT = 6
+
+    const processQueue = () => {
+      while (loadQueue.length > 0 && loadingCount < MAX_CONCURRENT) {
+        const item = loadQueue.shift()
+        loadItemNow(item)
       }
+    }
+
+    const loadItemNow = (item) => {
+      const thumbSrc = item.dataset.thumb
+      if (!thumbSrc || item.dataset.loaded) return
+      item.dataset.loaded = 'true'
+      loadingCount++
+
+      const overlay = createTileLoader()
+      item.appendChild(overlay)
+
+      const img = new Image()
+      img.onload = () => {
+        requestAnimationFrame(() => {
+          item.style.backgroundImage = `url('${thumbSrc}')`
+          overlay.remove()
+          loadingCount--
+          processQueue()
+        })
+      }
+      img.onerror = () => {
+        overlay.remove()
+        loadingCount--
+        processQueue()
+      }
+      img.src = thumbSrc
+    }
+
+    const loadItem = (item) => {
+      if (item.dataset.loaded) return
+      loadQueue.push(item)
+      processQueue()
     }
 
     // Use IntersectionObserver for true lazy loading
@@ -329,12 +508,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       })
     }, { rootMargin: '100px' })
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const items = picker.querySelectorAll('.image-picker-item')
       items.forEach(item => {
         observer.observe(item)
       })
-    }, 50)
+    })
 
     return picker
   }
@@ -414,6 +593,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     redraw()
 
+    // Per-tile loader using the global loader markup (scaled)
+    const initBgTileLoaders = () => {
+      const items = paletteEl.querySelectorAll('.bg-item[data-src]')
+      items.forEach((item) => {
+        const src = item.dataset.src
+        if (!src) return
+
+        const overlay = createTileLoader()
+        item.appendChild(overlay)
+
+        const img = new Image()
+        img.onload = () => {
+          overlay.remove()
+        }
+        img.onerror = () => {
+          overlay.remove()
+        }
+        img.src = src
+      })
+    }
+    initBgTileLoaders()
+
     // Mode Switching - rebuild modal with new mode
     const modeBtns = paletteEl.querySelectorAll('.mode-btn')
     modeBtns.forEach(btn => {
@@ -436,9 +637,25 @@ document.addEventListener('DOMContentLoaded', async () => {
           openImagePicker(paletteEl._backgrounds)
           return
         }
-        bgItems.forEach(i => i.classList.remove('active'))
-        item.classList.add('active')
-        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image', imageOnly: bgState.imageOnly })
+        const src = item.dataset.src
+        if (src) {
+          // Show loader while loading new background image
+          showLoader()
+          const img = new Image()
+          img.onload = () => {
+            bgItems.forEach(i => i.classList.remove('active'))
+            item.classList.add('active')
+            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
+            hideLoader()
+          }
+          img.onerror = () => {
+            hideLoader()
+            bgItems.forEach(i => i.classList.remove('active'))
+            item.classList.add('active')
+            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
+          }
+          img.src = src
+        }
       })
     })
 
@@ -533,9 +750,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Fullscreen image picker
   let imagePickerEl = null
-  const openImagePicker = (backgrounds) => {
+  const openImagePicker = async (backgrounds) => {
     if (imagePickerEl) return
-    imagePickerEl = createImagePickerModal(backgrounds)
+    imagePickerEl = await createImagePickerModal(backgrounds)
     document.body.appendChild(imagePickerEl)
 
     const close = () => {
@@ -560,23 +777,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     const items = imagePickerEl.querySelectorAll('.image-picker-item')
     items.forEach(item => {
       item.addEventListener('click', () => {
-        items.forEach(i => i.classList.remove('active'))
-        item.classList.add('active')
-        applyBgState({ ...bgState, image: item.dataset.src, mode: 'image' })
+        const src = item.dataset.src
+        if (src) {
+          // Show loader while loading new background image
+          showLoader()
+          const img = new Image()
+          img.onload = () => {
+            items.forEach(i => i.classList.remove('active'))
+            item.classList.add('active')
+            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
 
-        // Update palette modal's preview grid
-        const paletteItems = paletteEl?.querySelectorAll('.bg-item')
-        if (paletteItems) {
-          paletteItems.forEach(i => {
-            if (i.dataset.src === item.dataset.src) {
-              i.classList.add('active')
-            } else {
-              i.classList.remove('active')
+            // Update palette modal's preview grid
+            const paletteItems = paletteEl?.querySelectorAll('.bg-item')
+            if (paletteItems) {
+              paletteItems.forEach(i => {
+                if (i.dataset.src === src) {
+                  i.classList.add('active')
+                } else {
+                  i.classList.remove('active')
+                }
+              })
             }
-          })
+            hideLoader()
+            close()
+          }
+          img.onerror = () => {
+            hideLoader()
+            items.forEach(i => i.classList.remove('active'))
+            item.classList.add('active')
+            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
+            close()
+          }
+          img.src = src
         }
-
-        close()
       })
     })
   }
@@ -763,6 +996,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           return
         }
 
+        // Show loader immediately
+        showLoader()
+
         try {
           const resp = await fetch(targetUrl)
           const html = await resp.text()
@@ -854,9 +1090,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             runPostEnhancements()
             initBackToTop()
             bindCopyActions()
+
+            // Hide loader after navigation complete
+            hideLoader()
           }
         } catch (err) {
           console.error(err)
+          hideLoader()
           window.location.href = targetUrl
         }
       })
@@ -962,6 +1202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.onpopstate = async () => {
     const targetUrl = window.location.href
+    showLoader()
     try {
       const resp = await fetch(targetUrl)
       const html = await resp.text()
@@ -988,8 +1229,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       initBackToTop()
       bindCopyActions()
       closeSidebar()
+      hideLoader()
     } catch (err) {
       console.error(err)
+      hideLoader()
       window.location.reload()
     }
   }

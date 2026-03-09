@@ -125,7 +125,7 @@ function renderChangelogPage(posts, entries) {
     .join('\n')
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="image-only">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -134,8 +134,35 @@ function renderChangelogPage(posts, entries) {
   <link rel="stylesheet" href="/blog/changelog.css" />
   <script>
     // Load theme immediately to prevent flash
+    // IMPORTANT: Load background settings FIRST to check imageOnly mode
     (function() {
       var root = document.documentElement;
+      
+      // 1. First load background settings to determine mode
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      var bg = null;
+      var isImageOnly = false;
+      var isImageMode = false;
+      
+      if (bgRaw) {
+        try {
+          bg = JSON.parse(bgRaw);
+          isImageOnly = bg.imageOnly === true;
+          isImageMode = bg.mode === 'image' && bg.image;
+          
+          if (isImageMode) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = isImageOnly ? 'image-only' : 'image';
+            root.setAttribute('data-theme-mode', mode);
+          } else if (bg.mode === 'color') {
+            root.setAttribute('data-theme-mode', 'color');
+          }
+        } catch(e) {}
+      }
+      
+      // 2. Then load theme color
       var themeRaw = localStorage.getItem('blog-theme-hsl');
       if (themeRaw) {
         try {
@@ -148,24 +175,17 @@ function renderChangelogPage(posts, entries) {
           }
         } catch(e) {}
       }
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      if (bgRaw) {
-        try {
-          var bg = JSON.parse(bgRaw);
-          if (bg.mode === 'image' && bg.image) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = bg.imageOnly ? 'image-only' : 'image';
-            document.documentElement.setAttribute('data-theme-mode', mode);
-            document.body && document.body.setAttribute('data-theme-mode', mode);
-          }
-        } catch(e) {}
+      
+      // Set body mode after DOM ready
+      if (isImageMode) {
+        var mode = isImageOnly ? 'image-only' : 'image';
+        document.body && document.body.setAttribute('data-theme-mode', mode);
       }
     })();
   </script>
 </head>
 <body>
+  ${PAGE_LOADER_HTML}
   <div class="site-background"></div>
   <div id="app" class="layout">
     <button class="nav-toggle" aria-label="menu" type="button">
@@ -204,9 +224,43 @@ const ICONS = {
   github: '<svg viewBox="0 0 1049 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M524.979332 0C234.676191 0 0 234.676191 0 524.979332c0 232.068678 150.366597 428.501342 358.967656 498.035028 26.075132 5.215026 35.636014-11.299224 35.636014-25.205961 0-12.168395-0.869171-53.888607-0.869171-97.347161-146.020741 31.290159-176.441729-62.580318-176.441729-62.580318-23.467619-60.841976-58.234462-76.487055-58.234463-76.487055-47.804409-32.15933 3.476684-32.15933 3.476685-32.15933 53.019436 3.476684 80.83291 53.888607 80.83291 53.888607 46.935238 79.963739 122.553122 57.365291 152.97411 43.458554 4.345855-33.897672 18.252593-57.365291 33.028501-70.402857-116.468925-12.168395-239.022047-57.365291-239.022047-259.012982 0-57.365291 20.860106-104.300529 53.888607-140.805715-5.215026-13.037566-23.467619-66.926173 5.215027-139.067372 0 0 44.327725-13.906737 144.282399 53.888607 41.720212-11.299224 86.917108-17.383422 131.244833-17.383422s89.524621 6.084198 131.244833 17.383422C756.178839 203.386032 800.506564 217.29277 800.506564 217.29277c28.682646 72.1412 10.430053 126.029806 5.215026 139.067372 33.897672 36.505185 53.888607 83.440424 53.888607 140.805715 0 201.64769-122.553122 245.975415-239.891218 259.012982 19.121764 16.514251 35.636014 47.804409 35.636015 97.347161 0 70.402857-0.869171 126.898978-0.869172 144.282399 0 13.906737 9.560882 30.420988 35.636015 25.205961 208.601059-69.533686 358.967656-265.96635 358.967655-498.035028C1049.958663 234.676191 814.413301 0 524.979332 0z" fill="currentColor"></path></svg>',
   email: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M893.421013 263.914762c-1.982144 16.412808-9.237385 32.210609-21.676695 44.729737L581.597101 598.791715c-29.696346 29.696346-78.243015 29.696346-107.939361 0L183.510524 308.644499c-12.519128-12.519128-19.770276-28.396747-21.676695-44.729737-0.38374 3.130294-0.611937 6.259564-0.611937 9.465582l0 396.939451c0 41.983183 34.348296 76.335572 76.336596 76.335572l580.14196 0c41.980113 0 76.332503-34.352389 76.332503-76.335572L894.03295 273.380344C894.03295 270.174326 893.804752 267.045055 893.421013 263.914762L893.421013 263.914762 893.421013 263.914762zM581.597101 543.222095l304.193117-304.19414c-12.598946-24.883737-38.473243-41.983183-68.089771-41.983183L237.558487 197.044772c-29.616528 0-55.499012 17.099447-68.089771 41.983183L473.65774 543.222095C503.349993 572.917418 551.900755 572.917418 581.597101 543.222095L581.597101 543.222095 581.597101 543.222095z" fill="currentColor"></path></svg>',
   qq: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M824.8 613.2c-16-51.4-34.4-94.6-62.7-165.3C766.5 262.2 689.3 112 511.5 112 331.7 112 256.2 265.2 261 447.9c-28.4 70.8-46.7 113.7-62.7 165.3-34 109.5-23 154.8-14.6 155.8 18 2.2 70.1-82.4 70.1-82.4 0 49 25.2 112.9 79.8 159-26.4 8.1-85.7 29.9-71.6 53.8 11.4 19.3 196.2 12.3 249.5 6.3 53.3 6 238.1 13 249.5-6.3 14.1-23.8-45.3-45.7-71.6-53.8 54.6-46.2 79.8-110.1 79.8-159 0 0 52.1 84.6 70.1 82.4 8.5-1.1 19.5-46.4-14.5-155.8z" fill="currentColor"></path></svg>',
-  palette: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M512 65.3312C184.9344 65.3312 64.1024 350.6176 64.1024 510.5664S180.224 958.464 502.5792 958.464c0 0 80.0768 1.4336 80.0768-70.656s-36.0448-48.9472-36.0448-100.7616c0-51.8144 36.0448-74.9568 53.248-74.9568 17.2032 0 131.072 8.6016 194.56-15.9744 63.2832-24.3712 165.6832-102.1952 165.6832-234.7008 0-116.5312-121.0368-396.0832-448.1024-396.0832z" fill="#FFFFFF"></path><path d="M502.9888 989.184h-0.6144c-191.488 0-303.7184-95.8464-364.3392-176.3328-77.2096-102.4-104.6528-223.4368-104.6528-302.4896 0-78.848 28.2624-199.2704 107.9296-301.4656 61.8496-79.4624 176.5376-174.2848 370.688-174.2848 190.8736 0 306.5856 89.9072 370.0736 165.2736 74.9568 89.088 108.544 195.584 108.544 261.7344 0 65.7408-22.9376 127.1808-66.56 177.9712-45.8752 53.4528-98.304 77.6192-118.784 85.4016-53.8624 20.6848-132.3008 20.6848-194.7648 18.2272-4.3008-0.2048-7.9872-0.2048-10.0352-0.4096-4.7104 1.2288-23.3472 12.288-23.3472 44.2368 0 11.4688 1.2288 12.9024 7.3728 19.456 14.5408 15.36 28.672 34.2016 28.672 81.5104 0 28.0576-9.4208 52.224-27.4432 70.0416-30.3104 29.696-74.1376 31.1296-82.7392 31.1296zM512 96.0512C196.8128 96.0512 94.8224 375.3984 94.8224 510.5664c0 69.2224 24.1664 175.3088 92.16 265.4208 52.224 69.2224 149.2992 151.7568 315.5968 151.7568h0.4096c7.3728 0 28.4672-2.4576 39.936-13.9264 3.8912-3.8912 9.0112-10.6496 9.0112-26.0096 0-26.8288-4.7104-31.744-11.8784-39.3216-12.288-12.9024-24.1664-28.2624-24.1664-61.6448 0-38.7072 15.36-63.488 28.2624-77.6192 15.9744-17.6128 36.864-28.0576 55.9104-28.0576 2.8672 0 6.9632 0.2048 13.1072 0.4096 30.1056 1.2288 121.4464 4.7104 170.1888-14.1312 54.272-20.8896 146.0224-87.8592 146.0224-206.0288 0-93.3888-102.8096-365.3632-417.3824-365.3632z" fill="currentColor"></path><path d="M239.0016 512c-43.008 0-77.824-34.816-77.824-77.824s34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824c-0.2048 43.008-35.0208 77.824-77.824 77.824z" fill="currentColor"></path><path d="M474.112 316.928c0 43.008-34.816 77.824-77.824 77.824s-77.824-34.816-77.824-77.824 34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824z" fill="currentColor"></path><path d="M745.6768 378.88c0 43.008-34.816 77.824-77.824 77.824s-77.824-34.816-77.824-77.824 34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824z" fill="currentColor"></path><path d="M650.7776 601.088c0 43.008-34.816 77.824-77.824 77.824s-77.824-34.816-77.824-77.824 34.816-77.824 77.824-77.824 77.824 34.816 77.824 77.824z" fill="currentColor"></path></svg>',
+  palette: '<svg t="1773046739790" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M608 384a64 64 0 1 0 0-128 64 64 0 0 0 0 128zM416 384a64 64 0 1 1-128 0 64 64 0 0 1 128 0zM384 704a64 64 0 1 0 0-128 64 64 0 0 0 0 128z" fill="currentColor"></path><path d="M64 512a448 448 0 0 1 896 0c0 40.384-17.792 69.12-45.632 87.872-25.152 17.024-57.536 25.152-86.656 31.104-10.688 2.176-21.056 4.096-31.04 5.952-19.712 3.584-38.336 7.04-56.832 12.032-27.328 7.424-47.872 16.704-61.568 30.08-7.744 7.424-14.272 17.664-19.968 30.72a200 200 0 0 0-9.792 28.096 400.64 400.64 0 0 0-4.48 17.344c-3.2 13.184-5.824 26.688-8.576 40.64l-0.064 0.384-0.192 0.96-0.32 1.664-3.264 16.256-2.24 10.752c-6.272 29.44-14.72 62.016-31.168 87.296-18.112 27.84-46.08 46.848-86.208 46.848a448 448 0 0 1-448-448z m448-384a384 384 0 1 0 0 768 34.56 34.56 0 0 0 32.576-17.792c9.344-14.336 15.936-36.224 22.208-65.728 1.728-7.936 3.392-16.576 5.12-25.472 4.288-21.632 8.96-45.312 15.04-66.688 8.704-30.72 21.952-63.296 46.784-87.296 25.344-24.512 58.368-37.44 89.408-45.824 20.992-5.696 44.16-9.984 65.28-13.888 9.408-1.728 18.304-3.328 26.496-5.056 29.056-5.888 50.048-12.224 63.68-21.44a44.16 44.16 0 0 0 8.896-7.68 32.192 32.192 0 0 0 4.352-6.4A44.864 44.864 0 0 0 896 512a384 384 0 0 0-384-384z" fill="currentColor"></path></svg>',
   changelog: '<svg t="1772501785743" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M704 416H320a32 32 0 0 0 0 64h384a32 32 0 0 0 0-64z m0 192H320a32 32 0 0 0 0 64h384a32 32 0 0 0 0-64z" fill="currentColor"></path><path d="M832 32H192c-52.928 0-96 43.072-96 96v768c0 52.928 43.072 96 96 96h640c52.928 0 96-43.072 96-96V128c0-52.928-43.072-96-96-96zM320 96h384v96H320V96z m544 800a32 32 0 0 1-32 32H192c-17.632 0-32-14.336-32-32V128c0-17.632 14.368-32 32-32h64v96c0 35.296 28.704 64 64 64h384c35.296 0 64-28.704 64-64V96h64c17.664 0 32 14.368 32 32v768z" fill="currentColor"></path></svg>',
 }
+
+// Page Loader HTML - shown on initial load and page transitions
+const PAGE_LOADER_HTML = `
+  <div class="page-loader">
+    <div class="loader">
+      <svg height="0" width="0" viewBox="0 0 64 64" class="absolute">
+        <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="b">
+            <stop class="s-xJBuHA073rTt" stop-color="#973BED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#007CFF" offset="1"></stop>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="0" x2="0" y1="64" x1="0" id="c">
+            <stop class="s-xJBuHA073rTt" stop-color="#FFC800"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#F0F" offset="1"></stop>
+            <animateTransform repeatCount="indefinite" keySplines=".42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1" keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1" dur="8s" values="0 32 32;-270 32 32;-270 32 32;-540 32 32;-540 32 32;-810 32 32;-810 32 32;-1080 32 32;-1080 32 32" type="rotate" attributeName="gradientTransform"></animateTransform>
+          </linearGradient>
+          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="d">
+            <stop class="s-xJBuHA073rTt" stop-color="#00E0ED"></stop>
+            <stop class="s-xJBuHA073rTt" stop-color="#00DA72" offset="1"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#b)" d="M 54.722656,3.9726563 A 2.0002,2.0002 0 0 0 54.941406,4 h 5.007813 C 58.955121,17.046124 49.099667,27.677057 36.121094,29.580078 a 2.0002,2.0002 0 0 0 -1.708985,1.978516 V 60 H 29.587891 V 31.558594 A 2.0002,2.0002 0 0 0 27.878906,29.580078 C 14.900333,27.677057 5.0448787,17.046124 4.0507812,4 H 9.28125 c 1.231666,11.63657 10.984383,20.554048 22.6875,20.734375 a 2.0002,2.0002 0 0 0 0.02344,0 c 11.806958,0.04283 21.70649,-9.003371 22.730469-20.7617187 z" class="dash" id="y" pathLength="360"></path>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="10" stroke="url(#c)" d="M 32 32 m 0 -27 a 27 27 0 1 1 0 54 a 27 27 0 1 1 0 -54" class="spin" id="o" pathLength="360"></path>
+      </svg>
+      <div class="w-2"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
+        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#d)" d="M 4,4 h 4.6230469 v 25.919922 c -0.00276,11.916203 9.8364941,21.550422 21.7500001,21.296875 11.616666,-0.240651 21.014356,-9.63894 21.253906,-21.25586 a 2.0002,2.0002 0 0 0 0,-0.04102 V 4 H 56.25 v 25.919922 c 0,14.33873 -11.581192,25.919922 -25.919922,25.919922 a 2.0002,2.0002 0 0 0 -0.0293,0 C 15.812309,56.052941 3.998433,44.409961 4,29.919922 Z" class="dash" id="u" pathLength="360"></path>
+      </svg>
+    </div>
+  </div>`
 
 function getUniqueTagCount(posts) {
   const set = new Set()
@@ -463,7 +517,7 @@ function renderBlogIndex(posts) {
     .join('\n')
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="image-only">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -471,8 +525,35 @@ function renderBlogIndex(posts) {
   <link rel="stylesheet" href="/blog/blog.css" />
   <script>
     // Load theme immediately to prevent flash
+    // IMPORTANT: Load background settings FIRST to check imageOnly mode
     (function() {
       var root = document.documentElement;
+      
+      // 1. First load background settings to determine mode
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      var bg = null;
+      var isImageOnly = false;
+      var isImageMode = false;
+      
+      if (bgRaw) {
+        try {
+          bg = JSON.parse(bgRaw);
+          isImageOnly = bg.imageOnly === true;
+          isImageMode = bg.mode === 'image' && bg.image;
+          
+          if (isImageMode) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = isImageOnly ? 'image-only' : 'image';
+            root.setAttribute('data-theme-mode', mode);
+          } else if (bg.mode === 'color') {
+            root.setAttribute('data-theme-mode', 'color');
+          }
+        } catch(e) {}
+      }
+      
+      // 2. Then load theme color
       var themeRaw = localStorage.getItem('blog-theme-hsl');
       if (themeRaw) {
         try {
@@ -485,24 +566,17 @@ function renderBlogIndex(posts) {
           }
         } catch(e) {}
       }
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      if (bgRaw) {
-        try {
-          var bg = JSON.parse(bgRaw);
-          if (bg.mode === 'image' && bg.image) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = bg.imageOnly ? 'image-only' : 'image';
-            document.documentElement.setAttribute('data-theme-mode', mode);
-            document.body && document.body.setAttribute('data-theme-mode', mode);
-          }
-        } catch(e) {}
+      
+      // Set body mode after DOM ready
+      if (isImageMode) {
+        var mode = isImageOnly ? 'image-only' : 'image';
+        document.body && document.body.setAttribute('data-theme-mode', mode);
       }
     })();
   </script>
 </head>
 <body>
+  ${PAGE_LOADER_HTML}
   <div class="site-background"></div>
   <div id="app" class="layout">
     <button class="nav-toggle" aria-label="menu" type="button">
@@ -535,7 +609,7 @@ function renderPostPage(post, allPosts) {
   const body = mdToHtml(post.body)
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="image-only">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -544,8 +618,35 @@ function renderPostPage(post, allPosts) {
   <link rel="stylesheet" href="/blog/post.css" />
   <script>
     // Load theme immediately to prevent flash
+    // IMPORTANT: Load background settings FIRST to check imageOnly mode
     (function() {
       var root = document.documentElement;
+      
+      // 1. First load background settings to determine mode
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      var bg = null;
+      var isImageOnly = false;
+      var isImageMode = false;
+      
+      if (bgRaw) {
+        try {
+          bg = JSON.parse(bgRaw);
+          isImageOnly = bg.imageOnly === true;
+          isImageMode = bg.mode === 'image' && bg.image;
+          
+          if (isImageMode) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = isImageOnly ? 'image-only' : 'image';
+            root.setAttribute('data-theme-mode', mode);
+          } else if (bg.mode === 'color') {
+            root.setAttribute('data-theme-mode', 'color');
+          }
+        } catch(e) {}
+      }
+      
+      // 2. Then load theme color
       var themeRaw = localStorage.getItem('blog-theme-hsl');
       if (themeRaw) {
         try {
@@ -558,24 +659,17 @@ function renderPostPage(post, allPosts) {
           }
         } catch(e) {}
       }
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      if (bgRaw) {
-        try {
-          var bg = JSON.parse(bgRaw);
-          if (bg.mode === 'image' && bg.image) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = bg.imageOnly ? 'image-only' : 'image';
-            document.documentElement.setAttribute('data-theme-mode', mode);
-            document.body && document.body.setAttribute('data-theme-mode', mode);
-          }
-        } catch(e) {}
+      
+      // Set body mode after DOM ready
+      if (isImageMode) {
+        var mode = isImageOnly ? 'image-only' : 'image';
+        document.body && document.body.setAttribute('data-theme-mode', mode);
       }
     })();
   </script>
 </head>
 <body>
+  ${PAGE_LOADER_HTML}
   <div class="site-background"></div>
   <div id="app" class="layout">
     <button class="nav-toggle" aria-label="menu" type="button">
@@ -665,7 +759,7 @@ function renderArchivesPage(posts) {
     .join('\n')
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="image-only">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -674,8 +768,35 @@ function renderArchivesPage(posts) {
   <link rel="stylesheet" href="/blog/archives.css" />
   <script>
     // Load theme immediately to prevent flash
+    // IMPORTANT: Load background settings FIRST to check imageOnly mode
     (function() {
       var root = document.documentElement;
+      
+      // 1. First load background settings to determine mode
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      var bg = null;
+      var isImageOnly = false;
+      var isImageMode = false;
+      
+      if (bgRaw) {
+        try {
+          bg = JSON.parse(bgRaw);
+          isImageOnly = bg.imageOnly === true;
+          isImageMode = bg.mode === 'image' && bg.image;
+          
+          if (isImageMode) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = isImageOnly ? 'image-only' : 'image';
+            root.setAttribute('data-theme-mode', mode);
+          } else if (bg.mode === 'color') {
+            root.setAttribute('data-theme-mode', 'color');
+          }
+        } catch(e) {}
+      }
+      
+      // 2. Then load theme color
       var themeRaw = localStorage.getItem('blog-theme-hsl');
       if (themeRaw) {
         try {
@@ -688,24 +809,17 @@ function renderArchivesPage(posts) {
           }
         } catch(e) {}
       }
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      if (bgRaw) {
-        try {
-          var bg = JSON.parse(bgRaw);
-          if (bg.mode === 'image' && bg.image) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = bg.imageOnly ? 'image-only' : 'image';
-            document.documentElement.setAttribute('data-theme-mode', mode);
-            document.body && document.body.setAttribute('data-theme-mode', mode);
-          }
-        } catch(e) {}
+      
+      // Set body mode after DOM ready
+      if (isImageMode) {
+        var mode = isImageOnly ? 'image-only' : 'image';
+        document.body && document.body.setAttribute('data-theme-mode', mode);
       }
     })();
   </script>
 </head>
 <body>
+  ${PAGE_LOADER_HTML}
   <div class="site-background"></div>
   <div id="app" class="layout">
     <button class="nav-toggle" aria-label="menu" type="button">
@@ -760,7 +874,7 @@ function renderTagsPage(posts) {
     .join('\n')
 
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-mode="image-only">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -769,8 +883,35 @@ function renderTagsPage(posts) {
   <link rel="stylesheet" href="/blog/tags.css" />
   <script>
     // Load theme immediately to prevent flash
+    // IMPORTANT: Load background settings FIRST to check imageOnly mode
     (function() {
       var root = document.documentElement;
+      
+      // 1. First load background settings to determine mode
+      var bgRaw = localStorage.getItem('blog-theme-bg');
+      var bg = null;
+      var isImageOnly = false;
+      var isImageMode = false;
+      
+      if (bgRaw) {
+        try {
+          bg = JSON.parse(bgRaw);
+          isImageOnly = bg.imageOnly === true;
+          isImageMode = bg.mode === 'image' && bg.image;
+          
+          if (isImageMode) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
+            root.style.setProperty('--bg-opacity', bg.opacity || 1);
+            var mode = isImageOnly ? 'image-only' : 'image';
+            root.setAttribute('data-theme-mode', mode);
+          } else if (bg.mode === 'color') {
+            root.setAttribute('data-theme-mode', 'color');
+          }
+        } catch(e) {}
+      }
+      
+      // 2. Then load theme color
       var themeRaw = localStorage.getItem('blog-theme-hsl');
       if (themeRaw) {
         try {
@@ -783,24 +924,17 @@ function renderTagsPage(posts) {
           }
         } catch(e) {}
       }
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      if (bgRaw) {
-        try {
-          var bg = JSON.parse(bgRaw);
-          if (bg.mode === 'image' && bg.image) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = bg.imageOnly ? 'image-only' : 'image';
-            document.documentElement.setAttribute('data-theme-mode', mode);
-            document.body && document.body.setAttribute('data-theme-mode', mode);
-          }
-        } catch(e) {}
+      
+      // Set body mode after DOM ready
+      if (isImageMode) {
+        var mode = isImageOnly ? 'image-only' : 'image';
+        document.body && document.body.setAttribute('data-theme-mode', mode);
       }
     })();
   </script>
 </head>
 <body>
+  ${PAGE_LOADER_HTML}
   <div class="site-background"></div>
   <div id="app" class="layout">
     <button class="nav-toggle" aria-label="menu" type="button">
@@ -837,13 +971,58 @@ async function writeFile(p, content) {
 
 async function scanBackgrounds() {
   const bgDir = path.join(projectRoot, 'public', 'blog', 'backgrounds')
+  const thumbsDir = path.join(bgDir, 'thumbs')
   const files = await fs.readdir(bgDir).catch(() => [])
-  const images = files
-    .filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
-    .map(f => `/blog/backgrounds/${f}`)
+  
+  // Prefer WebP over other formats
+  const allImages = files.filter(f => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+  const webpSet = new Set()
+  const images = []
+  
+  for (const f of allImages) {
+    const baseName = f.replace(/\.[^.]+$/, '')
+    if (f.toLowerCase().endsWith('.webp')) {
+      webpSet.add(baseName)
+      images.push(`/blog/backgrounds/${f}`)
+    }
+  }
+  
+  // Add non-WebP only if no WebP version exists
+  for (const f of allImages) {
+    if (f.toLowerCase().endsWith('.webp')) continue
+    const baseName = f.replace(/\.[^.]+$/, '')
+    if (!webpSet.has(baseName)) {
+      images.push(`/blog/backgrounds/${f}`)
+    }
+  }
+  
+  // Sort by number in filename
+  images.sort((a, b) => {
+    const numA = parseInt(a.match(/(\d+)/)?.[1] || '0')
+    const numB = parseInt(b.match(/(\d+)/)?.[1] || '0')
+    return numA - numB
+  })
+  
   const outPath = path.join(projectRoot, 'public', 'blog', 'backgrounds.json')
   await fs.writeFile(outPath, JSON.stringify(images, null, 2))
-  console.log(`[blog] found ${images.length} background images`)
+  
+  // Generate thumbs config
+  const thumbFiles = (await fs.readdir(thumbsDir).catch(() => []))
+    .filter(f => f.endsWith('.webp'))
+    .sort((a, b) => {
+      const numA = parseInt(a.match(/(\d+)/)?.[1] || '0')
+      const numB = parseInt(b.match(/(\d+)/)?.[1] || '0')
+      return numA - numB
+    })
+  
+  const thumbsConfig = {
+    dir: '/blog/backgrounds/thumbs/',
+    files: thumbFiles
+  }
+  const thumbsPath = path.join(projectRoot, 'public', 'blog', 'thumbs.json')
+  await fs.writeFile(thumbsPath, JSON.stringify(thumbsConfig, null, 2))
+  
+  console.log(`[blog] found ${images.length} background images, ${thumbFiles.length} thumbnails`)
   return images
 }
 

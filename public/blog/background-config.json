@@ -3,5 +3,5 @@
   "defaultImage": 41,
   "defaultBlur": 0,
   "defaultOpacity": 1,
-  "defaultImageOnly": false
+  "defaultImageOnly": true
 }
