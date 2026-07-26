@@ -158,16 +158,28 @@
       <a class="back" href="/blog/" aria-label="返回"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg></a>
         <div class="brand">
           <h1>Games()</h1>
-          <div class="subtitle">摸鱼一下，配色跟着主题走</div>
+          <div class="subtitle">60 款小游戏，配色跟着主题走</div>
         </div>
     
       </header>
 
-      <section class="content">
+      <section class="content games-content">
+        
+      <div class="game-filters" role="tablist" aria-label="游戏分类">
+        <button class="game-filter active" type="button" data-filter="all">全部 <span>60</span></button>
+        <button class="game-filter" type="button" data-filter="arcade">街机动作 <span>14</span></button><button class="game-filter" type="button" data-filter="puzzle">益智解谜 <span>13</span></button><button class="game-filter" type="button" data-filter="board">棋牌对弈 <span>9</span></button><button class="game-filter" type="button" data-filter="match">消除匹配 <span>6</span></button><button class="game-filter" type="button" data-filter="skill">反应训练 <span>12</span></button><button class="game-filter" type="button" data-filter="casual">休闲创意 <span>6</span></button>
+      </div>
+        <div class="game-sections">
+          
+      <section class="game-section" data-cat="arcade">
+        <header class="game-section-head">
+          <h2 class="game-section-title">街机动作<span class="game-section-count">14</span></h2>
+          <span class="game-section-desc">手速与反应，越玩越快</span>
+        </header>
         <div class="game-list">
           
-      <a class="game-card" href="/blog/games/snake/" style="--i:0; --accent-shift:0">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="36" height="36" rx="6" stroke="currentColor" stroke-width="2.5"/><path d="M14 30h8v-8h8v-8h4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="32" r="3" fill="currentColor"/></svg></div>
+      <a class="game-card" href="/blog/games/snake/" data-cat="arcade" style="--i:0; --accent-shift:0">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="36" height="36" rx="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 30h8v-8h8v-8h4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="32" r="3" fill="currentColor"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">贪吃蛇<span class="game-en">Snake</span></h2>
           <p class="game-desc">起始页那条蛇的完整版。吃食物变长，撞墙或咬到自己就结束。</p>
@@ -175,32 +187,9 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/2048/" style="--i:1; --accent-shift:40">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/><rect x="6" y="26" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/><rect x="26" y="26" width="16" height="16" rx="4" fill="currentColor" opacity="0.9"/></svg></div>
-        <div class="game-body">
-          <h2 class="game-name">2048<span class="game-en">2048</span></h2>
-          <p class="game-desc">滑动合并相同数字，看看能不能凑出 2048。</p>
-          <div class="game-controls">方向键 / WASD，手机可滑动</div>
-        </div>
-        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      </a>
-    
-
-      <a class="game-card" href="/blog/games/memory/" style="--i:2; --accent-shift:80">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="5" y="10" width="16" height="24" rx="4" transform="rotate(-8 5 10)" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="12" width="16" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M31 24h6M34 21v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
-        <div class="game-body">
-          <h2 class="game-name">记忆翻牌<span class="game-en">Memory</span></h2>
-          <p class="game-desc">翻开两张相同的牌就配对成功，用最少步数清空棋盘。</p>
-          <div class="game-controls">点击或轻触卡片</div>
-        </div>
-        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      </a>
-    
-
-      <a class="game-card" href="/blog/games/tetris/" style="--i:3; --accent-shift:160">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5"/><rect x="18" y="16" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5"/><rect x="18" y="27" width="11" height="11" rx="2.5" fill="currentColor" opacity="0.85"/><rect x="29" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" opacity="0.6"/></svg></div>
+      <a class="game-card" href="/blog/games/tetris/" data-cat="arcade" style="--i:1; --accent-shift:160">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="16" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="27" width="11" height="11" rx="2.5" fill="currentColor" opacity="0.85"/><rect x="29" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">俄罗斯方块<span class="game-en">Tetris</span></h2>
           <p class="game-desc">经典七连块，带下一块预览、影子提示和硬降。消行升级，越来越快。</p>
@@ -208,32 +197,9 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/minesweeper/" style="--i:4; --accent-shift:120">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="27" r="12" stroke="currentColor" stroke-width="2.5"/><path d="M24 11v6M24 37v-4M11 27h4M37 27h-4M14.7 17.7l3.2 3.2M33.3 17.7l-3.2 3.2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="20.5" cy="23.5" r="2.4" fill="currentColor"/></svg></div>
-        <div class="game-body">
-          <h2 class="game-name">扫雷<span class="game-en">Minesweeper</span></h2>
-          <p class="game-desc">首点必不踩雷，支持初级与进阶两档，数字连点自动展开。</p>
-          <div class="game-controls">左键翻开 · 右键插旗；手机轻触翻开 · 长按插旗</div>
-        </div>
-        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      </a>
-    
-
-      <a class="game-card" href="/blog/games/gomoku/" style="--i:5; --accent-shift:200">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 16h32M8 24h32M8 32h32M16 8v32M24 8v32M32 8v32" stroke="currentColor" stroke-width="1.8" opacity="0.55"/><circle cx="16" cy="24" r="5" fill="currentColor"/><circle cx="32" cy="16" r="5" stroke="currentColor" stroke-width="2.5"/></svg></div>
-        <div class="game-body">
-          <h2 class="game-name">五子棋<span class="game-en">Gomoku</span></h2>
-          <p class="game-desc">和会算棋型的 AI 下一盘，先连成五子者胜。</p>
-          <div class="game-controls">点击交叉点落子</div>
-        </div>
-        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      </a>
-    
-
-      <a class="game-card" href="/blog/games/breakout/" style="--i:6; --accent-shift:240">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="19" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.85"/><rect x="31" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="13" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2.2"/><rect x="25" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2.2"/><circle cx="24" cy="30" r="3.4" fill="currentColor"/><rect x="15" y="38" width="18" height="4.5" rx="2.2" stroke="currentColor" stroke-width="2.4"/></svg></div>
+      <a class="game-card" href="/blog/games/breakout/" data-cat="arcade" style="--i:2; --accent-shift:240">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="19" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.85"/><rect x="31" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="13" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="25" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="30" r="3.4" fill="currentColor"/><rect x="15" y="38" width="18" height="4.5" rx="2.2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">打砖块<span class="game-en">Breakout</span></h2>
           <p class="game-desc">接住小球打光砖块，还有加宽挡板和减速道具，一关比一关快。</p>
@@ -241,10 +207,9 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/dino/" style="--i:7; --accent-shift:280">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 38h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="18" width="13" height="13" rx="4" stroke="currentColor" stroke-width="2.5"/><circle cx="19.5" cy="22.5" r="1.8" fill="currentColor"/><path d="M32 38V27M36.5 38v-7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+      <a class="game-card" href="/blog/games/dino/" data-cat="arcade" style="--i:3; --accent-shift:280">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 38h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="18" width="13" height="13" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19.5" cy="22.5" r="1.8" fill="currentColor"/><path d="M32 38V27M36.5 38v-7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">像素跑酷<span class="game-en">Dino Run</span></h2>
           <p class="game-desc">一键起跳的无尽跑酷，越跑越快，暗色模式自动变夜晚。</p>
@@ -252,21 +217,138 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/reversi/" style="--i:8; --accent-shift:20">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="17" cy="17" r="8" fill="currentColor"/><circle cx="31" cy="31" r="8" stroke="currentColor" stroke-width="2.5"/><path d="M31 9a8 8 0 0 1 8 8M17 39a8 8 0 0 1-8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+      <a class="game-card" href="/blog/games/flappy/" data-cat="arcade" style="--i:4; --accent-shift:45">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="9" height="14" rx="2" fill="currentColor" opacity="0.55"/><rect x="6" y="30" width="9" height="12" rx="2" fill="currentColor" opacity="0.55"/><rect x="33" y="6" width="9" height="18" rx="2" fill="currentColor" opacity="0.35"/><rect x="33" y="34" width="9" height="8" rx="2" fill="currentColor" opacity="0.35"/><circle cx="24" cy="24" r="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 24l-4 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="game-body">
-          <h2 class="game-name">黑白棋<span class="game-en">Reversi</span></h2>
-          <p class="game-desc">夹住就翻面，抢住四个角。AI 懂位置价值，别小看它。</p>
-          <div class="game-controls">点击提示点落子</div>
+          <h2 class="game-name">像素小鸟<span class="game-en">Flappy</span></h2>
+          <p class="game-desc">一键控制高度，从管道缝隙里穿过去。手感很贱，但会上瘾。</p>
+          <div class="game-controls">空格 / 点击拍翅膀</div>
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/puzzle15/" style="--i:9; --accent-shift:320">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="7" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.8"/><rect x="7" y="26" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.55"/><rect x="26" y="26" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 4" opacity="0.6"/></svg></div>
+      <a class="game-card" href="/blog/games/doodle/" data-cat="arcade" style="--i:5; --accent-shift:100">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="34" width="14" height="4" rx="2" fill="currentColor" opacity="0.6"/><rect x="26" y="24" width="14" height="4" rx="2" fill="currentColor" opacity="0.8"/><rect x="10" y="14" width="14" height="4" rx="2" fill="currentColor" opacity="0.5"/><circle cx="33" cy="17" r="5.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M30 12l-2-3M36 12l2-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">跳跃者<span class="game-en">Doodle</span></h2>
+          <p class="game-desc">不停往上跳，踩稳每一块台阶，还有弹簧能一飞冲天。</p>
+          <div class="game-controls">←→ / A D 或手机左右倾斜区域</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/invaders/" data-cat="arcade" style="--i:6; --accent-shift:200">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 12h4v-4h12v4h4v6h4v8H10v-8h4v-6Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="1.8" fill="currentColor"/><circle cx="28" cy="20" r="1.8" fill="currentColor"/><path d="M24 32v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 42h16l-8-6-8 6Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">太空侵略者<span class="game-en">Invaders</span></h2>
+          <p class="game-desc">敌阵一步步压下来，躲在掩体后面把它们全部打光。</p>
+          <div class="game-controls">←→ 移动 · 空格开火</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/pong/" data-cat="arcade" style="--i:7; --accent-shift:210">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="8" width="34" height="32" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 10v28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 4"/><rect x="11" y="16" width="3" height="10" rx="1.5" fill="currentColor"/><rect x="34" y="22" width="3" height="10" rx="1.5" fill="currentColor"/><circle cx="24" cy="24" r="2.6" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">弹球对战<span class="game-en">Pong</span></h2>
+          <p class="game-desc">最古老的电子游戏。和 AI 你来我往，先得 7 分者胜。</p>
+          <div class="game-controls">↑↓ / 鼠标拖动挡板</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/jump/" data-cat="arcade" style="--i:8; --accent-shift:320">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="30" width="14" height="12" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="24" width="14" height="18" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><path d="M18 22c3-6 8-6 11-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/><rect x="12" y="20" width="7" height="10" rx="3" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">跳一跳<span class="game-en">Jump</span></h2>
+          <p class="game-desc">按住蓄力，松手起跳。落在中心有额外加分，连中还有连击。</p>
+          <div class="game-controls">按住蓄力，松开起跳</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/tower100/" data-cat="arcade" style="--i:9; --accent-shift:20">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 10h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="20" width="12" height="3.5" rx="1.7" fill="currentColor" opacity="0.55"/><rect x="26" y="28" width="12" height="3.5" rx="1.7" fill="currentColor" opacity="0.75"/><rect x="12" y="36" width="12" height="3.5" rx="1.7" fill="currentColor" opacity="0.55"/><circle cx="16" cy="15" r="4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">下一百层<span class="game-en">100 Floors</span></h2>
+          <p class="game-desc">平台不断上移，一层层往下踩，别被顶到天花板也别踩到尖刺。</p>
+          <div class="game-controls">←→ / A D 移动</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/shooter/" data-cat="arcade" style="--i:10; --accent-shift:260">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 6l6 14h-4v8h-4v-8h-4l6-14Z" fill="currentColor"/><path d="M12 26l6-3v8l-6-2v-3ZM36 26l-6-3v8l6-2v-3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="38" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="38" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="40" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">飞机大战<span class="game-en">Shooter</span></h2>
+          <p class="game-desc">弹幕、道具、Boss 血条一应俱全，看你能撑到第几波。</p>
+          <div class="game-controls">方向键 / 拖动移动，自动开火</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/tank/" data-cat="arcade" style="--i:11; --accent-shift:130">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="26" width="32" height="12" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="16" width="12" height="10" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 16V8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle cx="15" cy="32" r="2" fill="currentColor"/><circle cx="24" cy="32" r="2" fill="currentColor"/><circle cx="33" cy="32" r="2" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">坦克大战<span class="game-en">Tank</span></h2>
+          <p class="game-desc">砖墙能打穿，钢墙打不动。守住基地，消灭所有敌方坦克。</p>
+          <div class="game-controls">方向键移动 · 空格开炮</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/racing/" data-cat="arcade" style="--i:12; --accent-shift:350">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 6v36M36 6v36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><path d="M24 10v6M24 22v6M24 34v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0" opacity="0.7"/><rect x="17" y="26" width="14" height="14" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="19" y="8" width="10" height="10" rx="3" fill="currentColor" opacity="0.5"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">极速赛车<span class="game-en">Racing</span></h2>
+          <p class="game-desc">俯视视角躲车流，速度一路往上飙，蹭到就结束。</p>
+          <div class="game-controls">←→ / A D 变道</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/pinball/" data-cat="arcade" style="--i:13; --accent-shift:300">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="17" r="3.5" fill="currentColor" opacity="0.75"/><circle cx="30" cy="23" r="3.5" fill="currentColor" opacity="0.5"/><path d="M14 34l6 4M34 34l-6 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="14" r="2.4" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">弹珠台<span class="game-en">Pinball</span></h2>
+          <p class="game-desc">双挡板守住底线，撞击弹力柱疯狂刷分，还能召唤多球。</p>
+          <div class="game-controls">A D / ←→ 控制左右挡板</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
+
+      <section class="game-section" data-cat="puzzle">
+        <header class="game-section-head">
+          <h2 class="game-section-title">益智解谜<span class="game-section-count">13</span></h2>
+          <span class="game-section-desc">慢慢想，想通了很爽</span>
+        </header>
+        <div class="game-list">
+          
+      <a class="game-card" href="/blog/games/2048/" data-cat="puzzle" style="--i:0; --accent-shift:40">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/><rect x="6" y="26" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/><rect x="26" y="26" width="16" height="16" rx="4" fill="currentColor" opacity="0.9"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">2048<span class="game-en">2048</span></h2>
+          <p class="game-desc">滑动合并相同数字，看看能不能凑出 2048。</p>
+          <div class="game-controls">方向键 / WASD，手机可滑动</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/minesweeper/" data-cat="puzzle" style="--i:1; --accent-shift:120">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="27" r="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 11v6M24 37v-4M11 27h4M37 27h-4M14.7 17.7l3.2 3.2M33.3 17.7l-3.2 3.2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20.5" cy="23.5" r="2.4" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">扫雷<span class="game-en">Minesweeper</span></h2>
+          <p class="game-desc">首点必不踩雷，支持初级与进阶两档，数字连点自动展开。</p>
+          <div class="game-controls">左键翻开 · 右键插旗；手机轻触翻开 · 长按插旗</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/puzzle15/" data-cat="puzzle" style="--i:2; --accent-shift:320">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="7" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.8"/><rect x="7" y="26" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.55"/><rect x="26" y="26" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4" opacity="0.6"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">数字华容道<span class="game-en">15 Puzzle</span></h2>
           <p class="game-desc">把 1 到 15 滑回原位，打乱保证一定有解。</p>
@@ -274,10 +356,296 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/simon/" style="--i:10; --accent-shift:60">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 6a18 18 0 0 1 18 18h-8a10 10 0 0 0-10-10V6Z" fill="currentColor" opacity="0.85"/><path d="M24 6a18 18 0 0 0-18 18h8a10 10 0 0 1 10-10V6Z" stroke="currentColor" stroke-width="2.4"/><path d="M6 24a18 18 0 0 0 18 18v-8a10 10 0 0 1-10-10H6Z" stroke="currentColor" stroke-width="2.4"/><path d="M42 24a18 18 0 0 1-18 18v-8a10 10 0 0 0 10-10h8Z" fill="currentColor" opacity="0.5"/></svg></div>
+      <a class="game-card" href="/blog/games/lightsout/" data-cat="puzzle" style="--i:3; --accent-shift:55">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="14" width="8" height="8" rx="2" fill="currentColor"/><rect x="26" y="14" width="8" height="8" rx="2" fill="currentColor" opacity="0.3"/><rect x="14" y="26" width="8" height="8" rx="2" fill="currentColor" opacity="0.3"/><rect x="26" y="26" width="8" height="8" rx="2" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">关灯游戏<span class="game-en">Lights Out</span></h2>
+          <p class="game-desc">点一下会连带上下左右一起翻转，把整片灯全部熄灭。</p>
+          <div class="game-controls">点击方格，难度可调</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/hanoi/" data-cat="puzzle" style="--i:4; --accent-shift:175">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 40h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 40V14M24 40V14M35 40V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><rect x="5" y="34" width="16" height="4.5" rx="2.2" fill="currentColor"/><rect x="7" y="28" width="12" height="4.5" rx="2.2" fill="currentColor" opacity="0.75"/><rect x="9" y="22" width="8" height="4.5" rx="2.2" fill="currentColor" opacity="0.5"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">汉诺塔<span class="game-en">Hanoi</span></h2>
+          <p class="game-desc">大盘不能压小盘，把整摞盘子搬到最右边，3 到 7 层可调。</p>
+          <div class="game-controls">点击柱子拿起 / 放下</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/game24/" data-cat="puzzle" style="--i:5; --accent-shift:85">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="10" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="10" width="14" height="20" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><path d="M13 36v8M9 40h8M31 40h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 36l6 6M34 36l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">24 点<span class="game-en">24 Game</span></h2>
+          <p class="game-desc">四个数字用加减乘除凑出 24，出题带穷举验证，保证有解。</p>
+          <div class="game-controls">点数字和运算符组合，可撤销</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/bulls/" data-cat="puzzle" style="--i:6; --accent-shift:15">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="9" width="34" height="12" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 15h4M23 15h4M32 15h2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="27" width="8" height="7" rx="2" fill="currentColor" opacity="0.7"/><rect x="20" y="27" width="8" height="7" rx="2" fill="currentColor" opacity="0.45"/><rect x="31" y="27" width="8" height="7" rx="2" fill="currentColor" opacity="0.7"/><path d="M13 39h22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">猜数字<span class="game-en">1A2B</span></h2>
+          <p class="game-desc">猜四位不重复数字，A 是位置数字都对，B 是数字对位置错。</p>
+          <div class="game-controls">数字键盘输入，回车确认</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/sudoku/" data-cat="puzzle" style="--i:7; --accent-shift:190">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.3 7v34M29.7 7v34M7 18.3h34M7 29.7h34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/><path d="M12 14h1M35 14h1M23 25h1M12 36h1M35 36h1" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">数独<span class="game-en">Sudoku</span></h2>
+          <p class="game-desc">挖洞法生成唯一解，支持候选数标记和冲突高亮，三档难度。</p>
+          <div class="game-controls">选格子后输入数字，可标记候选</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/sokoban/" data-cat="puzzle" style="--i:8; --accent-shift:30">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><rect x="19" y="19" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 19l11 11M30 19L19 30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><circle cx="12" cy="24" r="3.5" fill="currentColor"/><rect x="34" y="20" width="5" height="8" rx="1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">推箱子<span class="game-en">Sokoban</span></h2>
+          <p class="game-desc">只能推不能拉，把所有箱子推到目标点。内置多关，可随时撤销。</p>
+          <div class="game-controls">方向键推动，支持撤销</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/klotski/" data-cat="puzzle" style="--i:9; --accent-shift:5">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="7" width="32" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="11" width="12" height="12" rx="2.5" fill="currentColor" opacity="0.85"/><rect x="11" y="11" width="5" height="12" rx="2" fill="currentColor" opacity="0.45"/><rect x="32" y="11" width="5" height="12" rx="2" fill="currentColor" opacity="0.45"/><rect x="18" y="26" width="12" height="5" rx="2" fill="currentColor" opacity="0.6"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">华容道<span class="game-en">Klotski</span></h2>
+          <p class="game-desc">横刀立马经典布局，把曹操从下方缺口挪出去。</p>
+          <div class="game-controls">点击或拖动滑块</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/nonogram/" data-cat="puzzle" style="--i:10; --accent-shift:220">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 8v33M8 16h33" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><rect x="16" y="16" width="25" height="25" rx="2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="19" y="19" width="6" height="6" fill="currentColor"/><rect x="32" y="19" width="6" height="6" fill="currentColor"/><rect x="19" y="32" width="6" height="6" fill="currentColor"/><rect x="32" y="32" width="6" height="6" fill="currentColor"/><path d="M9 21h4M9 30h4M21 9v4M30 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">数织<span class="game-en">Nonogram</span></h2>
+          <p class="game-desc">按行列数字提示涂格子，最后会拼出一幅像素画。</p>
+          <div class="game-controls">左键涂黑 · 右键标叉</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/numberlink/" data-cat="puzzle" style="--i:11; --accent-shift:145">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="14" cy="14" r="3.5" fill="currentColor"/><circle cx="34" cy="34" r="3.5" fill="currentColor"/><path d="M14 18v10h20v-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="14" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="34" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">数字连线<span class="game-en">Number Link</span></h2>
+          <p class="game-desc">把同色端点用不交叉的线连起来，还要铺满整张棋盘。</p>
+          <div class="game-controls">按住从一端拖到另一端</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/maze/" data-cat="puzzle" style="--i:12; --accent-shift:165">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7v20h9v7h-9M33 41V21h-9v-7h9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="2.4" fill="currentColor"/><circle cx="37" cy="37" r="2.4" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">迷宫探险<span class="game-en">Maze</span></h2>
+          <p class="game-desc">随机生成的迷宫加视野迷雾，走投无路时可以看一眼最短路。</p>
+          <div class="game-controls">方向键 / 滑动移动</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
+
+      <section class="game-section" data-cat="board">
+        <header class="game-section-head">
+          <h2 class="game-section-title">棋牌对弈<span class="game-section-count">9</span></h2>
+          <span class="game-section-desc">和 AI 或规则较劲</span>
+        </header>
+        <div class="game-list">
+          
+      <a class="game-card" href="/blog/games/gomoku/" data-cat="board" style="--i:0; --accent-shift:200">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 16h32M8 24h32M8 32h32M16 8v32M24 8v32M32 8v32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/><circle cx="16" cy="24" r="5" fill="currentColor"/><circle cx="32" cy="16" r="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">五子棋<span class="game-en">Gomoku</span></h2>
+          <p class="game-desc">和会算棋型的 AI 下一盘，先连成五子者胜。</p>
+          <div class="game-controls">点击交叉点落子</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/reversi/" data-cat="board" style="--i:1; --accent-shift:20">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="17" cy="17" r="8" fill="currentColor"/><circle cx="31" cy="31" r="8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M31 9a8 8 0 0 1 8 8M17 39a8 8 0 0 1-8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">黑白棋<span class="game-en">Reversi</span></h2>
+          <p class="game-desc">夹住就翻面，抢住四个角。AI 懂位置价值，别小看它。</p>
+          <div class="game-controls">点击提示点落子</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/tictactoe/" data-cat="board" style="--i:2; --accent-shift:250">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18 8v32M30 8v32M8 18h32M8 30h32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><path d="M11 11l4 4M15 11l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 33l4 4M37 33l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">井字棋<span class="game-en">Tic Tac Toe</span></h2>
+          <p class="game-desc">看着简单，但这个 AI 用的是完美策略——你最多只能逼平。</p>
+          <div class="game-controls">点击空格，可切换先后手</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/checkers/" data-cat="board" style="--i:3; --accent-shift:35">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><circle cx="17" cy="17" r="6" fill="currentColor" opacity="0.85"/><circle cx="31" cy="31" r="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 29l3-3 3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">西洋跳棋<span class="game-en">Checkers</span></h2>
+          <p class="game-desc">能吃必须吃，连跳一气呵成，走到底线升王倒着走。</p>
+          <div class="game-controls">点击棋子再点目标格</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/xiangqi/" data-cat="board" style="--i:4; --accent-shift:355">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 24h34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><circle cx="17" cy="16" r="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="31" cy="32" r="6" fill="currentColor" opacity="0.8"/><path d="M14 16h6M17 13v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">中国象棋<span class="game-en">Xiangqi</span></h2>
+          <p class="game-desc">完整走法规则、将军与将死判定，AI 会算子力和位置。</p>
+          <div class="game-controls">点击棋子再点目标点</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/blackjack/" data-cat="board" style="--i:5; --accent-shift:340">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="12" width="18" height="26" rx="3" transform="rotate(-10 8 12)" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="24" y="10" width="18" height="26" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 17l4 6-4 6-4-6 4-6Z" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">21 点<span class="game-en">Blackjack</span></h2>
+          <p class="game-desc">要牌、停牌、加倍，庄家 17 点必停。别爆了就行。</p>
+          <div class="game-controls">点击按钮决策</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/yahtzee/" data-cat="board" style="--i:6; --accent-shift:275">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="18" width="18" height="18" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="10" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><circle cx="12" cy="24" r="1.9" fill="currentColor"/><circle cx="18" cy="30" r="1.9" fill="currentColor"/><circle cx="12" cy="30" r="1.9" fill="currentColor"/><circle cx="18" cy="24" r="1.9" fill="currentColor"/><circle cx="34" cy="18" r="1.9" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">快艇骰子<span class="game-en">Yahtzee</span></h2>
+          <p class="game-desc">五颗骰子最多掷三次，锁住想要的，填满十三个计分格。</p>
+          <div class="game-controls">点骰子锁定，点计分格记录</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/solitaire/" data-cat="board" style="--i:7; --accent-shift:150">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="8" width="14" height="19" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="8" width="14" height="19" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/><rect x="12" y="22" width="14" height="19" rx="3" fill="currentColor" opacity="0.75"/><path d="M17 30l3 4-3 4-3-4 3-4Z" fill="var(--panel, #fff)"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">纸牌接龙<span class="game-en">Solitaire</span></h2>
+          <p class="game-desc">Windows 同款 Klondike。点击移动而不是拖拽，手机也顺手。</p>
+          <div class="game-controls">点击选牌，再点目标堆</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/freecell/" data-cat="board" style="--i:8; --accent-shift:185">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="7" width="8" height="11" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/><rect x="17" y="7" width="8" height="11" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/><rect x="34" y="7" width="8" height="11" rx="2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="9" y="24" width="10" height="16" rx="2.5" fill="currentColor" opacity="0.7"/><rect x="23" y="24" width="10" height="16" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">空当接龙<span class="game-en">FreeCell</span></h2>
+          <p class="game-desc">四个空位随便挪，几乎每一局都能解开——就看你会不会。</p>
+          <div class="game-controls">点击选牌，再点目标堆</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
+
+      <section class="game-section" data-cat="match">
+        <header class="game-section-head">
+          <h2 class="game-section-title">消除匹配<span class="game-section-count">6</span></h2>
+          <span class="game-section-desc">连成一片的快感</span>
+        </header>
+        <div class="game-list">
+          
+      <a class="game-card" href="/blog/games/match3/" data-cat="match" style="--i:0; --accent-shift:330">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="14" cy="14" r="5" fill="currentColor" opacity="0.85"/><circle cx="24" cy="14" r="5" fill="currentColor" opacity="0.85"/><circle cx="34" cy="14" r="5" fill="currentColor" opacity="0.85"/><circle cx="14" cy="26" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="26" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="26" r="5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><circle cx="19" cy="37" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/><circle cx="30" cy="37" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">消消乐<span class="game-en">Match 3</span></h2>
+          <p class="game-desc">交换相邻方块连成三个，掉落会引发连锁，步数有限。</p>
+          <div class="game-controls">点击相邻两格交换，或滑动</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/onet/" data-cat="match" style="--i:1; --accent-shift:105">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="9" width="13" height="13" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="26" width="13" height="13" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 22v10h21V26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/><circle cx="13.5" cy="15.5" r="2.4" fill="currentColor"/><circle cx="34.5" cy="32.5" r="2.4" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">连连看<span class="game-en">Onet</span></h2>
+          <p class="game-desc">两张相同的牌，连线不超过两个折点就能消掉。卡住了能洗牌。</p>
+          <div class="game-controls">点击两张相同的牌</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/bubble/" data-cat="match" style="--i:2; --accent-shift:195">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="14" cy="12" r="5.5" fill="currentColor" opacity="0.8"/><circle cx="25" cy="12" r="5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="12" r="5.5" fill="currentColor" opacity="0.5"/><circle cx="19.5" cy="22" r="5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/><circle cx="30.5" cy="22" r="5.5" fill="currentColor" opacity="0.6"/><path d="M24 40v-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="42" r="3" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">泡泡龙<span class="game-en">Bubble</span></h2>
+          <p class="game-desc">瞄准角度打上去，三个同色就爆，断开连接的会一起掉下来。</p>
+          <div class="game-controls">移动瞄准，点击发射</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/zuma/" data-cat="match" style="--i:3; --accent-shift:25">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M40 24a16 16 0 1 1-16-16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" stroke-dasharray="4 4"/><circle cx="30" cy="10" r="3.6" fill="currentColor" opacity="0.85"/><circle cx="38" cy="17" r="3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="40" cy="27" r="3.6" fill="currentColor" opacity="0.6"/><circle cx="24" cy="26" r="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 26l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">祖玛<span class="game-en">Zuma</span></h2>
+          <p class="game-desc">珠链沿轨道往前爬，从中间射进去凑三个同色炸掉它。</p>
+          <div class="game-controls">移动瞄准，点击发射</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/mahjong/" data-cat="match" style="--i:4; --accent-shift:65">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="16" width="12" height="16" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="16" width="12" height="16" rx="2.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="18" y="10" width="12" height="16" rx="2.5" fill="currentColor" opacity="0.8"/><path d="M12 22h4M32 22h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">麻将连连看<span class="game-en">Mahjong</span></h2>
+          <p class="game-desc">层叠的牌堆，只有两侧不被压住的牌才能点，配对消除。</p>
+          <div class="game-controls">点击两张可选的相同牌</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/suika/" data-cat="match" style="--i:5; --accent-shift:350">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 40h28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><circle cx="18" cy="32" r="8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="33" cy="34" r="6" fill="currentColor" opacity="0.7"/><circle cx="27" cy="20" r="5" fill="currentColor" opacity="0.45"/><circle cx="15" cy="16" r="3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">合成大西瓜<span class="game-en">Suika</span></h2>
+          <p class="game-desc">同样大小的水果碰在一起会合成更大的，别让它们堆过头顶。</p>
+          <div class="game-controls">左右移动，点击投放</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
+
+      <section class="game-section" data-cat="skill">
+        <header class="game-section-head">
+          <h2 class="game-section-title">反应训练<span class="game-section-count">12</span></h2>
+          <span class="game-section-desc">测测你的极限</span>
+        </header>
+        <div class="game-list">
+          
+      <a class="game-card" href="/blog/games/memory/" data-cat="skill" style="--i:0; --accent-shift:80">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="5" y="10" width="16" height="24" rx="4" transform="rotate(-8 5 10)" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="12" width="16" height="24" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M31 24h6M34 21v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">记忆翻牌<span class="game-en">Memory</span></h2>
+          <p class="game-desc">翻开两张相同的牌就配对成功，用最少步数清空棋盘。</p>
+          <div class="game-controls">点击或轻触卡片</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/simon/" data-cat="skill" style="--i:1; --accent-shift:60">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 6a18 18 0 0 1 18 18h-8a10 10 0 0 0-10-10V6Z" fill="currentColor" opacity="0.85"/><path d="M24 6a18 18 0 0 0-18 18h8a10 10 0 0 1 10-10V6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 24a18 18 0 0 0 18 18v-8a10 10 0 0 1-10-10H6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 24a18 18 0 0 1-18 18v-8a10 10 0 0 0 10-10h8Z" fill="currentColor" opacity="0.5"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">西蒙记忆<span class="game-en">Simon</span></h2>
           <p class="game-desc">四个色块按顺序闪烁，凭记忆复现，每轮多记一个。</p>
@@ -285,10 +653,9 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/whack/" style="--i:11; --accent-shift:100">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="24" cy="36" rx="14" ry="4.5" stroke="currentColor" stroke-width="2.5"/><path d="M14 34v-8a10 10 0 0 1 20 0v8" stroke="currentColor" stroke-width="2.5"/><circle cx="20" cy="26" r="1.8" fill="currentColor"/><circle cx="28" cy="26" r="1.8" fill="currentColor"/><path d="M22.5 30.5c1 .8 2 .8 3 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <a class="game-card" href="/blog/games/whack/" data-cat="skill" style="--i:2; --accent-shift:100">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="24" cy="36" rx="14" ry="4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 34v-8a10 10 0 0 1 20 0v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="26" r="1.8" fill="currentColor"/><circle cx="28" cy="26" r="1.8" fill="currentColor"/><path d="M22.5 30.5c1 .8 2 .8 3 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">打地鼠<span class="game-en">Whack</span></h2>
           <p class="game-desc">60 秒限时，地鼠越冒越快，金色地鼠三倍分，连击有加成。</p>
@@ -296,10 +663,9 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
 
-      <a class="game-card" href="/blog/games/reaction/" style="--i:12; --accent-shift:140">
-        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 5 12 27h9l-3 16 16-24h-9l1-14Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="currentColor" fill-opacity="0.25"/></svg></div>
+      <a class="game-card" href="/blog/games/reaction/" data-cat="skill" style="--i:3; --accent-shift:140">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 5 12 27h9l-3 16 16-24h-9l1-14Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.25"/></svg></div>
         <div class="game-body">
           <h2 class="game-name">反应速度<span class="game-en">Reaction</span></h2>
           <p class="game-desc">变绿的瞬间出手，五轮取平均，看看你是不是电竞级反应。</p>
@@ -307,7 +673,157 @@
         </div>
         <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </a>
-    
+
+      <a class="game-card" href="/blog/games/schulte/" data-cat="skill" style="--i:4; --accent-shift:210">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.3 7v34M29.7 7v34M7 18.3h34M7 29.7h34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><rect x="8" y="8" width="9.5" height="9.5" rx="2" fill="currentColor" opacity="0.7"/><rect x="30.5" y="30.5" width="9.5" height="9.5" rx="2" fill="currentColor" opacity="0.35"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">舒尔特方格<span class="game-en">Schulte</span></h2>
+          <p class="game-desc">按 1 到 25 顺序点，专注力训练经典项目，点错要罚时。</p>
+          <div class="game-controls">按数字顺序点击</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/memorymatrix/" data-cat="skill" style="--i:5; --accent-shift:235">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><rect x="11" y="11" width="9" height="9" rx="2" fill="currentColor"/><rect x="28" y="11" width="9" height="9" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="28" width="9" height="9" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="28" width="9" height="9" rx="2" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">记忆矩阵<span class="game-en">Memory Matrix</span></h2>
+          <p class="game-desc">方格闪一下就消失，凭记忆点回来，格子会越来越多。</p>
+          <div class="game-controls">记住闪烁的格子再点击</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/colormatch/" data-cat="skill" style="--i:6; --accent-shift:290">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="15" height="15" rx="3" fill="currentColor" opacity="0.35"/><rect x="26" y="7" width="15" height="15" rx="3" fill="currentColor" opacity="0.35"/><rect x="7" y="26" width="15" height="15" rx="3" fill="currentColor" opacity="0.75"/><rect x="26" y="26" width="15" height="15" rx="3" fill="currentColor" opacity="0.35"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">色差挑战<span class="game-en">Color Match</span></h2>
+          <p class="game-desc">一堆同色方块里藏着一个不一样的，找出来。色差越来越小。</p>
+          <div class="game-controls">点击颜色不同的那个</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/aim/" data-cat="skill" style="--i:7; --accent-shift:15">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/><circle cx="24" cy="24" r="3" fill="currentColor"/><path d="M24 4v6M24 38v6M4 24h6M38 24h6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">瞄准训练<span class="game-en">Aim Trainer</span></h2>
+          <p class="game-desc">30 秒内尽可能多地击中靶子，统计命中率和平均反应。</p>
+          <div class="game-controls">点击靶心</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/typing/" data-cat="skill" style="--i:8; --accent-shift:170">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="5" y="14" width="38" height="22" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 21h2M19 21h2M26 21h2M33 21h2M12 27h2M19 27h2M26 27h2M33 27h2M16 33h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">打字速度<span class="game-en">Typing</span></h2>
+          <p class="game-desc">照着句子打，实时统计速度和正确率，打错会标红。</p>
+          <div class="game-controls">直接用键盘输入</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/mathsprint/" data-cat="skill" style="--i:9; --accent-shift:125">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 18h8M18 14v8M28 18h7M26 30h8M30 26v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 31l5-5M18 31l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">速算冲刺<span class="game-en">Math Sprint</span></h2>
+          <p class="game-desc">60 秒做尽量多的四则运算，答对加时，难度会跟着涨。</p>
+          <div class="game-controls">点数字键盘或直接敲键盘</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/pianotiles/" data-cat="skill" style="--i:10; --accent-shift:205">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="6" width="34" height="36" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><path d="M15.5 6v36M24 6v36M32.5 6v36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/><rect x="8" y="10" width="7" height="11" rx="1.5" fill="currentColor" opacity="0.85"/><rect x="25" y="20" width="7" height="11" rx="1.5" fill="currentColor" opacity="0.85"/><rect x="16.5" y="31" width="7" height="11" rx="1.5" fill="currentColor" opacity="0.85"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">别踩白块<span class="game-en">Piano Tiles</span></h2>
+          <p class="game-desc">四条轨道往下掉黑块，只能踩黑的，速度一路加快。</p>
+          <div class="game-controls">DFJK 或点击对应轨道</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/rhythm/" data-cat="skill" style="--i:11; --accent-shift:315">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 34a4 4 0 1 0 8 0V14l16-4v20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 34a4 4 0 1 0 8 0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 20l16-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">节奏大师<span class="game-en">Rhythm</span></h2>
+          <p class="game-desc">音符掉到判定线时按键，Perfect / Good / Miss 三档判定加连击。</p>
+          <div class="game-controls">DFJK 或点击轨道</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
+
+      <section class="game-section" data-cat="casual">
+        <header class="game-section-head">
+          <h2 class="game-section-title">休闲创意<span class="game-section-count">6</span></h2>
+          <span class="game-section-desc">随手玩两下</span>
+        </header>
+        <div class="game-list">
+          
+      <a class="game-card" href="/blog/games/rps/" data-cat="casual" style="--i:0; --accent-shift:40">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="14" cy="16" r="7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 10l5 7-5 7M40 10l-5 7 5 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="30" width="28" height="10" rx="4" fill="currentColor" opacity="0.6"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">石头剪刀布<span class="game-en">RPS</span></h2>
+          <p class="game-desc">这个 AI 会记录你的出拳习惯来预测下一步。别有固定套路。</p>
+          <div class="game-controls">点击出拳</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/slot/" data-cat="casual" style="--i:1; --accent-shift:350">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="10" width="30" height="28" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="17" width="6" height="12" rx="2" fill="currentColor" opacity="0.75"/><rect x="19" y="17" width="6" height="12" rx="2" fill="currentColor" opacity="0.5"/><rect x="27" y="17" width="6" height="12" rx="2" fill="currentColor" opacity="0.75"/><path d="M41 16v10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="41" cy="13" r="3" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">老虎机<span class="game-en">Slot</span></h2>
+          <p class="game-desc">三轴依次缓停，连成一线有倍率。纯看运气，不花钱。</p>
+          <div class="game-controls">点击拉杆开始</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/hexguess/" data-cat="casual" style="--i:2; --accent-shift:265">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="20" r="13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 7v26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><path d="M11 20h26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/><path d="M15 40h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 36l-2 4M29 36l2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">猜色值<span class="game-en">Hex Guess</span></h2>
+          <p class="game-desc">给你一个颜色，猜它的 HEX 值。和本站的调色盘是一家人。</p>
+          <div class="game-controls">从三个选项里选，或直接输入</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/wordle/" data-cat="casual" style="--i:3; --accent-shift:90">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="9" width="9" height="9" rx="2" fill="currentColor" opacity="0.85"/><rect x="17" y="9" width="9" height="9" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="28" y="9" width="9" height="9" rx="2" fill="currentColor" opacity="0.45"/><rect x="6" y="21" width="9" height="9" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="17" y="21" width="9" height="9" rx="2" fill="currentColor" opacity="0.85"/><rect x="28" y="21" width="9" height="9" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 37h28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">猜词<span class="game-en">Wordle</span></h2>
+          <p class="game-desc">六次机会猜五字母单词，绿色位置对，黄色字母对位置错。</p>
+          <div class="game-controls">键盘输入，回车提交</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/idiom/" data-cat="casual" style="--i:4; --accent-shift:10">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="12" width="15" height="15" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="27" y="21" width="15" height="15" rx="3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 19h6M21 19v10h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/><path d="M11 19h5M32 28h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">成语接龙<span class="game-en">Idiom Chain</span></h2>
+          <p class="game-desc">用上一个成语的末字接下一个，内置词库，限时挑战。</p>
+          <div class="game-controls">从候选里选，或输入四字成语</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+
+      <a class="game-card" href="/blog/games/lifegame/" data-cat="casual" style="--i:5; --accent-shift:155">
+        <div class="game-icon"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/><rect x="21" y="12" width="6" height="6" fill="currentColor"/><rect x="28" y="19" width="6" height="6" fill="currentColor"/><rect x="14" y="26" width="6" height="6" fill="currentColor"/><rect x="21" y="26" width="6" height="6" fill="currentColor"/><rect x="28" y="26" width="6" height="6" fill="currentColor"/></svg></div>
+        <div class="game-body">
+          <h2 class="game-name">生命游戏<span class="game-en">Life</span></h2>
+          <p class="game-desc">康威细胞自动机。画几个点让它自己演化，内置滑翔机等经典图案。</p>
+          <div class="game-controls">拖动画细胞，可暂停调速</div>
+        </div>
+        <div class="game-play">开始 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14m0 0-6-6m6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </a>
+        </div>
+      </section>
         </div>
       </section>
     

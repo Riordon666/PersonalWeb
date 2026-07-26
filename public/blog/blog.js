@@ -1200,11 +1200,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Category filter on the games index
+  const initGameFilters = () => {
+    const bar = qs('.game-filters')
+    if (!bar || bar.dataset.bound === 'true') return
+    bar.dataset.bound = 'true'
+    bar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.game-filter')
+      if (!btn) return
+      const key = btn.dataset.filter
+      bar.querySelectorAll('.game-filter').forEach((b) => b.classList.toggle('active', b === btn))
+      document.querySelectorAll('.game-section').forEach((sec) => {
+        sec.hidden = key !== 'all' && sec.dataset.cat !== key
+      })
+    })
+  }
+
   const runPostEnhancements = () => {
     const isPostPage = Boolean(qs('.post'))
     document.body.setAttribute('data-page', detectPageKind())
     initReadingProgress(isPostPage)
     syncGame()
+    initGameFilters()
     if (!isPostPage) return
 
     const titleEl = qs('.post-h1')

@@ -33,7 +33,7 @@ export function mount(stage, api) {
       el.className = 'memory-card'
       el.dataset.idx = String(idx)
       el.innerHTML = `
-        <span class="memory-face back"></span>
+        <span class="memory-face cover"></span>
         <span class="memory-face front">${card.sym}</span>
       `
       el.style.setProperty('--card-hue-shift', String((SYMBOLS.indexOf(card.sym) * 18) % 360))

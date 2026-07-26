@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import hljs from 'highlight.js'
+import { GAMES, GAMES_BY_CATEGORY } from './games-catalog.mjs'
 
 const projectRoot = path.resolve(process.cwd())
 const contentDir = path.join(projectRoot, 'content', 'posts')
@@ -900,130 +901,10 @@ function renderProjectsPage(projects, posts) {
 }
 
 // Mini games. Each one is mounted by /blog/games.js via its `slug`.
-const GAMES = [
-  {
-    slug: 'snake',
-    name: '贪吃蛇',
-    en: 'Snake',
-    desc: '起始页那条蛇的完整版。吃食物变长，撞墙或咬到自己就结束。',
-    controls: '方向键 / WASD 控制，手机可滑动屏幕',
-    accent: 0,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="36" height="36" rx="6" stroke="currentColor" stroke-width="2.5"/><path d="M14 30h8v-8h8v-8h4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="32" r="3" fill="currentColor"/></svg>',
-  },
-  {
-    slug: '2048',
-    name: '2048',
-    en: '2048',
-    desc: '滑动合并相同数字，看看能不能凑出 2048。',
-    controls: '方向键 / WASD，手机可滑动',
-    accent: 40,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="6" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/><rect x="6" y="26" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2.5" opacity="0.55"/><rect x="26" y="26" width="16" height="16" rx="4" fill="currentColor" opacity="0.9"/></svg>',
-  },
-  {
-    slug: 'memory',
-    name: '记忆翻牌',
-    en: 'Memory',
-    desc: '翻开两张相同的牌就配对成功，用最少步数清空棋盘。',
-    controls: '点击或轻触卡片',
-    accent: 80,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="5" y="10" width="16" height="24" rx="4" transform="rotate(-8 5 10)" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="12" width="16" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M31 24h6M34 21v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>',
-  },
-  {
-    slug: 'tetris',
-    name: '俄罗斯方块',
-    en: 'Tetris',
-    desc: '经典七连块，带下一块预览、影子提示和硬降。消行升级，越来越快。',
-    controls: '方向键移动旋转 · 空格硬降 · 手机拖动点按',
-    accent: 160,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5"/><rect x="18" y="16" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5"/><rect x="18" y="27" width="11" height="11" rx="2.5" fill="currentColor" opacity="0.85"/><rect x="29" y="27" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="2.5" opacity="0.6"/></svg>',
-  },
-  {
-    slug: 'minesweeper',
-    name: '扫雷',
-    en: 'Minesweeper',
-    desc: '首点必不踩雷，支持初级与进阶两档，数字连点自动展开。',
-    controls: '左键翻开 · 右键插旗；手机轻触翻开 · 长按插旗',
-    accent: 120,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="24" cy="27" r="12" stroke="currentColor" stroke-width="2.5"/><path d="M24 11v6M24 37v-4M11 27h4M37 27h-4M14.7 17.7l3.2 3.2M33.3 17.7l-3.2 3.2" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="20.5" cy="23.5" r="2.4" fill="currentColor"/></svg>',
-  },
-  {
-    slug: 'gomoku',
-    name: '五子棋',
-    en: 'Gomoku',
-    desc: '和会算棋型的 AI 下一盘，先连成五子者胜。',
-    controls: '点击交叉点落子',
-    accent: 200,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 16h32M8 24h32M8 32h32M16 8v32M24 8v32M32 8v32" stroke="currentColor" stroke-width="1.8" opacity="0.55"/><circle cx="16" cy="24" r="5" fill="currentColor"/><circle cx="32" cy="16" r="5" stroke="currentColor" stroke-width="2.5"/></svg>',
-  },
-  {
-    slug: 'breakout',
-    name: '打砖块',
-    en: 'Breakout',
-    desc: '接住小球打光砖块，还有加宽挡板和减速道具，一关比一关快。',
-    controls: '鼠标 / 拖动移动挡板 · 点击或空格发射',
-    accent: 240,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="19" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.85"/><rect x="31" y="8" width="10" height="6" rx="2" fill="currentColor" opacity="0.6"/><rect x="13" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2.2"/><rect x="25" y="16" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2.2"/><circle cx="24" cy="30" r="3.4" fill="currentColor"/><rect x="15" y="38" width="18" height="4.5" rx="2.2" stroke="currentColor" stroke-width="2.4"/></svg>',
-  },
-  {
-    slug: 'dino',
-    name: '像素跑酷',
-    en: 'Dino Run',
-    desc: '一键起跳的无尽跑酷，越跑越快，暗色模式自动变夜晚。',
-    controls: '空格 / 点击跳跃',
-    accent: 280,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 38h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="10" y="18" width="13" height="13" rx="4" stroke="currentColor" stroke-width="2.5"/><circle cx="19.5" cy="22.5" r="1.8" fill="currentColor"/><path d="M32 38V27M36.5 38v-7" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>',
-  },
-  {
-    slug: 'reversi',
-    name: '黑白棋',
-    en: 'Reversi',
-    desc: '夹住就翻面，抢住四个角。AI 懂位置价值，别小看它。',
-    controls: '点击提示点落子',
-    accent: 20,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="17" cy="17" r="8" fill="currentColor"/><circle cx="31" cy="31" r="8" stroke="currentColor" stroke-width="2.5"/><path d="M31 9a8 8 0 0 1 8 8M17 39a8 8 0 0 1-8-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>',
-  },
-  {
-    slug: 'puzzle15',
-    name: '数字华容道',
-    en: '15 Puzzle',
-    desc: '把 1 到 15 滑回原位，打乱保证一定有解。',
-    controls: '点击滑块或用方向键',
-    accent: 320,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="7" y="7" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="7" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.8"/><rect x="7" y="26" width="15" height="15" rx="3.5" fill="currentColor" opacity="0.55"/><rect x="26" y="26" width="15" height="15" rx="3.5" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 4" opacity="0.6"/></svg>',
-  },
-  {
-    slug: 'simon',
-    name: '西蒙记忆',
-    en: 'Simon',
-    desc: '四个色块按顺序闪烁，凭记忆复现，每轮多记一个。',
-    controls: '看完闪烁后点击复现',
-    accent: 60,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 6a18 18 0 0 1 18 18h-8a10 10 0 0 0-10-10V6Z" fill="currentColor" opacity="0.85"/><path d="M24 6a18 18 0 0 0-18 18h8a10 10 0 0 1 10-10V6Z" stroke="currentColor" stroke-width="2.4"/><path d="M6 24a18 18 0 0 0 18 18v-8a10 10 0 0 1-10-10H6Z" stroke="currentColor" stroke-width="2.4"/><path d="M42 24a18 18 0 0 1-18 18v-8a10 10 0 0 0 10-10h8Z" fill="currentColor" opacity="0.5"/></svg>',
-  },
-  {
-    slug: 'whack',
-    name: '打地鼠',
-    en: 'Whack',
-    desc: '60 秒限时，地鼠越冒越快，金色地鼠三倍分，连击有加成。',
-    controls: '点击冒头的地鼠',
-    accent: 100,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="24" cy="36" rx="14" ry="4.5" stroke="currentColor" stroke-width="2.5"/><path d="M14 34v-8a10 10 0 0 1 20 0v8" stroke="currentColor" stroke-width="2.5"/><circle cx="20" cy="26" r="1.8" fill="currentColor"/><circle cx="28" cy="26" r="1.8" fill="currentColor"/><path d="M22.5 30.5c1 .8 2 .8 3 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
-  },
-  {
-    slug: 'reaction',
-    name: '反应速度',
-    en: 'Reaction',
-    desc: '变绿的瞬间出手，五轮取平均，看看你是不是电竞级反应。',
-    controls: '变绿后尽快点击',
-    accent: 140,
-    icon: '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M26 5 12 27h9l-3 16 16-24h-9l1-14Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" fill="currentColor" fill-opacity="0.25"/></svg>',
-  },
-]
 
 function renderGamesPage(posts) {
-  const cards = GAMES.map(
-    (g, idx) => `
-      <a class="game-card" href="/blog/games/${g.slug}/" style="--i:${idx}; --accent-shift:${g.accent}">
+  const gameCard = (g, idx) => `
+      <a class="game-card" href="/blog/games/${g.slug}/" data-cat="${g.category}" style="--i:${idx}; --accent-shift:${g.accent}">
         <div class="game-icon">${g.icon}</div>
         <div class="game-body">
           <h2 class="game-name">${escapeHtml(g.name)}<span class="game-en">${escapeHtml(g.en)}</span></h2>
@@ -1031,9 +912,29 @@ function renderGamesPage(posts) {
           <div class="game-controls">${escapeHtml(g.controls)}</div>
         </div>
         <div class="game-play">开始 ${MINI_ICONS.arrowRight}</div>
-      </a>
-    `
+      </a>`
+
+  const sections = GAMES_BY_CATEGORY.map(
+    (cat) => `
+      <section class="game-section" data-cat="${cat.key}">
+        <header class="game-section-head">
+          <h2 class="game-section-title">${escapeHtml(cat.name)}<span class="game-section-count">${cat.games.length}</span></h2>
+          <span class="game-section-desc">${escapeHtml(cat.desc)}</span>
+        </header>
+        <div class="game-list">
+          ${cat.games.map((g, i) => gameCard(g, i)).join('\n')}
+        </div>
+      </section>`
   ).join('\n')
+
+  const filters = `
+      <div class="game-filters" role="tablist" aria-label="游戏分类">
+        <button class="game-filter active" type="button" data-filter="all">全部 <span>${GAMES.length}</span></button>
+        ${GAMES_BY_CATEGORY.map(
+          (c) =>
+            `<button class="game-filter" type="button" data-filter="${c.key}">${escapeHtml(c.name)} <span>${c.games.length}</span></button>`
+        ).join('')}
+      </div>`
 
   return renderShell({
     title: 'Games',
@@ -1045,13 +946,14 @@ function renderGamesPage(posts) {
       <a class="back" href="/blog/" aria-label="返回">${ICONS.back}</a>
         <div class="brand">
           <h1>Games()</h1>
-          <div class="subtitle">摸鱼一下，配色跟着主题走</div>
+          <div class="subtitle">${GAMES.length} 款小游戏，配色跟着主题走</div>
         </div>
     `,
     content: `
-      <section class="content">
-        <div class="game-list">
-          ${cards}
+      <section class="content games-content">
+        ${filters}
+        <div class="game-sections">
+          ${sections}
         </div>
       </section>
     `,
