@@ -7,58 +7,46 @@
   <link rel="stylesheet" href="/blog/blog.css" />
   <link rel="stylesheet" href="/blog/tags.css" />
   <script>
-    // Load theme immediately to prevent flash
-    // IMPORTANT: Load background settings FIRST to check imageOnly mode
-    (function() {
-      var root = document.documentElement;
-      
-      // 1. First load background settings to determine mode
-      var bgRaw = localStorage.getItem('blog-theme-bg');
-      var bg = null;
-      var isImageOnly = false;
-      var isImageMode = false;
-      
-      if (bgRaw) {
-        try {
-          bg = JSON.parse(bgRaw);
-          isImageOnly = bg.imageOnly === true;
-          isImageMode = bg.mode === 'image' && bg.image;
-          
-          if (isImageMode) {
-            root.style.setProperty('--bg-image', 'url("' + bg.image + '")');
-            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px');
-            root.style.setProperty('--bg-opacity', bg.opacity || 1);
-            var mode = isImageOnly ? 'image-only' : 'image';
-            root.setAttribute('data-theme-mode', mode);
+    (function () {
+      var root = document.documentElement
+      try {
+        var scheme = localStorage.getItem('blog-theme-scheme') || 'auto'
+        var dark =
+          scheme === 'dark' ||
+          (scheme === 'auto' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) root.setAttribute('data-scheme', 'dark')
+      } catch (e) {}
+      try {
+        var bg = JSON.parse(localStorage.getItem('blog-theme-bg') || 'null')
+        if (bg) {
+          if (typeof bg.panelAlpha === 'number') {
+            root.style.setProperty('--panel-alpha', bg.panelAlpha)
+          }
+          if (bg.mode === 'image' && bg.image) {
+            root.style.setProperty('--bg-image', 'url("' + bg.image + '")')
+            root.style.setProperty('--bg-blur', (bg.blur || 0) + 'px')
+            root.style.setProperty('--bg-opacity', bg.opacity == null ? 1 : bg.opacity)
+            root.setAttribute('data-theme-mode', bg.imageOnly ? 'image-only' : 'image')
           } else if (bg.mode === 'color') {
-            root.setAttribute('data-theme-mode', 'color');
+            root.setAttribute('data-theme-mode', 'color')
           }
-        } catch(e) {}
-      }
-      
-      // 2. Then load theme color
-      var themeRaw = localStorage.getItem('blog-theme-hsl');
-      if (themeRaw) {
-        try {
-          var t = JSON.parse(themeRaw);
-          if (typeof t.h === 'number') {
-            root.style.setProperty('--theme-h', String(Math.round(t.h)));
-            root.style.setProperty('--theme-s', Math.round(t.s) + '%');
-            root.style.setProperty('--theme-l', Math.round(t.l) + '%');
-            root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)');
-          }
-        } catch(e) {}
-      }
-      
-      // Set body mode after DOM ready
-      if (isImageMode) {
-        var mode = isImageOnly ? 'image-only' : 'image';
-        document.body && document.body.setAttribute('data-theme-mode', mode);
-      }
-    })();
+        }
+      } catch (e) {}
+      try {
+        var t = JSON.parse(localStorage.getItem('blog-theme-hsl') || 'null')
+        if (t && typeof t.h === 'number') {
+          root.style.setProperty('--theme-h', String(Math.round(t.h)))
+          root.style.setProperty('--theme-s', Math.round(t.s) + '%')
+          root.style.setProperty('--theme-l', Math.round(t.l) + '%')
+          root.style.setProperty('--theme-color', 'hsl(' + Math.round(t.h) + ',' + Math.round(t.s) + '%,' + Math.round(t.l) + '%)')
+        }
+      } catch (e) {}
+    })()
   </script>
 </head>
-<body>
+<body data-page="tags">
   
   <div class="page-loader">
     <div class="loader">
@@ -100,7 +88,7 @@
     <aside class="sidebar" data-open="false">
       <div class="profile">
         <div class="avatar"><img src="/avatar.jpg" alt="avatar" /></div>
-        <div class="name">Riordon-v1.1</div>
+        <div class="name">Riordon-v1.2</div>
       </div>
       <div class="quick-actions">
         <a class="qa" href="https://github.com/Riordon666" target="_blank" aria-label="GitHub"><svg viewBox="0 0 1049 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M524.979332 0C234.676191 0 0 234.676191 0 524.979332c0 232.068678 150.366597 428.501342 358.967656 498.035028 26.075132 5.215026 35.636014-11.299224 35.636014-25.205961 0-12.168395-0.869171-53.888607-0.869171-97.347161-146.020741 31.290159-176.441729-62.580318-176.441729-62.580318-23.467619-60.841976-58.234462-76.487055-58.234463-76.487055-47.804409-32.15933 3.476684-32.15933 3.476685-32.15933 53.019436 3.476684 80.83291 53.888607 80.83291 53.888607 46.935238 79.963739 122.553122 57.365291 152.97411 43.458554 4.345855-33.897672 18.252593-57.365291 33.028501-70.402857-116.468925-12.168395-239.022047-57.365291-239.022047-259.012982 0-57.365291 20.860106-104.300529 53.888607-140.805715-5.215026-13.037566-23.467619-66.926173 5.215027-139.067372 0 0 44.327725-13.906737 144.282399 53.888607 41.720212-11.299224 86.917108-17.383422 131.244833-17.383422s89.524621 6.084198 131.244833 17.383422C756.178839 203.386032 800.506564 217.29277 800.506564 217.29277c28.682646 72.1412 10.430053 126.029806 5.215026 139.067372 33.897672 36.505185 53.888607 83.440424 53.888607 140.805715 0 201.64769-122.553122 245.975415-239.891218 259.012982 19.121764 16.514251 35.636014 47.804409 35.636015 97.347161 0 70.402857-0.869171 126.898978-0.869172 144.282399 0 13.906737 9.560882 30.420988 35.636015 25.205961 208.601059-69.533686 358.967656-265.96635 358.967655-498.035028C1049.958663 234.676191 814.413301 0 524.979332 0z" fill="currentColor"></path></svg></a>
@@ -113,7 +101,7 @@
           <div class="stat-label">文章</div>
         </div>
         <div class="stat">
-          <div class="stat-value">7</div>
+          <div class="stat-value">10</div>
           <div class="stat-label">标签</div>
         </div>
       </div>
@@ -121,6 +109,14 @@
         <a class="nav-item " href="/blog/" data-short="主">
           <span class="nav-icon svg-icon"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M883.2 277.333333l-264.533333-183.466666C546.133333 42.666667 435.2 42.666667 366.933333 98.133333L136.533333 277.333333c-46.933333 34.133333-81.066667 106.666667-81.066666 166.4v315.733334c0 115.2 93.866667 213.333333 213.333333 213.333333h494.933333c115.2 0 213.333333-93.866667 213.333334-213.333333v-311.466667c-4.266667-59.733333-42.666667-136.533333-93.866667-170.666667z m21.333333 482.133334c0 38.4-12.8 72.533333-42.666666 102.4s-59.733333 42.666667-102.4 42.666666H268.8c-38.4 0-72.533333-12.8-102.4-42.666666s-42.666667-64-42.666667-102.4v-315.733334c0-46.933333 17.066667-85.333333 55.466667-110.933333l230.4-179.2c21.333333-17.066667 51.2-25.6 85.333333-25.6s64 8.533333 85.333334 25.6l264.533333 183.466667c42.666667 29.866667 59.733333 68.266667 59.733333 115.2v307.2z" fill="currentColor"></path><path d="M486.4 789.333333v-170.666666c0-17.066667 17.066667-34.133333 34.133333-34.133334s34.133333 17.066667 34.133334 34.133334v170.666666c0 17.066667-17.066667 34.133333-34.133334 34.133334s-34.133333-17.066667-34.133333-34.133334z" fill="currentColor"></path></svg></span>
           <span class="nav-text">主 页</span>
+        </a>
+        <a class="nav-item " href="/blog/projects/" data-short="项">
+          <span class="nav-icon svg-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h3l2 2.5h6A2.5 2.5 0 0 1 20 10v6.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+          <span class="nav-text">项 目</span>
+        </a>
+        <a class="nav-item " href="/blog/games/" data-short="玩">
+          <span class="nav-icon svg-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7.5 8h9a4.5 4.5 0 0 1 4.44 3.77l.55 3.3A2.6 2.6 0 0 1 18.93 18a2.6 2.6 0 0 1-2.02-.96L15.8 15.7a1.5 1.5 0 0 0-1.15-.55H9.35a1.5 1.5 0 0 0-1.15.55l-1.11 1.34A2.6 2.6 0 0 1 5.07 18a2.6 2.6 0 0 1-2.56-2.93l.55-3.3A4.5 4.5 0 0 1 7.5 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.4 11v2.2M6.3 12.1h2.2M15.4 11.6h.01M17.2 13.1h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          <span class="nav-text">小游戏</span>
         </a>
         <a class="nav-item " href="/blog/archives/" data-short="档">
           <span class="nav-icon svg-icon"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M934.4 260.266667l-396.8-145.066667c-17.066667-8.533333-38.4-8.533333-59.733333 0L81.066667 260.266667c-51.2 21.333333-51.2 93.866667 0 110.933333l396.8 145.066667c17.066667 8.533333 38.4 8.533333 59.733333 0l396.8-145.066667c51.2-17.066667 51.2-93.866667 0-110.933333zM512 452.266667h-12.8L128 315.733333l375.466667-136.533333h12.8l375.466666 136.533333-379.733333 136.533334z" fill="currentColor"></path><path d="M72.533333 499.2c-4.266667 0-8.533333-4.266667-12.8-4.266667-17.066667 0-34.133333 17.066667-34.133333 34.133334 0 12.8 8.533333 25.6 21.333333 29.866666l418.133334 157.866667c29.866667 12.8 55.466667 12.8 85.333333 0l418.133333-157.866667c12.8-4.266667 21.333333-17.066667 21.333334-29.866666 0-17.066667-17.066667-34.133333-34.133334-34.133334-4.266667 0-8.533333 0-12.8 4.266667l-418.133333 157.866667c-12.8 4.266667-25.6 4.266667-38.4 0l-413.866667-157.866667z" fill="currentColor"></path><path d="M72.533333 712.533333c-4.266667 0-8.533333-4.266667-12.8-4.266666-17.066667 0-34.133333 17.066667-34.133333 34.133333 0 12.8 8.533333 25.6 21.333333 29.866667l418.133334 157.866666c29.866667 12.8 55.466667 12.8 85.333333 0l418.133333-157.866666c12.8-4.266667 21.333333-17.066667 21.333334-29.866667 0-17.066667-17.066667-34.133333-34.133334-34.133333-4.266667 0-8.533333 0-12.8 4.266666l-418.133333 157.866667c-12.8 4.266667-25.6 4.266667-38.4 0l-413.866667-157.866667z" fill="currentColor"></path></svg></span>
@@ -146,11 +142,11 @@
       <div class="sidebar-footer">
         <div class="copyright">© 2026 Riordon. All rights reserved.</div>
         <a target="_blank" href="https://beian.miit.gov.cn/">
-          <img class="beian-icon" src="https://lemoncoder.cn/themes/halo-theme-vapor/assets/imgs/icpb.webp" alt="ICP备案" />
+          <svg class="beian-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span>蜀ICP备2026002494号-1</span>
         </a>
         <a target="_blank" href="https://beian.mps.gov.cn/#/query/webSearch">
-          <img class="beian-icon" src="https://lemoncoder.cn/upload/gawb.png?width=800" alt="网安备案" />
+          <svg class="beian-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 3 5 5.6v5.3c0 4.4 2.9 8.4 7 9.6 4.1-1.2 7-5.2 7-9.6V5.6L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9.2 11.8 2 2 3.6-3.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span>川公网安备51111102000146号</span>
         </a>
       </div>
@@ -158,57 +154,79 @@
   
     <main class="main">
       <header class="topbar">
-        <a class="back" href="/blog/" aria-label="返回"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg></a>
+
+      <a class="back" href="/blog/" aria-label="返回"><svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg></a>
         <div class="brand">
           <h1>Tag.sort()</h1>
         </div>
+    
       </header>
+
       <section class="content">
         <div class="tag-list">
           
-        <div class="tag-block">
+        <div class="tag-block" style="--i:0">
+          <div class="tag-title">版本 <span class="tag-count">(1)</span></div>
+          <div class="tag-posts"><a class="tag-post" href="/blog/v1-0/">Riordon&#39;s Blog v1.0 更新说明与网站介绍</a></div>
+        </div>
+      
+
+        <div class="tag-block" style="--i:1">
           <div class="tag-title">博客 <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/blog-writing-tutorial/">博客文章写作教程</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:2">
+          <div class="tag-title">更新 <span class="tag-count">(1)</span></div>
+          <div class="tag-posts"><a class="tag-post" href="/blog/v1-0/">Riordon&#39;s Blog v1.0 更新说明与网站介绍</a></div>
+        </div>
+      
+
+        <div class="tag-block" style="--i:3">
           <div class="tag-title">股票 <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/stock/">基于 Flask 的股票预测管理系统</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:4">
           <div class="tag-title">机器学习 <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/stock/">基于 Flask 的股票预测管理系统</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:5">
           <div class="tag-title">教程 <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/blog-writing-tutorial/">博客文章写作教程</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:6">
+          <div class="tag-title">介绍 <span class="tag-count">(1)</span></div>
+          <div class="tag-posts"><a class="tag-post" href="/blog/v1-0/">Riordon&#39;s Blog v1.0 更新说明与网站介绍</a></div>
+        </div>
+      
+
+        <div class="tag-block" style="--i:7">
           <div class="tag-title">项目分享 <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/stock/">基于 Flask 的股票预测管理系统</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:8">
           <div class="tag-title">Flask <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/stock/">基于 Flask 的股票预测管理系统</a></div>
         </div>
       
 
-        <div class="tag-block">
+        <div class="tag-block" style="--i:9">
           <div class="tag-title">Python <span class="tag-count">(1)</span></div>
           <div class="tag-posts"><a class="tag-post" href="/blog/stock/">基于 Flask 的股票预测管理系统</a></div>
         </div>
       
         </div>
       </section>
+    
     </main>
   </div>
   <script type="module" src="/blog/blog.js"></script>

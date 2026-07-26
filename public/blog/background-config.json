@@ -3,5 +3,6 @@
   "defaultImage": 41,
   "defaultBlur": 0,
   "defaultOpacity": 1,
-  "defaultImageOnly": true
+  "defaultImageOnly": true,
+  "defaultPanelAlpha": 0.85
 }

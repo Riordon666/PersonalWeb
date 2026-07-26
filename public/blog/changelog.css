@@ -1,7 +1,7 @@
 /* Changelog page */
 
 .changelog-wrap {
-  width: min(900px, 92vw);
+  width: min(900px, 100%);
   position: relative;
   padding: 10px 0 30px;
 }
@@ -35,11 +35,44 @@
   padding-left: var(--changelog-timeline-pad-left);
 }
 
+@keyframes changelogItemIn {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .changelog-item {
   position: relative;
   display: flex;
   align-items: stretch;
   padding-left: 0;
+  animation: changelogItemIn 0.5s var(--ease-out, ease) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 90ms);
+  animation-play-state: paused;
+}
+
+body.app-ready .changelog-item {
+  animation-play-state: running;
+}
+
+@keyframes dotPulse {
+  0% {
+    box-shadow: 0 0 0 0 hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.45);
+  }
+
+  70% {
+    box-shadow: 0 0 0 9px hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0);
+  }
 }
 
 .changelog-dot {
@@ -56,24 +89,30 @@
   z-index: 2;
 }
 
+.changelog-item:first-child .changelog-dot {
+  animation: dotPulse 2.4s ease-out infinite;
+}
+
+.changelog-card {
+  transition: transform 0.25s var(--ease-out, ease), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.changelog-item:hover .changelog-card {
+  transform: translateX(4px);
+  border-color: hsla(var(--theme-h), var(--theme-s), var(--theme-l), 0.35);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.1);
+}
+
 .changelog-card {
   width: 100%;
   margin-left: var(--changelog-card-offset-left);
-  background: rgba(255, 255, 255, 0.52);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
   border-radius: 18px;
   padding: 16px 30px 12px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-}
-
-body[data-theme-mode="image"] .changelog-card {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-body[data-theme-mode="image-only"] .changelog-card {
-  background: rgba(255, 255, 255, 0.32);
 }
 
 .changelog-head {
@@ -87,7 +126,7 @@ body[data-theme-mode="image-only"] .changelog-card {
 .changelog-version {
   font-size: 18px;
   font-weight: 800;
-  color: #2b2b2b;
+  color: var(--text);
 }
 
 .changelog-date {

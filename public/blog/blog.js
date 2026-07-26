@@ -1,10 +1,110 @@
 // Blog page interactions
+// - Theme & background system (HSL palette / background picker)
+// - SPA navigation with top progress bar, prefetch & page cache
+// - Global search (search-index.json) with keyboard navigation
+// - Post enhancements: TOC, code copy, reading progress, lightbox
+// - Back-to-top & sticky post header
 
-// Page Loader
-const createPageLoader = () => {
-  const loader = document.createElement('div')
-  loader.className = 'page-loader'
-  loader.innerHTML = `
+// ========================================
+// Utilities
+// ========================================
+
+const qs = (s, r = document) => r.querySelector(s)
+const qsa = (s, r = document) => Array.from(r.querySelectorAll(s))
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+const escapeHtml = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+const prefersReducedMotion = () =>
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// ========================================
+// Color scheme (light / dark / follow OS)
+// ========================================
+
+const SCHEME_KEY = 'blog-theme-scheme'
+
+const SCHEMES = [
+  {
+    id: 'auto',
+    label: '跟随系统',
+    icon: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="3" y="4.5" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M9 20.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  },
+  {
+    id: 'light',
+    label: '浅色',
+    icon: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.8v2.1M12 19.1v2.1M21.2 12h-2.1M4.9 12H2.8m15.3-6.4-1.5 1.5M7.3 16.7l-1.5 1.5m12.3 0-1.5-1.5M7.3 7.3 5.8 5.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  },
+  {
+    id: 'dark',
+    label: '深色',
+    icon: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  },
+]
+
+const getScheme = () => {
+  try {
+    const v = localStorage.getItem(SCHEME_KEY)
+    return v === 'light' || v === 'dark' ? v : 'auto'
+  } catch {
+    return 'auto'
+  }
+}
+
+const systemPrefersDark = () =>
+  window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
+const applyScheme = (scheme) => {
+  const dark = scheme === 'dark' || (scheme === 'auto' && systemPrefersDark())
+  const root = document.documentElement
+  if (dark) root.setAttribute('data-scheme', 'dark')
+  else root.removeAttribute('data-scheme')
+  try {
+    localStorage.setItem(SCHEME_KEY, scheme)
+  } catch {}
+}
+
+// Track the OS preference while in "auto"
+if (window.matchMedia) {
+  const mq = window.matchMedia('(prefers-color-scheme: dark)')
+  const onChange = () => {
+    if (getScheme() === 'auto') applyScheme('auto')
+  }
+  if (mq.addEventListener) mq.addEventListener('change', onChange)
+  else if (mq.addListener) mq.addListener(onChange)
+}
+
+// ========================================
+// Toast (single reusable element)
+// ========================================
+
+let toastEl = null
+let toastTimer = 0
+const showToast = (message) => {
+  if (!toastEl) {
+    toastEl = document.createElement('div')
+    toastEl.className = 'toast'
+    document.body.appendChild(toastEl)
+  }
+  toastEl.textContent = message
+  clearTimeout(toastTimer)
+  requestAnimationFrame(() => toastEl.classList.add('show'))
+  toastTimer = window.setTimeout(() => {
+    toastEl.classList.remove('show')
+  }, 1400)
+}
+
+// ========================================
+// Page Loader (initial full-screen)
+// ========================================
+
+const LOADER_SVG = `
     <div class="loader">
       <svg height="0" width="0" viewBox="0 0 64 64" class="absolute">
         <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
@@ -33,73 +133,34 @@ const createPageLoader = () => {
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
         <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#d)" d="M 4,4 h 4.6230469 v 25.919922 c -0.00276,11.916203 9.8364941,21.550422 21.7500001,21.296875 11.616666,-0.240651 21.014356,-9.63894 21.253906,-21.25586 a 2.0002,2.0002 0 0 0 0,-0.04102 V 4 H 56.25 v 25.919922 c 0,14.33873 -11.581192,25.919922 -25.919922,25.919922 a 2.0002,2.0002 0 0 0 -0.0293,0 C 15.812309,56.052941 3.998433,44.409961 4,29.919922 Z" class="dash" id="u" pathLength="360"></path>
       </svg>
-    </div>
-  `
-  document.body.appendChild(loader)
-  return loader
+    </div>`
+
+let pageLoader = null
+const showLoader = () => {
+  if (!pageLoader) pageLoader = qs('.page-loader')
+  if (!pageLoader) {
+    pageLoader = document.createElement('div')
+    pageLoader.className = 'page-loader'
+    pageLoader.innerHTML = LOADER_SVG
+    document.body.appendChild(pageLoader)
+  }
+  pageLoader.classList.remove('hidden')
+}
+const hideLoader = () => {
+  if (!pageLoader) pageLoader = qs('.page-loader')
+  if (pageLoader) pageLoader.classList.add('hidden')
+  document.body.classList.add('app-ready')
 }
 
 const createTileLoader = () => {
   const loader = document.createElement('div')
   loader.className = 'tile-loader'
-
   const uid = `tl-${Math.random().toString(36).slice(2, 10)}`
-  const idB = `b-${uid}`
-  const idC = `c-${uid}`
-  const idD = `d-${uid}`
-
-  loader.innerHTML = `
-    <div class="loader">
-      <svg height="0" width="0" viewBox="0 0 64 64" class="absolute">
-        <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
-          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="${idB}">
-            <stop class="s-xJBuHA073rTt" stop-color="#973BED"></stop>
-            <stop class="s-xJBuHA073rTt" stop-color="#007CFF" offset="1"></stop>
-          </linearGradient>
-          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="0" x2="0" y1="64" x1="0" id="${idC}">
-            <stop class="s-xJBuHA073rTt" stop-color="#FFC800"></stop>
-            <stop class="s-xJBuHA073rTt" stop-color="#F0F" offset="1"></stop>
-            <animateTransform repeatCount="indefinite" keySplines=".42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1;.42,0,.58,1" keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1" dur="8s" values="0 32 32;-270 32 32;-270 32 32;-540 32 32;-540 32 32;-810 32 32;-810 32 32;-1080 32 32;-1080 32 32" type="rotate" attributeName="gradientTransform"></animateTransform>
-          </linearGradient>
-          <linearGradient class="s-xJBuHA073rTt" gradientUnits="userSpaceOnUse" y2="2" x2="0" y1="62" x1="0" id="${idD}">
-            <stop class="s-xJBuHA073rTt" stop-color="#00E0ED"></stop>
-            <stop class="s-xJBuHA073rTt" stop-color="#00DA72" offset="1"></stop>
-          </linearGradient>
-        </defs>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
-        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#${idB})" d="M 54.722656,3.9726563 A 2.0002,2.0002 0 0 0 54.941406,4 h 5.007813 C 58.955121,17.046124 49.099667,27.677057 36.121094,29.580078 a 2.0002,2.0002 0 0 0 -1.708985,1.978516 V 60 H 29.587891 V 31.558594 A 2.0002,2.0002 0 0 0 27.878906,29.580078 C 14.900333,27.677057 5.0448787,17.046124 4.0507812,4 H 9.28125 c 1.231666,11.63657 10.984383,20.554048 22.6875,20.734375 a 2.0002,2.0002 0 0 0 0.02344,0 c 11.806958,0.04283 21.70649,-9.003371 22.730469,-20.7617187 z" class="dash" id="y" pathLength="360"></path>
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
-        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="10" stroke="url(#${idC})" d="M 32 32
-        m 0 -27
-        a 27 27 0 1 1 0 54
-        a 27 27 0 1 1 0 -54" class="spin" id="o" pathLength="360"></path>
-      </svg>
-      <div class="w-2"></div>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" style="--rotation-duration:0ms; --rotation-direction:normal;" viewBox="0 0 64 64" height="64" width="64" class="inline-block">
-        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#${idD})" d="M 4,4 h 4.6230469 v 25.919922 c -0.00276,11.916203 9.8364941,21.550422 21.7500001,21.296875 11.616666,-0.240651 21.014356,-9.63894 21.253906,-21.25586 a 2.0002,2.0002 0 0 0 0,-0.04102 V 4 H 56.25 v 25.919922 c 0,14.33873 -11.581192,25.919922 -25.919922,25.919922 a 2.0002,2.0002 0 0 0 -0.0293,0 C 15.812309,56.052941 3.998433,44.409961 4,29.919922 Z" class="dash" id="u" pathLength="360"></path>
-      </svg>
-    </div>
-  `
+  loader.innerHTML = LOADER_SVG.replace(/url\(#([bcd])\)/g, `url(#$1-${uid})`).replace(
+    /id="([bcd])"/g,
+    `id="$1-${uid}"`
+  )
   return loader
-}
-
-let pageLoader = null
-const showLoader = () => {
-  // First check if loader already exists in DOM (from PAGE_LOADER_HTML)
-  if (!pageLoader) {
-    pageLoader = document.querySelector('.page-loader')
-  }
-  // If still not found, create a new one
-  if (!pageLoader) {
-    pageLoader = createPageLoader()
-  }
-  pageLoader.classList.remove('hidden')
-}
-const hideLoader = () => {
-  if (!pageLoader) pageLoader = document.querySelector('.page-loader')
-  if (pageLoader) pageLoader.classList.add('hidden')
 }
 
 // Track when theme and background are fully loaded
@@ -108,184 +169,232 @@ const themeLoadedPromise = new Promise((resolve) => {
   themeLoadedResolve = resolve
 })
 
-// Hide loader only when both conditions are met:
-// 1. Minimum 1 second has passed
-// 2. Theme and background are fully loaded
+// Hide the initial loader when the page + theme are ready.
+// Keeps a short minimum so the animation doesn't flash, plus a
+// safety timeout so a failed fetch can never leave it stuck.
 window.addEventListener('load', async () => {
   const startTime = Date.now()
-  const minDuration = 1000
-
-  // Wait for theme to be fully loaded
-  await themeLoadedPromise
-
-  // Ensure minimum display time
-  const elapsed = Date.now() - startTime
-  const remaining = Math.max(0, minDuration - elapsed)
-  if (remaining > 0) {
-    await new Promise(r => setTimeout(r, remaining))
-  }
-
+  const minDuration = 500
+  await Promise.race([themeLoadedPromise, sleep(3000)])
+  const remaining = Math.max(0, minDuration - (Date.now() - startTime))
+  if (remaining > 0) await sleep(remaining)
   hideLoader()
 })
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const sidebar = document.querySelector('.sidebar')
-  const toggle = document.querySelector('.nav-toggle')
+// ========================================
+// Top progress bar (SPA navigation)
+// ========================================
 
-  const showToast = (message) => {
-    const el = document.createElement('div')
-    el.className = 'toast'
-    el.textContent = message
+const progress = (() => {
+  let el = null
+  let bar = null
+  let hideTimer = 0
+  let trickleTimer = 0
+  let value = 0
+
+  const ensure = () => {
+    if (el) return
+    el = document.createElement('div')
+    el.className = 'nav-progress'
+    bar = document.createElement('div')
+    bar.className = 'nav-progress-bar'
+    el.appendChild(bar)
     document.body.appendChild(el)
-    requestAnimationFrame(() => el.classList.add('show'))
-    window.setTimeout(() => {
-      el.classList.remove('show')
-      window.setTimeout(() => el.remove(), 220)
-    }, 1200)
   }
 
-  const bindCopyActions = () => {
-    document.querySelectorAll('[data-copy-text]').forEach((el) => {
-      if (el.getAttribute('data-copy-bound') === 'true') return
-      el.setAttribute('data-copy-bound', 'true')
-
-      el.addEventListener('click', async (e) => {
-        e.preventDefault()
-        const text = el.getAttribute('data-copy-text') || ''
-        const toast = el.getAttribute('data-copy-toast') || '已复制QQ号'
-        if (!text) return
-        try {
-          await navigator.clipboard.writeText(text)
-          showToast(toast)
-        } catch {
-          const ta = document.createElement('textarea')
-          ta.value = text
-          ta.setAttribute('readonly', '')
-          ta.style.position = 'fixed'
-          ta.style.left = '-9999px'
-          document.body.appendChild(ta)
-          ta.select()
-          try {
-            document.execCommand('copy')
-            showToast(toast)
-          } finally {
-            ta.remove()
-          }
-        }
-      })
-    })
+  const set = (v) => {
+    value = Math.min(1, Math.max(0, v))
+    bar.style.transform = `scaleX(${value})`
   }
+
+  return {
+    start() {
+      ensure()
+      clearTimeout(hideTimer)
+      clearInterval(trickleTimer)
+      el.classList.add('active')
+      set(0.08)
+      trickleTimer = window.setInterval(() => {
+        // Trickle towards 90% while waiting
+        set(value + (0.9 - value) * 0.12)
+      }, 160)
+    },
+    done() {
+      if (!el) return
+      clearInterval(trickleTimer)
+      set(1)
+      hideTimer = window.setTimeout(() => {
+        el.classList.remove('active')
+        set(0)
+      }, 260)
+    },
+  }
+})()
+
+// ========================================
+// Main app
+// ========================================
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const root = document.documentElement
+  const sidebar = qs('.sidebar')
+  const toggle = qs('.nav-toggle')
+
+  // ----------------------------------------
+  // Sidebar
+  // ----------------------------------------
 
   const setOpen = (open) => {
     if (!sidebar) return
     sidebar.setAttribute('data-open', open ? 'true' : 'false')
-    document.documentElement.classList.toggle('nav-open', open)
+    root.classList.toggle('nav-open', open)
   }
-
   const closeSidebar = () => setOpen(false)
 
   if (toggle && sidebar) {
     toggle.addEventListener('click', () => {
-      const open = sidebar.getAttribute('data-open') === 'true'
-      setOpen(!open)
+      setOpen(sidebar.getAttribute('data-open') !== 'true')
     })
   }
 
-  bindCopyActions()
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false)
-  })
-
   document.addEventListener('click', (e) => {
     if (!sidebar) return
-    const open = sidebar.getAttribute('data-open') === 'true'
-    if (!open) return
+    if (sidebar.getAttribute('data-open') !== 'true') return
     const target = e.target
-    if (target instanceof Node && !sidebar.contains(target) && (!toggle || !toggle.contains(target))) {
+    if (
+      target instanceof Node &&
+      !sidebar.contains(target) &&
+      (!toggle || !toggle.contains(target))
+    ) {
       setOpen(false)
     }
   })
 
-  // Theme and Background Management
-  const root = document.documentElement
+  // ----------------------------------------
+  // Copy-to-clipboard (event delegation)
+  // ----------------------------------------
+
+  document.addEventListener('click', async (e) => {
+    const el = e.target instanceof Element ? e.target.closest('[data-copy-text]') : null
+    if (!el) return
+    e.preventDefault()
+    const text = el.getAttribute('data-copy-text') || ''
+    const toast = el.getAttribute('data-copy-toast') || '已复制QQ号'
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      showToast(toast)
+    } catch {
+      const ta = document.createElement('textarea')
+      ta.value = text
+      ta.setAttribute('readonly', '')
+      ta.style.position = 'fixed'
+      ta.style.left = '-9999px'
+      document.body.appendChild(ta)
+      ta.select()
+      try {
+        document.execCommand('copy')
+        showToast(toast)
+      } finally {
+        ta.remove()
+      }
+    }
+  })
+
+  // ----------------------------------------
+  // Theme & Background
+  // ----------------------------------------
+
   const STORAGE_KEY = 'blog-theme-hsl'
   const BG_STORAGE_KEY = 'blog-theme-bg'
-
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v))
+
+  const DEFAULT_PANEL_ALPHA = 0.85
 
   let bgState = {
     mode: 'color',
     image: '',
     blur: 0,
     opacity: 1,
-    imageOnly: false
+    imageOnly: false,
+    panelAlpha: DEFAULT_PANEL_ALPHA,
   }
 
   const applyBgState = (state) => {
     bgState = state
     const bodyMode = state.mode === 'image' && state.imageOnly ? 'image-only' : state.mode
     document.body.setAttribute('data-theme-mode', bodyMode)
-    // Clear background image when in color mode
-    const bgImage = state.mode === 'color' ? 'none' : (state.image ? `url("${state.image}")` : 'none')
+    root.setAttribute('data-theme-mode', bodyMode)
+    const bgImage = state.mode === 'color' ? 'none' : state.image ? `url("${state.image}")` : 'none'
     root.style.setProperty('--bg-image', bgImage)
     root.style.setProperty('--bg-blur', `${state.blur}px`)
     root.style.setProperty('--bg-opacity', state.opacity)
-    // Save with timestamp
+    root.style.setProperty('--panel-alpha', state.panelAlpha ?? DEFAULT_PANEL_ALPHA)
     localStorage.setItem(BG_STORAGE_KEY, JSON.stringify({ ...state, timestamp: Date.now() }))
   }
 
   const loadBgState = async () => {
     try {
-      // Load config for defaults
       let config = { defaultMode: 'color', defaultImage: 1, defaultBlur: 0, defaultOpacity: 1 }
       try {
         const resp = await fetch('/blog/background-config.json')
         if (resp.ok) config = await resp.json()
-      } catch (e) { /* use defaults */ }
+      } catch (e) {
+        /* use defaults */
+      }
 
-      // Build default image path
-      const files = await fetch('/blog/backgrounds.json').then(r => r.ok ? r.json() : []).catch(() => [])
+      const files = await fetch('/blog/backgrounds.json')
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => [])
       const defaultImage = files[config.defaultImage - 1] || ''
 
-      // Check localStorage for user settings with 2-day expiration
       const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
       const raw = localStorage.getItem(BG_STORAGE_KEY)
       let useDefaults = true
 
       if (raw) {
-        const saved = JSON.parse(raw)
-        // Check if settings are still valid (within 2 days)
-        if (saved.timestamp && (Date.now() - saved.timestamp) < TWO_DAYS_MS) {
-          useDefaults = false
-          applyBgState({
-            mode: saved.mode,
-            image: saved.image || defaultImage,
-            blur: saved.blur ?? config.defaultBlur,
-            opacity: saved.opacity ?? config.defaultOpacity,
-            imageOnly: saved.imageOnly ?? false
-          })
+        try {
+          const saved = JSON.parse(raw)
+          if (saved.timestamp && Date.now() - saved.timestamp < TWO_DAYS_MS) {
+            useDefaults = false
+            applyBgState({
+              mode: saved.mode,
+              image: saved.image || defaultImage,
+              blur: saved.blur ?? config.defaultBlur,
+              opacity: saved.opacity ?? config.defaultOpacity,
+              imageOnly: saved.imageOnly ?? false,
+              panelAlpha:
+                saved.panelAlpha ?? config.defaultPanelAlpha ?? DEFAULT_PANEL_ALPHA,
+            })
+          }
+        } catch (e) {
+          /* corrupted state -> defaults */
         }
       }
 
       if (useDefaults) {
-        // No valid saved state, use config defaults
         applyBgState({
           mode: config.defaultMode || 'color',
           image: defaultImage,
           blur: config.defaultBlur,
           opacity: config.defaultOpacity,
-          imageOnly: config.defaultImageOnly ?? false
+          imageOnly: config.defaultImageOnly ?? false,
+          panelAlpha: config.defaultPanelAlpha ?? DEFAULT_PANEL_ALPHA,
         })
       }
-    } catch (e) { console.error('Failed to load bg state', e) }
+    } catch (e) {
+      console.error('Failed to load bg state', e)
+    }
   }
 
   const setTheme = ({ h, s, l }) => {
     root.style.setProperty('--theme-h', String(Math.round(h)))
     root.style.setProperty('--theme-s', `${Math.round(s)}%`)
     root.style.setProperty('--theme-l', `${Math.round(l)}%`)
-    root.style.setProperty('--theme-color', `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`)
+    root.style.setProperty(
+      '--theme-color',
+      `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`
+    )
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ h, s, l }))
   }
 
@@ -305,8 +414,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   setTheme(getTheme())
   await loadBgState()
-
-  // Signal that theme and background are fully loaded
   if (themeLoadedResolve) themeLoadedResolve()
 
   const hslToRgb = (h, s, l) => {
@@ -315,13 +422,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const c = (1 - Math.abs(2 * l - 1)) * s
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
     const m = l - c / 2
-    let r = 0, g = 0, b = 0
+    let r = 0,
+      g = 0,
+      b = 0
     if (0 <= h && h < 60) [r, g, b] = [c, x, 0]
     else if (60 <= h && h < 120) [r, g, b] = [x, c, 0]
     else if (120 <= h && h < 180) [r, g, b] = [0, c, x]
     else if (180 <= h && h < 240) [r, g, b] = [0, x, c]
     else if (240 <= h && h < 300) [r, g, b] = [x, 0, c]
-    else[r, g, b] = [c, 0, x]
+    else [r, g, b] = [c, 0, x]
     return {
       r: Math.round((r + m) * 255),
       g: Math.round((g + m) * 255),
@@ -329,99 +438,140 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // ----------------------------------------
+  // Palette modal
+  // ----------------------------------------
+
   const createPaletteModal = async (initial) => {
     const modal = document.createElement('div')
     modal.className = 'palette-modal'
 
-    // Fetch backgrounds from JSON
     let backgrounds = []
     try {
       const resp = await fetch('/blog/backgrounds.json')
-      if (resp.ok) {
-        backgrounds = await resp.json()
-      }
+      if (resp.ok) backgrounds = await resp.json()
     } catch (e) {
       console.warn('Failed to load backgrounds:', e)
     }
 
-    // Show first 7 images, 8th slot is "view more" button (2x4 grid on mobile)
+    // One preview slot is taken by the solid-color tile, one by "view more"
     const isMobile = window.innerWidth <= 768
-    const previewCount = isMobile ? 7 : 8
+    const previewCount = isMobile ? 5 : 6
     const previewImages = backgrounds.slice(0, previewCount)
     const hasMore = backgrounds.length > previewCount
-    const isColorMode = bgState.mode === 'color'
 
     modal.innerHTML = `
-      <div class="palette-card" role="dialog" aria-modal="true" aria-label="palette">
+      <div class="palette-card" role="dialog" aria-modal="true" aria-label="外观设置">
         <div class="palette-header">
-          <div class="mode-switch">
-            <button class="mode-btn ${isColorMode ? 'active' : ''}" data-mode="color">纯色</button>
-            <button class="mode-btn ${!isColorMode ? 'active' : ''}" data-mode="image">图片</button>
-          </div>
+          <div class="palette-title">外观</div>
+          <button class="palette-close" type="button" aria-label="close">×</button>
         </div>
+
         <div class="palette-content">
-          ${isColorMode ? `
-            <div class="color-pane active">
+          <section class="palette-section">
+            <div class="section-label">配色方案</div>
+            <div class="scheme-switch" role="group" aria-label="配色方案">
+              ${SCHEMES.map(
+                (s) => `
+                <button class="scheme-btn ${getScheme() === s.id ? 'active' : ''}" type="button" data-scheme="${s.id}">
+                  ${s.icon}<span>${s.label}</span>
+                </button>`
+              ).join('')}
+            </div>
+          </section>
+
+          <section class="palette-section">
+            <div class="section-label">主题色</div>
+            <div class="color-row">
               <div class="wheel-wrap">
-                <canvas class="palette-wheel" width="240" height="240"></canvas>
+                <canvas class="palette-wheel" width="168" height="168"></canvas>
                 <div class="wheel-knob" aria-hidden="true"></div>
               </div>
-              <input class="palette-light" type="range" min="20" max="80" value="${Math.round(initial.l)}" aria-label="light" />
-            </div>
-          ` : `
-            <div class="image-pane active">
-              <div class="bg-grid">
-                ${backgrounds.length > 0 ? `
-                  ${previewImages.map(src => `
-                    <div class="bg-item ${bgState.image === src ? 'active' : ''}"
-                         style="background-image: url('${src}')"
-                         data-src="${src}">
-                    </div>
-                  `).join('')}
-                  ${hasMore ? `
-                    <div class="bg-item bg-more" data-action="view-more">
-                      <span class="bg-more-text">+${backgrounds.length - previewCount}</span>
-                      <span class="bg-more-label">查看更多</span>
-                    </div>
-                  ` : ''}
-                ` : '<div class="bg-empty">暂无背景图片，请添加到 public/blog/backgrounds/ 文件夹</div>'}
+              <div class="color-side">
+                <div class="theme-chip"><span class="theme-chip-dot"></span><span class="theme-chip-text">当前主题色</span></div>
+                <div class="setting-row">
+                  <div class="setting-label"><span>明度</span><span id="val-light">${Math.round(initial.l)}%</span></div>
+                  <input class="setting-slider palette-light" type="range" min="20" max="80" value="${Math.round(initial.l)}" aria-label="明度" />
+                </div>
               </div>
-              <div class="bg-controls">
-                <div class="setting-row">
-                  <div class="setting-label"><span>虚化程度</span><span id="val-blur">${bgState.blur}px</span></div>
-                  <input class="setting-slider" id="input-blur" type="range" min="0" max="20" value="${bgState.blur}" />
-                </div>
-                <div class="setting-row">
-                  <div class="setting-label"><span>背景亮度</span><span id="val-opacity">${Math.round(bgState.opacity * 100)}%</span></div>
-                  <input class="setting-slider" id="input-opacity" type="range" min="10" max="100" value="${bgState.opacity * 100}" />
-                </div>
-                <div class="setting-row setting-switch">
-                  <div class="setting-label"><span>仅背景图片</span><span>不叠加主题色</span></div>
-                  <div class="checkbox-wrapper-5">
-                    <div class="check">
-                      <input ${bgState.imageOnly ? 'checked' : ''} id="toggle-image-only" type="checkbox">
-                      <label for="toggle-image-only"></label>
-                    </div>
+            </div>
+          </section>
+
+          <section class="palette-section">
+            <div class="section-label">背景</div>
+            <div class="bg-grid">
+              <button class="bg-item bg-solid ${bgState.mode === 'color' ? 'active' : ''}" type="button" data-action="solid">
+                <span class="bg-solid-swatch"></span>
+                <span class="bg-solid-label">纯色</span>
+              </button>
+              ${
+                backgrounds.length > 0
+                  ? `
+                ${previewImages
+                  .map(
+                    (src) => `
+                  <button class="bg-item ${bgState.mode === 'image' && bgState.image === src ? 'active' : ''}"
+                       type="button"
+                       style="background-image: url('${src}')"
+                       data-src="${src}"></button>
+                `
+                  )
+                  .join('')}
+                ${
+                  hasMore
+                    ? `
+                  <button class="bg-item bg-more" type="button" data-action="view-more">
+                    <span class="bg-more-text">+${backgrounds.length - previewCount}</span>
+                    <span class="bg-more-label">更多</span>
+                  </button>
+                `
+                    : ''
+                }
+              `
+                  : '<div class="bg-empty">暂无背景图片，请添加到 public/blog/backgrounds/ 文件夹</div>'
+              }
+            </div>
+          </section>
+
+          <section class="palette-section">
+            <div class="section-label">显示</div>
+            <div class="bg-controls">
+              <div class="setting-row">
+                <div class="setting-label"><span>卡片透明度</span><span id="val-panel">${Math.round((bgState.panelAlpha ?? DEFAULT_PANEL_ALPHA) * 100)}%</span></div>
+                <input class="setting-slider" id="input-panel" type="range" min="20" max="100" value="${Math.round((bgState.panelAlpha ?? DEFAULT_PANEL_ALPHA) * 100)}" />
+              </div>
+              <div class="setting-row needs-image">
+                <div class="setting-label"><span>虚化程度</span><span id="val-blur">${bgState.blur}px</span></div>
+                <input class="setting-slider" id="input-blur" type="range" min="0" max="20" value="${bgState.blur}" />
+              </div>
+              <div class="setting-row needs-image">
+                <div class="setting-label"><span>背景亮度</span><span id="val-opacity">${Math.round(bgState.opacity * 100)}%</span></div>
+                <input class="setting-slider" id="input-opacity" type="range" min="10" max="100" value="${bgState.opacity * 100}" />
+              </div>
+              <div class="setting-row setting-switch needs-image">
+                <div class="setting-label"><span>仅背景图片</span><span>不叠加主题色</span></div>
+                <div class="checkbox-wrapper-5">
+                  <div class="check">
+                    <input ${bgState.imageOnly ? 'checked' : ''} id="toggle-image-only" type="checkbox">
+                    <label for="toggle-image-only"></label>
                   </div>
                 </div>
               </div>
             </div>
-          `}
+          </section>
         </div>
+
         <div class="palette-footer">
-          <button class="palette-btn-close" type="button">关闭</button>
+          <button class="palette-btn-close" type="button">完成</button>
         </div>
       </div>
     `
 
-    // Store backgrounds for later use
     modal._backgrounds = backgrounds
     return modal
   }
 
-  // Fullscreen image picker modal with lazy loading
   const createImagePickerModal = async (backgrounds) => {
-    // Load thumbnails config
     let thumbsConfig = { dir: '/blog/backgrounds/thumbs/', files: [] }
     try {
       const resp = await fetch('/blog/thumbs.json')
@@ -438,31 +588,30 @@ document.addEventListener('DOMContentLoaded', async () => {
           <button class="image-picker-close" type="button" aria-label="close">×</button>
         </div>
         <div class="image-picker-grid">
-          ${backgrounds.map((src, i) => {
-            // Use thumbnail if available, fallback to full image
-            const baseName = src.split('/').pop().replace(/\.[^.]+$/, '')
-            const thumbFile = thumbsConfig.files.find(f => f.includes(baseName))
-            const thumbSrc = thumbFile ? `${thumbsConfig.dir}${thumbFile}` : src
-            return `
-              <div class="image-picker-item ${bgState.image === src ? 'active' : ''}" 
+          ${backgrounds
+            .map((src) => {
+              const baseName = src.split('/').pop().replace(/\.[^.]+$/, '')
+              const thumbFile = thumbsConfig.files.find((f) => f.includes(baseName))
+              const thumbSrc = thumbFile ? `${thumbsConfig.dir}${thumbFile}` : src
+              return `
+              <div class="image-picker-item ${bgState.image === src ? 'active' : ''}"
                    data-src="${src}"
                    data-thumb="${thumbSrc}"></div>
             `
-          }).join('')}
+            })
+            .join('')}
         </div>
       </div>
     `
 
-    // Lazy load images with IntersectionObserver for better performance
-    // Limit concurrent loads to prevent jank
+    // Lazy load thumbnails with a small concurrency budget
     const loadQueue = []
     let loadingCount = 0
     const MAX_CONCURRENT = 6
 
     const processQueue = () => {
       while (loadQueue.length > 0 && loadingCount < MAX_CONCURRENT) {
-        const item = loadQueue.shift()
-        loadItemNow(item)
+        loadItemNow(loadQueue.shift())
       }
     }
 
@@ -498,21 +647,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       processQueue()
     }
 
-    // Use IntersectionObserver for true lazy loading
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          loadItem(entry.target)
-          observer.unobserve(entry.target)
-        }
-      })
-    }, { rootMargin: '100px' })
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            loadItem(entry.target)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { rootMargin: '100px' }
+    )
 
     requestAnimationFrame(() => {
-      const items = picker.querySelectorAll('.image-picker-item')
-      items.forEach(item => {
-        observer.observe(item)
-      })
+      picker.querySelectorAll('.image-picker-item').forEach((item) => observer.observe(item))
     })
 
     return picker
@@ -571,14 +719,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     let theme = getTheme()
     paletteEl = await createPaletteModal(theme)
     document.body.appendChild(paletteEl)
+    requestAnimationFrame(() => paletteEl && paletteEl.classList.add('open'))
+
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') close()
+    }
 
     const close = () => {
       if (!paletteEl) return
-      paletteEl.remove()
+      const el = paletteEl
       paletteEl = null
+      document.removeEventListener('keydown', onKeydown)
+      el.classList.remove('open')
+      window.setTimeout(() => el.remove(), 200)
     }
 
-    const closeBtn = paletteEl.querySelector('.palette-close')
+    document.addEventListener('keydown', onKeydown)
+
     const wheel = paletteEl.querySelector('.palette-wheel')
     const knob = paletteEl.querySelector('.wheel-knob')
     const light = paletteEl.querySelector('.palette-light')
@@ -593,104 +750,120 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     redraw()
 
-    // Per-tile loader using the global loader markup (scaled)
-    const initBgTileLoaders = () => {
-      const items = paletteEl.querySelectorAll('.bg-item[data-src]')
-      items.forEach((item) => {
-        const src = item.dataset.src
-        if (!src) return
+    // Tile loaders for the preview grid
+    paletteEl.querySelectorAll('.bg-item[data-src]').forEach((item) => {
+      const src = item.dataset.src
+      if (!src) return
+      const overlay = createTileLoader()
+      item.appendChild(overlay)
+      const img = new Image()
+      img.onload = () => overlay.remove()
+      img.onerror = () => overlay.remove()
+      img.src = src
+    })
 
-        const overlay = createTileLoader()
-        item.appendChild(overlay)
-
-        const img = new Image()
-        img.onload = () => {
-          overlay.remove()
-        }
-        img.onerror = () => {
-          overlay.remove()
-        }
-        img.src = src
-      })
-    }
-    initBgTileLoaders()
-
-    // Mode Switching - rebuild modal with new mode
-    const modeBtns = paletteEl.querySelectorAll('.mode-btn')
-    modeBtns.forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const newMode = btn.dataset.mode
-        applyBgState({ ...bgState, mode: newMode })
-        // Rebuild modal
-        paletteEl.remove()
-        paletteEl = null
-        await openPalette()
+    // Color scheme switch
+    paletteEl.querySelectorAll('.scheme-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.scheme
+        applyScheme(next)
+        paletteEl?.querySelectorAll('.scheme-btn').forEach((b) => {
+          b.classList.toggle('active', b.dataset.scheme === next)
+        })
+        // The wheel is painted with canvas pixels, so it has to be
+        // repainted for the new surface behind it
+        redraw()
       })
     })
 
-    // Background selection (only in image mode)
-    const bgItems = paletteEl.querySelectorAll('.bg-item')
-    bgItems.forEach(item => {
+    // Background-dependent controls are dimmed while in solid-color mode
+    const syncModeUI = () => {
+      if (!paletteEl) return
+      const isColor = bgState.mode === 'color'
+      paletteEl.classList.toggle('is-color-mode', isColor)
+      paletteEl.querySelectorAll('.needs-image input').forEach((el) => {
+        el.disabled = isColor
+      })
+      paletteEl.querySelectorAll('.bg-item').forEach((el) => {
+        const active = el.dataset.action === 'solid' ? isColor : !isColor && el.dataset.src === bgState.image
+        el.classList.toggle('active', !!active)
+      })
+    }
+    syncModeUI()
+
+    // Background selection — switches mode in place, no modal rebuild
+    paletteEl.querySelectorAll('.bg-item').forEach((item) => {
       item.addEventListener('click', () => {
-        // Check if it's the "view more" button
         if (item.dataset.action === 'view-more') {
-          openImagePicker(paletteEl._backgrounds)
+          openImagePicker(item.closest('.palette-modal')._backgrounds)
+          return
+        }
+        if (item.dataset.action === 'solid') {
+          applyBgState({ ...bgState, mode: 'color' })
+          syncModeUI()
           return
         }
         const src = item.dataset.src
-        if (src) {
-          // Show loader while loading new background image
-          showLoader()
-          const img = new Image()
-          img.onload = () => {
-            bgItems.forEach(i => i.classList.remove('active'))
-            item.classList.add('active')
-            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
-            hideLoader()
-          }
-          img.onerror = () => {
-            hideLoader()
-            bgItems.forEach(i => i.classList.remove('active'))
-            item.classList.add('active')
-            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
-          }
-          img.src = src
+        if (!src) return
+        const apply = () => {
+          applyBgState({ ...bgState, image: src, mode: 'image' })
+          syncModeUI()
         }
+        // Already-decoded images swap instantly; only show the loader
+        // when the bitmap still needs fetching
+        const img = new Image()
+        img.src = src
+        if (img.complete) {
+          apply()
+          return
+        }
+        showLoader()
+        const done = () => {
+          apply()
+          hideLoader()
+        }
+        img.onload = done
+        img.onerror = done
       })
     })
 
-    // Blur slider
+    // Sliders
+    const panelInput = paletteEl.querySelector('#input-panel')
+    const panelVal = paletteEl.querySelector('#val-panel')
+    panelInput?.addEventListener('input', () => {
+      panelVal.textContent = `${panelInput.value}%`
+      applyBgState({ ...bgState, panelAlpha: Number(panelInput.value) / 100 })
+    })
+
     const blurInput = paletteEl.querySelector('#input-blur')
     const blurVal = paletteEl.querySelector('#val-blur')
     blurInput?.addEventListener('input', () => {
-      const v = blurInput.value
-      blurVal.textContent = `${v}px`
-      applyBgState({ ...bgState, blur: Number(v) })
+      blurVal.textContent = `${blurInput.value}px`
+      applyBgState({ ...bgState, blur: Number(blurInput.value) })
     })
 
-    // Opacity slider
     const opacityInput = paletteEl.querySelector('#input-opacity')
     const opacityVal = paletteEl.querySelector('#val-opacity')
     opacityInput?.addEventListener('input', () => {
-      const v = opacityInput.value
-      opacityVal.textContent = `${v}%`
-      applyBgState({ ...bgState, opacity: Number(v) / 100 })
+      opacityVal.textContent = `${opacityInput.value}%`
+      applyBgState({ ...bgState, opacity: Number(opacityInput.value) / 100 })
     })
 
-    // Image-only toggle (only in image mode)
     const imageOnlyToggle = paletteEl.querySelector('#toggle-image-only')
     imageOnlyToggle?.addEventListener('change', () => {
       applyBgState({ ...bgState, mode: 'image', imageOnly: !!imageOnlyToggle.checked })
+      syncModeUI()
     })
 
+    paletteEl._syncModeUI = syncModeUI
+
+    // Color wheel dragging
     const pickAt = (clientX, clientY) => {
       const rect = wheel.getBoundingClientRect()
       const x = clamp(clientX - rect.left, 0, rect.width)
       const y = clamp(clientY - rect.top, 0, rect.height)
-      const scaleX = wheel.width / rect.width
-      const scaleY = wheel.height / rect.height
-      const px = x * scaleX
-      const py = y * scaleY
+      const px = (x * wheel.width) / rect.width
+      const py = (y * wheel.height) / rect.height
       const cx = wheel.width / 2
       const cy = wheel.height / 2
       const dx = px - cx
@@ -726,193 +899,359 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.addEventListener('touchmove', move, { passive: true })
     window.addEventListener('touchend', end)
 
+    const lightVal = paletteEl.querySelector('#val-light')
     light?.addEventListener('input', () => {
       theme = { ...theme, l: Number(light.value) }
+      if (lightVal) lightVal.textContent = `${light.value}%`
       redraw()
     })
 
-    // Bottom close button
-    const footerCloseBtn = paletteEl.querySelector('.palette-btn-close')
-    footerCloseBtn?.addEventListener('click', close)
-
+    paletteEl.querySelector('.palette-btn-close')?.addEventListener('click', close)
+    paletteEl.querySelector('.palette-close')?.addEventListener('click', close)
     paletteEl.addEventListener('click', (e) => {
       if (e.target === paletteEl) close()
     })
-
-    document.addEventListener(
-      'keydown',
-      (e) => {
-        if (e.key === 'Escape') close()
-      },
-      { once: true }
-    )
   }
 
-  // Fullscreen image picker
   let imagePickerEl = null
   const openImagePicker = async (backgrounds) => {
     if (imagePickerEl) return
     imagePickerEl = await createImagePickerModal(backgrounds)
     document.body.appendChild(imagePickerEl)
 
-    const close = () => {
-      if (!imagePickerEl) return
-      imagePickerEl.remove()
-      imagePickerEl = null
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') close()
     }
 
-    const closeBtn = imagePickerEl.querySelector('.image-picker-close')
-    closeBtn?.addEventListener('click', (e) => {
+    const close = () => {
+      if (!imagePickerEl) return
+      const el = imagePickerEl
+      imagePickerEl = null
+      document.removeEventListener('keydown', onKeydown)
+      el.remove()
+    }
+
+    document.addEventListener('keydown', onKeydown)
+
+    imagePickerEl.querySelector('.image-picker-close')?.addEventListener('click', (e) => {
       e.stopPropagation()
       close()
     })
     imagePickerEl.addEventListener('click', (e) => {
-      if (e.target === imagePickerEl) close()
+      if (e.target === imagePickerEl || e.target.classList.contains('image-picker-backdrop'))
+        close()
     })
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') close()
-    }, { once: true })
 
-    // Image selection in picker
-    const items = imagePickerEl.querySelectorAll('.image-picker-item')
-    items.forEach(item => {
+    imagePickerEl.querySelectorAll('.image-picker-item').forEach((item) => {
       item.addEventListener('click', () => {
         const src = item.dataset.src
-        if (src) {
-          // Show loader while loading new background image
-          showLoader()
-          const img = new Image()
-          img.onload = () => {
-            items.forEach(i => i.classList.remove('active'))
-            item.classList.add('active')
-            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
-
-            // Update palette modal's preview grid
-            const paletteItems = paletteEl?.querySelectorAll('.bg-item')
-            if (paletteItems) {
-              paletteItems.forEach(i => {
-                if (i.dataset.src === src) {
-                  i.classList.add('active')
-                } else {
-                  i.classList.remove('active')
-                }
-              })
-            }
-            hideLoader()
-            close()
-          }
-          img.onerror = () => {
-            hideLoader()
-            items.forEach(i => i.classList.remove('active'))
-            item.classList.add('active')
-            applyBgState({ ...bgState, image: src, mode: 'image', imageOnly: bgState.imageOnly })
-            close()
-          }
-          img.src = src
+        if (!src) return
+        showLoader()
+        const apply = () => {
+          applyBgState({ ...bgState, image: src, mode: 'image' })
+          // The chosen image may live outside the palette's preview grid;
+          // syncModeUI reconciles both grids against the new state
+          paletteEl?._syncModeUI?.()
+          hideLoader()
+          close()
         }
+        const img = new Image()
+        img.onload = apply
+        img.onerror = apply
+        img.src = src
       })
     })
   }
 
-  const openSearch = () => {
-    const existing = document.querySelector('.search-modal')
-    if (existing) return
+  // ----------------------------------------
+  // Global search (search-index.json)
+  // ----------------------------------------
 
-    const modal = document.createElement('div')
-    modal.className = 'search-modal'
-    modal.innerHTML = `
+  let searchIndexCache = null
+  const loadSearchIndex = async () => {
+    if (searchIndexCache) return searchIndexCache
+    try {
+      const resp = await fetch('/blog/search-index.json')
+      if (resp.ok) searchIndexCache = await resp.json()
+    } catch {
+      searchIndexCache = null
+    }
+    return searchIndexCache || []
+  }
+
+  const highlight = (text, terms) => {
+    let out = escapeHtml(text)
+    for (const term of terms) {
+      if (!term) continue
+      const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')
+      out = out.replace(re, (m) => `<mark>${m}</mark>`)
+    }
+    return out
+  }
+
+  const makeSnippet = (content, terms) => {
+    const lower = content.toLowerCase()
+    let pos = -1
+    for (const term of terms) {
+      const p = lower.indexOf(term.toLowerCase())
+      if (p !== -1 && (pos === -1 || p < pos)) pos = p
+    }
+    if (pos === -1) return content.slice(0, 90)
+    const start = Math.max(0, pos - 30)
+    const end = Math.min(content.length, pos + 60)
+    return (start > 0 ? '…' : '') + content.slice(start, end) + (end < content.length ? '…' : '')
+  }
+
+  const searchPosts = (index, query) => {
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+    if (!terms.length) return []
+    const scored = []
+    for (const post of index) {
+      const title = post.title.toLowerCase()
+      const tags = (post.tags || []).join(' ').toLowerCase()
+      const content = (post.content || '').toLowerCase()
+      let score = 0
+      let allMatch = true
+      for (const term of terms) {
+        let s = 0
+        if (title.includes(term)) s += 5
+        if (tags.includes(term)) s += 3
+        if (content.includes(term)) s += 1
+        if (s === 0) {
+          allMatch = false
+          break
+        }
+        score += s
+      }
+      if (allMatch) scored.push({ post, score })
+    }
+    scored.sort((a, b) => b.score - a.score)
+    return scored.map((s) => s.post)
+  }
+
+  let searchModal = null
+  const openSearch = async () => {
+    if (searchModal) return
+
+    searchModal = document.createElement('div')
+    searchModal.className = 'search-modal'
+    searchModal.innerHTML = `
       <div class="search-card" role="dialog" aria-modal="true" aria-label="search">
         <div class="search-header">
-          <input class="search-input" type="text" placeholder="搜索文章..." autofocus />
+          <svg class="search-header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input class="search-input" type="text" placeholder="搜索文章标题、标签、内容…" autofocus />
           <button class="search-close" type="button" aria-label="close">×</button>
         </div>
-        <div class="search-results"></div>
+        <div class="search-results"><div class="search-hint">输入关键词，搜索全站文章</div></div>
+        <div class="search-footer">
+          <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+          <span><kbd>Enter</kbd> 打开</span>
+          <span><kbd>Esc</kbd> 关闭</span>
+        </div>
       </div>
     `
-    document.body.appendChild(modal)
+    document.body.appendChild(searchModal)
+    requestAnimationFrame(() => searchModal && searchModal.classList.add('open'))
 
-    const input = modal.querySelector('.search-input')
-    const results = modal.querySelector('.search-results')
-    const closeBtn = modal.querySelector('.search-close')
+    const input = searchModal.querySelector('.search-input')
+    const results = searchModal.querySelector('.search-results')
+    let activeIndex = -1
 
-    const close = () => modal.remove()
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') {
+        close()
+        return
+      }
+      const links = results ? Array.from(results.querySelectorAll('.search-result')) : []
+      if (!links.length) return
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        activeIndex =
+          e.key === 'ArrowDown'
+            ? (activeIndex + 1) % links.length
+            : (activeIndex - 1 + links.length) % links.length
+        links.forEach((l, i) => l.classList.toggle('selected', i === activeIndex))
+        links[activeIndex]?.scrollIntoView({ block: 'nearest' })
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        const target = activeIndex >= 0 ? links[activeIndex] : links[0]
+        target?.click()
+      }
+    }
 
-    closeBtn.addEventListener('click', close)
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) close()
+    const close = () => {
+      if (!searchModal) return
+      const el = searchModal
+      searchModal = null
+      document.removeEventListener('keydown', onKeydown)
+      el.classList.remove('open')
+      window.setTimeout(() => el.remove(), 200)
+    }
+
+    document.addEventListener('keydown', onKeydown)
+
+    searchModal.querySelector('.search-close').addEventListener('click', close)
+    searchModal.addEventListener('click', (e) => {
+      if (e.target === searchModal) close()
+      // Close after choosing a result (SPA handler takes over navigation)
+      if (e.target instanceof Element && e.target.closest('.search-result')) close()
     })
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') close()
-    }, { once: true })
 
-    const posts = Array.from(document.querySelectorAll('.post-item, .post-card')).map(el => ({
-      title: el.querySelector('.post-title, h2')?.textContent || '',
-      excerpt: el.querySelector('.post-excerpt, p')?.textContent || '',
-      href: el.querySelector('a')?.href || '',
-      date: el.querySelector('.post-date')?.textContent || ''
-    }))
+    const index = await loadSearchIndex()
 
+    let debounceTimer = 0
     input.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase()
-      if (!q) {
-        results.innerHTML = ''
-        return
-      }
-
-      const filtered = posts.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.excerpt.toLowerCase().includes(q)
-      )
-
-      if (filtered.length === 0) {
-        results.innerHTML = '<div class="search-empty">未找到相关文章</div>'
-        return
-      }
-
-      results.innerHTML = filtered.map(p => `
-        <a class="search-result" href="${p.href}">
-          <div class="search-result-title">${p.title}</div>
-          ${p.excerpt ? `<div class="search-result-excerpt">${p.excerpt.slice(0, 80)}...</div>` : ''}
-          ${p.date ? `<div class="search-result-date">${p.date}</div>` : ''}
-        </a>
-      `).join('')
+      clearTimeout(debounceTimer)
+      debounceTimer = window.setTimeout(() => {
+        const q = input.value.trim()
+        activeIndex = -1
+        if (!q) {
+          results.innerHTML = '<div class="search-hint">输入关键词，搜索全站文章</div>'
+          return
+        }
+        const terms = q.split(/\s+/).filter(Boolean)
+        const found = searchPosts(index, q)
+        if (!found.length) {
+          results.innerHTML = `<div class="search-empty">未找到与 "${escapeHtml(q)}" 相关的文章</div>`
+          return
+        }
+        results.innerHTML = found
+          .map(
+            (p) => `
+          <a class="search-result" href="${p.url}">
+            <div class="search-result-title">${highlight(p.title, terms)}</div>
+            <div class="search-result-excerpt">${highlight(makeSnippet(p.content || p.excerpt || '', terms), terms)}</div>
+            <div class="search-result-meta">
+              <span>${p.date}</span>
+              ${(p.tags || []).map((t) => `<span class="search-result-tag">${escapeHtml(t)}</span>`).join('')}
+            </div>
+          </a>
+        `
+          )
+          .join('')
+      }, 120)
     })
 
     input.focus()
   }
 
-  // Post enhancements
+  // Palette / search buttons via delegation (survives SPA swaps)
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return
+    if (e.target.closest('.palette-btn')) {
+      openPalette()
+      return
+    }
+    if (e.target.closest('.search') || e.target.closest('.sticky-search')) {
+      openSearch()
+    }
+  })
+
+  // Keyboard shortcut: Ctrl/Cmd+K or '/' opens search
+  document.addEventListener('keydown', (e) => {
+    const typing =
+      e.target instanceof HTMLElement &&
+      (e.target.tagName === 'INPUT' ||
+        e.target.tagName === 'TEXTAREA' ||
+        e.target.isContentEditable)
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault()
+      openSearch()
+    } else if (e.key === '/' && !typing && !searchModal) {
+      e.preventDefault()
+      openSearch()
+    } else if (e.key === 'Escape') {
+      setOpen(false)
+    }
+  })
+
+  // ----------------------------------------
+  // Post enhancements: TOC / code copy / lightbox / reading progress
+  // ----------------------------------------
+
+  // ----------------------------------------
+  // Mini games (loaded on demand)
+  // ----------------------------------------
+
+  let teardownGame = null
+  let gameMountSeq = 0
+  const syncGame = async () => {
+    const seq = ++gameMountSeq
+    if (teardownGame) {
+      teardownGame()
+      teardownGame = null
+    }
+    const stage = qs('[data-game]')
+    if (!stage) return
+    try {
+      const { mountGame } = await import('/blog/games.js')
+      if (seq !== gameMountSeq || !stage.isConnected) return
+      const teardown = await mountGame(stage)
+      // The page may have been swapped again while the game module loaded
+      if (seq !== gameMountSeq || !stage.isConnected) {
+        teardown?.()
+        return
+      }
+      teardownGame = teardown
+    } catch (err) {
+      console.error('[games] failed to load:', err)
+      const viewport = stage.querySelector('[data-role="viewport"]')
+      if (viewport) viewport.innerHTML = '<div class="game-loading">游戏加载失败</div>'
+    }
+  }
+
   const runPostEnhancements = () => {
-    const isPostPage = Boolean(document.querySelector('.post'))
+    const isPostPage = Boolean(qs('.post'))
+    document.body.setAttribute('data-page', detectPageKind())
+    initReadingProgress(isPostPage)
+    syncGame()
     if (!isPostPage) return
 
-    const titleEl = document.querySelector('.post-h1')
+    const titleEl = qs('.post-h1')
     if (titleEl) titleEl.classList.remove('typing')
 
-    const tocRoot = document.querySelector('.post-toc-inner')
-    const content = document.querySelector('.post-content')
+    initToc()
+    initCodeCopy()
+  }
+
+  const detectPageKind = () => {
+    if (qs('.post')) return 'post'
+    if (qs('.tag-list')) return 'tags'
+    if (qs('.archive-container')) return 'archives'
+    if (qs('.changelog-wrap')) return 'changelog'
+    if (qs('.project-list')) return 'projects'
+    if (qs('[data-game]')) return 'game'
+    if (qs('.game-list')) return 'games'
+    return 'home'
+  }
+
+  const initToc = () => {
+    const tocRoot = qs('.post-toc-inner')
+    const content = qs('.post-content')
     if (!tocRoot || !content) return
 
-    const headings = Array.from(content.querySelectorAll('h2, h3'))
+    const headings = qsa('h2, h3', content)
     if (headings.length === 0) {
-      const tocAside = document.querySelector('.post-toc')
+      const tocAside = qs('.post-toc')
       if (tocAside) tocAside.style.display = 'none'
       return
     }
 
-    const slugify = (s) =>
-      s.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9\u4e00-\u9fa5\-]/g, '')
+    const slugifyText = (s) =>
+      s
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9一-龥-]/g, '')
 
     const used = new Map()
     const ensureId = (el) => {
-      let id = el.id
-      if (id) return id
-      const base = slugify(el.textContent || 'section') || 'section'
+      if (el.id) return el.id
+      const base = slugifyText(el.textContent || 'section') || 'section'
       const n = (used.get(base) || 0) + 1
       used.set(base, n)
-      id = n === 1 ? base : `${base}-${n}`
-      el.id = id
-      return id
+      el.id = n === 1 ? base : `${base}-${n}`
+      return el.id
     }
 
     tocRoot.innerHTML = ''
@@ -925,9 +1264,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       a.setAttribute('data-level', h.tagName === 'H3' ? '3' : '2')
       a.addEventListener('click', (e) => {
         e.preventDefault()
+        e.stopPropagation()
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         history.pushState(null, '', `#${id}`)
-        // Auto-close TOC drawer on mobile
         document.body.setAttribute('data-toc-open', 'false')
       })
       tocRoot.appendChild(a)
@@ -946,11 +1285,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       },
       { root: null, threshold: 0.2, rootMargin: '-20% 0px -70% 0px' }
     )
-
     for (const it of items) io.observe(it.heading)
 
-    // Mobile TOC toggle
-    const tocToggle = document.querySelector('.toc-toggle')
+    const tocToggle = qs('.toc-toggle')
     if (tocToggle) {
       tocToggle.onclick = () => {
         const open = document.body.getAttribute('data-toc-open') === 'true'
@@ -959,181 +1296,132 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // SPA Navigation
-  const initLinks = () => {
-    document.querySelectorAll('a').forEach(a => {
-      const href = a.getAttribute('href')
-      // Skip links that don't match SPA navigation criteria
-      if (!href || a.getAttribute('target') === '_blank') return
-      if (href.startsWith('#')) return
-      if (href.startsWith('mailto:') || href.startsWith('tel:')) return
-      if (href.startsWith('http://') || href.startsWith('https://')) return
-      if (href.startsWith('tencent://')) return
-      if (!href.startsWith('/blog') && !href.startsWith('blog/') && !href.startsWith('./') && !href.startsWith('../')) return
-      // Skip copy-to-click elements (they have their own handler)
-      if (a.hasAttribute('data-copy-text')) return
-      // Skip already-bound links
-      if (a.getAttribute('data-spa-bound') === 'true') return
-      a.setAttribute('data-spa-bound', 'true')
-
-      a.addEventListener('click', async (e) => {
-        e.preventDefault()
-        const targetUrl = a.href
-        if (targetUrl === window.location.href) {
-          // Show toast notification for current page
-          const currentPath = window.location.pathname
-          let pageName = '当前页面'
-          if (currentPath === '/blog/' || currentPath === '/blog') {
-            pageName = '主页'
-          } else if (currentPath.startsWith('/blog/archives')) {
-            pageName = '归档页'
-          } else if (currentPath.startsWith('/blog/tags')) {
-            pageName = '标签页'
-          } else if (currentPath.startsWith('/blog/changelog')) {
-            pageName = '更新日志页'
-          }
-          showToast(`已经在${pageName}了`)
-          return
-        }
-
-        // Show loader immediately
-        showLoader()
-
+  const initCodeCopy = () => {
+    qsa('.post-content pre').forEach((pre) => {
+      const wrap = pre.closest('.code-block') || pre
+      if (wrap.querySelector('.code-copy')) return
+      const btn = document.createElement('button')
+      btn.className = 'code-copy'
+      btn.type = 'button'
+      btn.setAttribute('aria-label', '复制代码')
+      btn.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a1 1 0 0 1 1-1h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+      btn.addEventListener('click', async () => {
+        const code = pre.innerText
         try {
-          const resp = await fetch(targetUrl)
-          const html = await resp.text()
-          const parser = new DOMParser()
-          const doc = parser.parseFromString(html, 'text/html')
-
-          document.title = doc.title
-
-          // Sync page-specific stylesheets (archives.css / tags.css / post.css, etc.)
-          // because SPA navigation only swaps .main innerHTML by default.
-          // Returns a Promise that resolves when all new CSS files are loaded.
-          const syncStylesheets = () => {
-            const normalizeHref = (href) => {
-              try {
-                return new URL(href, window.location.origin).pathname
-              } catch {
-                return href
-              }
-            }
-
-            const isBlogStylesheet = (href) => {
-              const p = normalizeHref(href)
-              return p.startsWith('/blog/') && p.endsWith('.css')
-            }
-
-            const nextLinks = Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]'))
-              .map((l) => normalizeHref(l.getAttribute('href')))
-              .filter(isBlogStylesheet)
-
-            const curLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'))
-              .map((l) => ({ el: l, href: normalizeHref(l.getAttribute('href')) }))
-              .filter((x) => isBlogStylesheet(x.href))
-
-            // Remove current page-specific css that isn't needed anymore
-            for (const { el, href } of curLinks) {
-              if (!nextLinks.includes(href)) el.remove()
-            }
-
-            // Add missing css required by next page and wait for them to load
-            const have = new Set(
-              Array.from(document.querySelectorAll('link[rel="stylesheet"][href]'))
-                .map((l) => normalizeHref(l.getAttribute('href')))
-                .filter(isBlogStylesheet)
-            )
-            const loadPromises = []
-            for (const href of nextLinks) {
-              if (have.has(href)) continue
-              const link = document.createElement('link')
-              link.rel = 'stylesheet'
-              link.href = href
-              const loadPromise = new Promise((resolve) => {
-                link.onload = resolve
-                link.onerror = resolve // Continue even on error
-              })
-              document.head.appendChild(link)
-              loadPromises.push(loadPromise)
-            }
-            return Promise.all(loadPromises)
-          }
-          await syncStylesheets()
-
-          const newMain = doc.querySelector('.main')
-          const currentMain = document.querySelector('.main')
-          if (newMain && currentMain) {
-            currentMain.innerHTML = newMain.innerHTML
-
-            history.pushState(null, '', targetUrl)
-
-            // Keep cross-page UI state in sync (important for SPA navigations)
-            const isPost = Boolean(doc.querySelector('.post'))
-            document.body.setAttribute('data-page', isPost ? 'post' : '')
-            if (!isPost) {
-              // Leaving a post page: close mobile TOC drawer and remove any lingering toggles
-              document.body.setAttribute('data-toc-open', 'false')
-              document.querySelector('.toc-toggle')?.remove()
-              document.querySelector('.post-toc')?.remove()
-            }
-
-            const currentPath = new URL(targetUrl).pathname
-            document.querySelectorAll('.nav-item').forEach(nav => {
-              const navPath = new URL(nav.href, window.location.origin).pathname
-              nav.classList.toggle('active', navPath === currentPath)
-            })
-
-            // Keep sidebar closed after navigation. User can open it via hamburger.
-            closeSidebar()
-            initLinks()
-            attachGlobalListeners()
-            runPostEnhancements()
-            initBackToTop()
-            bindCopyActions()
-
-            // Hide loader after navigation complete
-            hideLoader()
-          }
-        } catch (err) {
-          console.error(err)
-          hideLoader()
-          window.location.href = targetUrl
+          await navigator.clipboard.writeText(code)
+          btn.classList.add('copied')
+          btn.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+          showToast('已复制代码')
+          setTimeout(() => {
+            btn.classList.remove('copied')
+            btn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a1 1 0 0 1 1-1h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+          }, 1600)
+        } catch {
+          showToast('复制失败')
         }
       })
+      if (wrap === pre) {
+        pre.style.position = 'relative'
+      }
+      wrap.appendChild(btn)
     })
   }
 
-  const attachGlobalListeners = () => {
-    const paletteBtn = document.querySelector('.palette-btn')
-    if (paletteBtn && paletteBtn.getAttribute('data-listener-bound') !== 'true') {
-      paletteBtn.setAttribute('data-listener-bound', 'true')
-      paletteBtn.addEventListener('click', openPalette)
+  // Lightbox for post images (delegated)
+  let lightboxEl = null
+  const openLightbox = (src, alt) => {
+    if (lightboxEl) return
+    lightboxEl = document.createElement('div')
+    lightboxEl.className = 'lightbox'
+    lightboxEl.innerHTML = `
+      <img class="lightbox-img" src="${src}" alt="${escapeHtml(alt || '')}" />
+      <div class="lightbox-caption">${escapeHtml(alt || '')}</div>
+    `
+    document.body.appendChild(lightboxEl)
+    document.body.style.overflow = 'hidden'
+    requestAnimationFrame(() => lightboxEl && lightboxEl.classList.add('open'))
+
+    const onKeydown = (e) => {
+      if (e.key === 'Escape') close()
     }
-    const searchBtn = document.querySelector('.search')
-    if (searchBtn && searchBtn.getAttribute('data-listener-bound') !== 'true') {
-      searchBtn.setAttribute('data-listener-bound', 'true')
-      searchBtn.addEventListener('click', openSearch)
+    const close = () => {
+      if (!lightboxEl) return
+      const el = lightboxEl
+      lightboxEl = null
+      document.removeEventListener('keydown', onKeydown)
+      document.body.style.overflow = ''
+      el.classList.remove('open')
+      window.setTimeout(() => el.remove(), 240)
     }
+    document.addEventListener('keydown', onKeydown)
+    lightboxEl.addEventListener('click', close)
   }
 
-  // Back to Top Button & Post Sticky Header
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Element)) return
+    const img = e.target.closest('.post-content img')
+    if (img && img instanceof HTMLImageElement) {
+      e.preventDefault()
+      openLightbox(img.currentSrc || img.src, img.alt)
+    }
+  })
+
+  // Reading progress bar (post pages only)
+  let readingProgressEl = null
+  let readingProgressRaf = 0
+  const updateReadingProgress = () => {
+    readingProgressRaf = 0
+    if (!readingProgressEl) return
+    const doc = document.documentElement
+    const max = doc.scrollHeight - window.innerHeight
+    const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0
+    readingProgressEl.style.transform = `scaleX(${ratio})`
+  }
+  const onReadingScroll = () => {
+    if (!readingProgressRaf) {
+      readingProgressRaf = requestAnimationFrame(updateReadingProgress)
+    }
+  }
+  const initReadingProgress = (isPostPage) => {
+    if (!isPostPage) {
+      readingProgressEl?.parentElement?.remove()
+      readingProgressEl = null
+      window.removeEventListener('scroll', onReadingScroll)
+      return
+    }
+    if (!readingProgressEl) {
+      const wrap = document.createElement('div')
+      wrap.className = 'reading-progress'
+      readingProgressEl = document.createElement('div')
+      readingProgressEl.className = 'reading-progress-bar'
+      wrap.appendChild(readingProgressEl)
+      document.body.appendChild(wrap)
+      window.addEventListener('scroll', onReadingScroll, { passive: true })
+    }
+    updateReadingProgress()
+  }
+
+  // ----------------------------------------
+  // Back-to-top & post sticky header
+  // ----------------------------------------
+
+  let scrollUiCleanup = null
   const initBackToTop = () => {
-    // Remove existing button if any (for SPA navigation)
-    const existingBtn = document.querySelector('.back-to-top')
-    if (existingBtn) existingBtn.remove()
-    const existingHeader = document.querySelector('.post-sticky-header')
-    if (existingHeader) existingHeader.remove()
+    if (scrollUiCleanup) {
+      scrollUiCleanup()
+      scrollUiCleanup = null
+    }
+    qs('.back-to-top')?.remove()
+    qs('.post-sticky-header')?.remove()
 
-    // Check if we're on tags page
-    const isTagsPage = Boolean(document.querySelector('.tag-list'))
-    if (isTagsPage) return
+    if (qs('.tag-list')) return
 
-    // Check if we're on a post page
-    const isPostPage = Boolean(document.querySelector('.post'))
-    const postTitleEl = document.querySelector('.post-h1')
-    const postTitle = postTitleEl ? postTitleEl.textContent : ''
+    const isPostPage = Boolean(qs('.post'))
+    const postTitle = qs('.post-h1')?.textContent || ''
 
-    // Create back-to-top button
     const btn = document.createElement('button')
     btn.className = 'back-to-top'
     btn.setAttribute('aria-label', 'Back to top')
@@ -1142,9 +1430,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
       </svg>
     `
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }))
     document.body.appendChild(btn)
 
-    // Create sticky header for post pages
     let stickyHeader = null
     if (isPostPage && postTitle) {
       stickyHeader = document.createElement('div')
@@ -1153,92 +1441,269 @@ document.addEventListener('DOMContentLoaded', async () => {
         <a class="sticky-back" href="/blog/" aria-label="返回">
           <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M269.704 127.864a30 30 0 0 1 42.428 42.428L172.424 310H696c144.696 0 261.996 117.3 262 262 0 144.696-117.304 262-262 262H318a30 30 0 0 1 0-60H696c111.56 0 202-90.44 202-202-0.004-111.564-90.44-202-202-202H172.424l139.708 139.704a30 30 0 0 1-42.428 42.428l-190.92-190.92a30.004 30.004 0 0 1 0-42.428l190.92-190.92z" fill="currentColor"></path></svg>
         </a>
-        <span class="sticky-title">${postTitle}</span>
+        <span class="sticky-title">${escapeHtml(postTitle)}</span>
         <button class="sticky-search" aria-label="search">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
         </button>
       `
       document.body.appendChild(stickyHeader)
+    }
 
-      // Bind search button
-      const searchBtn = stickyHeader.querySelector('.sticky-search')
-      if (searchBtn) {
-        searchBtn.addEventListener('click', openSearch)
+    let ticking = false
+    const checkScroll = () => {
+      ticking = false
+      const show = window.scrollY > 300
+      btn.classList.toggle('visible', show)
+      stickyHeader?.classList.toggle('visible', show)
+    }
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(checkScroll)
       }
     }
 
-    // Throttle function for scroll performance
-  const throttle = (fn, delay) => {
-    let lastCall = 0
-    return (...args) => {
-      const now = Date.now()
-      if (now - lastCall >= delay) {
-        lastCall = now
-        fn(...args)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    checkScroll()
+
+    scrollUiCleanup = () => window.removeEventListener('scroll', onScroll)
+  }
+
+  // ----------------------------------------
+  // SPA navigation: prefetch, cache, transitions
+  // ----------------------------------------
+
+  const pageCache = new Map()
+  const PAGE_CACHE_MAX = 40
+  const PAGE_CACHE_TTL = 5 * 60 * 1000
+  const prefetching = new Set()
+
+  const cachePut = (url, html) => {
+    if (pageCache.size >= PAGE_CACHE_MAX) {
+      const first = pageCache.keys().next().value
+      pageCache.delete(first)
+    }
+    pageCache.set(url, { html, time: Date.now() })
+  }
+
+  const cacheGet = (url) => {
+    const hit = pageCache.get(url)
+    if (!hit) return null
+    if (Date.now() - hit.time > PAGE_CACHE_TTL) {
+      pageCache.delete(url)
+      return null
+    }
+    return hit.html
+  }
+
+  const fetchPage = async (url) => {
+    const cached = cacheGet(url)
+    if (cached) return cached
+    const resp = await fetch(url)
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+    const html = await resp.text()
+    cachePut(url, html)
+    return html
+  }
+
+  const prefetchPage = (url) => {
+    if (cacheGet(url) || prefetching.has(url)) return
+    prefetching.add(url)
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : null))
+      .then((html) => {
+        if (html) cachePut(url, html)
+      })
+      .catch(() => {})
+      .finally(() => prefetching.delete(url))
+  }
+
+  const isSpaLink = (a) => {
+    if (!a || !(a instanceof HTMLAnchorElement)) return false
+    const href = a.getAttribute('href')
+    if (!href) return false
+    if (a.getAttribute('target') === '_blank') return false
+    if (a.hasAttribute('data-copy-text')) return false
+    if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return false
+    if (/^[a-z]+:\/\//i.test(href) || href.startsWith('tencent://')) return false
+    return href.startsWith('/blog')
+  }
+
+  // Sync page-specific stylesheets (archives.css / post.css, ...)
+  const syncStylesheets = (doc) => {
+    const normalizeHref = (href) => {
+      try {
+        return new URL(href, window.location.origin).pathname
+      } catch {
+        return href
       }
     }
-  }
-
-  // Show/hide based on scroll position (throttled for performance)
-  const checkScroll = throttle(() => {
-    if (window.scrollY > 300) {
-      btn.classList.add('visible')
-      if (stickyHeader) stickyHeader.classList.add('visible')
-    } else {
-      btn.classList.remove('visible')
-      if (stickyHeader) stickyHeader.classList.remove('visible')
+    const isBlogStylesheet = (href) => {
+      const p = normalizeHref(href)
+      return p.startsWith('/blog/') && p.endsWith('.css')
     }
-  }, 100)
 
-  // Click handler - smooth scroll to top
-  btn.onclick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const nextLinks = qsa('link[rel="stylesheet"][href]', doc)
+      .map((l) => normalizeHref(l.getAttribute('href')))
+      .filter(isBlogStylesheet)
+
+    const curLinks = qsa('link[rel="stylesheet"][href]')
+      .map((l) => ({ el: l, href: normalizeHref(l.getAttribute('href')) }))
+      .filter((x) => isBlogStylesheet(x.href))
+
+    for (const { el, href } of curLinks) {
+      if (!nextLinks.includes(href)) el.remove()
+    }
+
+    const have = new Set(
+      qsa('link[rel="stylesheet"][href]')
+        .map((l) => normalizeHref(l.getAttribute('href')))
+        .filter(isBlogStylesheet)
+    )
+    const loadPromises = []
+    for (const href of nextLinks) {
+      if (have.has(href)) continue
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = href
+      loadPromises.push(
+        new Promise((resolve) => {
+          link.onload = resolve
+          link.onerror = resolve
+        })
+      )
+      document.head.appendChild(link)
+    }
+    return Promise.all(loadPromises)
   }
 
-  // Listen for scroll with passive option
-  window.addEventListener('scroll', checkScroll, { passive: true })
-  checkScroll() // Initial check
+  const afterSwap = () => {
+    closeSidebar()
+    runPostEnhancements()
+    initBackToTop()
   }
 
-  window.onpopstate = async () => {
-    const targetUrl = window.location.href
-    showLoader()
+  let renderedPath = window.location.pathname
+  let navigating = false
+  const spaNavigate = async (targetUrl, { push = true, restoreScroll = null } = {}) => {
+    if (navigating) return
+    navigating = true
+    progress.start()
+
+    const main = qs('.main')
+    const reduced = prefersReducedMotion()
+
     try {
-      const resp = await fetch(targetUrl)
-      const html = await resp.text()
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(html, 'text/html')
+      if (main && !reduced) main.classList.add('page-leaving')
+
+      const [html] = await Promise.all([
+        fetchPage(targetUrl),
+        reduced ? Promise.resolve() : sleep(150),
+      ])
+
+      const doc = new DOMParser().parseFromString(html, 'text/html')
+      await syncStylesheets(doc)
 
       document.title = doc.title
 
       const newMain = doc.querySelector('.main')
-      const currentMain = document.querySelector('.main')
-      if (newMain && currentMain) {
-        currentMain.innerHTML = newMain.innerHTML
+      const currentMain = qs('.main')
+      if (!newMain || !currentMain) throw new Error('missing .main')
+
+      if (push) {
+        // Remember scroll position for history back
+        history.replaceState({ scroll: window.scrollY }, '', window.location.href)
+        history.pushState({ scroll: 0 }, '', targetUrl)
       }
 
-      const currentPath = new URL(targetUrl).pathname
-      document.querySelectorAll('.nav-item').forEach(nav => {
-        const navPath = new URL(nav.href, window.location.origin).pathname
+      // Close any floating post UI, then swap content
+      // (.post-toc lives inside .main, so the swap replaces it)
+      document.body.setAttribute('data-toc-open', 'false')
+      currentMain.innerHTML = newMain.innerHTML
+
+      const currentPath = new URL(targetUrl, window.location.origin).pathname
+      renderedPath = currentPath
+      qsa('.nav-item').forEach((nav) => {
+        const navPath = new URL(nav.getAttribute('href'), window.location.origin).pathname
         nav.classList.toggle('active', navPath === currentPath)
       })
 
-      initLinks()
-      attachGlobalListeners()
-      runPostEnhancements()
-      initBackToTop()
-      bindCopyActions()
-      closeSidebar()
-      hideLoader()
+      // Force an instant jump — html { scroll-behavior: smooth } would
+      // otherwise animate the scroll across the page swap
+      window.scrollTo({ top: restoreScroll ?? 0, behavior: 'instant' })
+
+      currentMain.classList.remove('page-leaving')
+      if (!reduced) {
+        currentMain.classList.add('page-entering')
+        window.setTimeout(() => currentMain.classList.remove('page-entering'), 450)
+      }
+
+      afterSwap()
+      progress.done()
     } catch (err) {
-      console.error(err)
-      hideLoader()
-      window.location.reload()
+      console.error('[spa] navigation failed:', err)
+      progress.done()
+      window.location.href = targetUrl
+    } finally {
+      navigating = false
     }
   }
 
-  initLinks()
-  attachGlobalListeners()
+  // Delegated click for SPA links
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented) return
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+    if (!(e.target instanceof Element)) return
+    const a = e.target.closest('a')
+    if (!isSpaLink(a)) return
+    e.preventDefault()
+
+    const targetUrl = a.href
+    if (targetUrl === window.location.href) {
+      const currentPath = window.location.pathname
+      let pageName = '当前页面'
+      if (currentPath === '/blog/' || currentPath === '/blog') pageName = '主页'
+      else if (currentPath.startsWith('/blog/archives')) pageName = '归档页'
+      else if (currentPath.startsWith('/blog/tags')) pageName = '标签页'
+      else if (currentPath.startsWith('/blog/changelog')) pageName = '更新日志页'
+      showToast(`已经在${pageName}了`)
+      return
+    }
+    spaNavigate(targetUrl)
+  })
+
+  // Hover / touch prefetch
+  const onPrefetchIntent = (e) => {
+    if (!(e.target instanceof Element)) return
+    const a = e.target.closest('a')
+    if (!isSpaLink(a)) return
+    if (a.href === window.location.href) return
+    prefetchPage(a.href)
+  }
+  document.addEventListener('mouseover', onPrefetchIntent, { passive: true })
+  document.addEventListener('touchstart', onPrefetchIntent, { passive: true })
+
+  // History back/forward
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+  window.addEventListener('popstate', (e) => {
+    const scroll = e.state && typeof e.state.scroll === 'number' ? e.state.scroll : 0
+    // Hash-only movement inside the current page (e.g. TOC anchors):
+    // scroll there directly instead of re-rendering the page
+    if (window.location.pathname === renderedPath) {
+      const hash = window.location.hash.slice(1)
+      const target = hash ? document.getElementById(decodeURIComponent(hash)) : null
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      else window.scrollTo({ top: scroll, behavior: 'instant' })
+      return
+    }
+    spaNavigate(window.location.href, { push: false, restoreScroll: scroll })
+  })
+
+  // ----------------------------------------
+  // Initial boot
+  // ----------------------------------------
+
+  history.replaceState({ scroll: window.scrollY }, '', window.location.href)
   runPostEnhancements()
   initBackToTop()
 })

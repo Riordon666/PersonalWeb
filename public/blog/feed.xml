@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Riordon's Blog</title>
+    <link>https://riordon.xyz/blog/</link>
+    <description>Go where your heart leads.</description>
+    <language>zh-CN</language>
+    
+    <item>
+      <title>Riordon&#39;s Blog v1.0 更新说明与网站介绍</title>
+      <link>https://riordon.xyz/blog/v1-0/</link>
+      <guid>https://riordon.xyz/blog/v1-0/</guid>
+      <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
+      <description>今天想认真写一篇&quot;里程碑&quot;——本网站（博客）正式进入 v1.0。 从最初的想法到现在能稳定地写作、展示、切换主题、在移动端也保持良好体验，这个过程里做了很多小优化。v1.0 不代表终点，而是一个&quot;可以放心持续迭代&quot;的起点。</description>
+    </item>
+
+    <item>
+      <title>博客文章写作教程</title>
+      <link>https://riordon.xyz/blog/blog-writing-tutorial/</link>
+      <guid>https://riordon.xyz/blog/blog-writing-tutorial/</guid>
+      <pubDate>Fri, 27 Feb 2026 00:00:00 GMT</pubDate>
+      <description>本博客使用 Markdown 格式编写文章，支持 Frontmatter 元数据配置。本文将详细介绍如何编写和发布文章。 所有文章存放在 content/posts/ 目录下，文件格式为 .md（Markdown 文件）。</description>
+    </item>
+
+    <item>
+      <title>基于 Flask 的股票预测管理系统</title>
+      <link>https://riordon.xyz/blog/stock/</link>
+      <guid>https://riordon.xyz/blog/stock/</guid>
+      <pubDate>Fri, 27 Feb 2026 00:00:00 GMT</pubDate>
+      <description>最近完成了一个股票分析预测系统，今天来分享一下这个项目的设计思路和实现细节。 作为一个对金融市场和编程都感兴趣的人，一直想做一个能够自动分析股票、预测走势的工具。经过一段时间的学习和实践，终于完成了这个 Stock Prediction Management System。</description>
+    </item>
+  </channel>
+</rss>
